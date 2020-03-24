@@ -1,8 +1,50 @@
-import csv, os, json
+import csv, os, json, sys
 from datetime import date, datetime
 from bs4 import BeautifulSoup
-from .util import *
+from util import *
 
+    
+# ==================================================================================================
+# PRESIDENTIAL RACE
+# ==================================================================================================
+def fetch_538_presidential():
+    url = "https://projects.fivethirtyeight.com/polls/polls.json"
+    outfilename = "five38_allpolls.json"
+    download_file(url, outfilename)
+
+    output = []
+    with open(outfilename, newline="", encoding='utf-8') as jsonfile:
+        polldata = json.load(jsonfile)
+        presidentaldata = [x for x in polldata if x["type"] == "president-general"]
+
+        for poll in presidentaldata:
+            entry = {
+                "pollster" : poll["pollster"],
+                "source" : "FiveThirtyEight",
+                "samplesize" : poll["sampleSize"],
+                "subpopulation" : poll["population"],
+                "poll_url" : poll["url"],
+                'state_code' : get_state_code(poll["state"])
+            } 
+            datevals = poll['startDate'].split('-')
+            entry['startdate'] = date(int(datevals[0]), int(datevals[1]), int(datevals[2]))
+            datevals = poll['endDate'].split('-')
+            entry['enddate'] = date(int(datevals[0]), int(datevals[1]), int(datevals[2]))
+            delta = (entry['startdate'] - entry['enddate']) / 2
+            entry['middate'] = entry['startdate'] + delta
+
+            Dem_answer = [x for x in poll["answers"] if x["party"] == "Dem"][0]
+            Rep_answer = [x for x in poll["answers"] if x["party"] == "Rep"][0]
+
+            entry["dem_cand"] = Dem_answer["choice"]
+            entry["rep_cand"] = Rep_answer["choice"]
+            entry["d_support"] = float(round(float(Dem_answer["pct"])))
+            entry["r_support"] = float(round(float(Rep_answer["pct"])))
+
+            output.append(entry)
+
+    os.remove(outfilename)    
+    return output
 
 # ==================================================================================================
 # GENERIC CONGRESSIONAL RACE
@@ -19,8 +61,8 @@ def fetch_538_generic():
         reader = csv.DictReader(csvfile)
         for row in reader:
             datarow = {}
-            datarow["D_support"] = row["dem"]
-            datarow["R_support"] = row["rep"]
+            datarow["d_support"] = row["dem"]
+            datarow["r_support"] = row["rep"]
             datarow["pollster"] = row["pollster"]
             datarow["subpopulation"] = subpop_key[row["population"]]
 
@@ -102,10 +144,7 @@ def fetch_538_senate():
         'New Jersey', 'Montana', 'Nevada', 'Florida', 'Arizona',
         'Indiana', 'Missouri', 'Texas', 'Tennessee', 'North Dakota'
     )
-    codes = {
-        'New Jersey' : 'NJ', 'Montana' : 'MT', 'Nevada' : 'NV', 'Florida' : 'FL', 'Arizona' : 'AZ',
-        'Indiana' : 'IN', 'Missouri' : 'MO', 'Texas' : 'TX', 'Tennessee' : 'TN', 'North Dakota' : 'ND'
-    }
+    
     output = []
     with open(outfilename, newline="", encoding='utf-8') as jsonfile:
         polldata = json.load(jsonfile)
@@ -113,14 +152,13 @@ def fetch_538_senate():
         keysenatedata = [x for x in senatedata if x["state"] in states]
 
         for poll in keysenatedata:
-            if poll['population'] != 'lv': continue
             entry = {
                 "pollster" : poll["pollster"],
                 "source" : "FiveThirtyEight",
                 "samplesize" : poll["sampleSize"],
                 "subpopulation" : poll["population"],
-                "poll_URL" : poll["url"],
-                'State_code' : codes[poll['state']]
+                "poll_url" : poll["url"],
+                'state_code' : get_state_code(poll['state'])
             } 
             datevals = poll['startDate'].split('-')
             entry['startdate'] = date(int(datevals[0]), int(datevals[1]), int(datevals[2]))
@@ -132,10 +170,10 @@ def fetch_538_senate():
             Dem_answer = [x for x in poll["answers"] if x["party"] == "Dem"][0]
             Rep_answer = [x for x in poll["answers"] if x["party"] == "Rep"][0]
 
-            entry["Dem_cand"] = Dem_answer["choice"]
-            entry["Rep_cand"] = Rep_answer["choice"]
-            entry["D_support"] = float(round(float(Dem_answer["pct"])))
-            entry["R_support"] = float(round(float(Rep_answer["pct"])))
+            entry["dem_cand"] = Dem_answer["choice"]
+            entry["rep_cand"] = Rep_answer["choice"]
+            entry["d_support"] = float(round(float(Dem_answer["pct"])))
+            entry["r_support"] = float(round(float(Rep_answer["pct"])))
 
             output.append(entry)
 
@@ -287,3 +325,12 @@ def fetch_rcp_senate():
         os.remove(outfilename)
     return data
 
+
+def main():
+    if len(sys.argv) > 1:
+        print(eval(sys.argv[1])())
+    return 0
+
+# Main function boilerplate
+if __name__ == "__main__":
+    exit(main())

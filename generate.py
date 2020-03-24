@@ -9,6 +9,14 @@
 # You may use or modify this software, but only for noncommericial purposes.
 # To seek a commercial-use license, contact sswang@princeton.edu
 
+# individual senate
+
+# all senate aggregate
+
+# presidential geneeric
+
+# presidential jersey votes
+
 import json, requests, os, csv, string, sys
 from bs4 import BeautifulSoup
 from pprint import pprint
@@ -16,14 +24,10 @@ from datetime import date, datetime, timedelta
 from statistics import median
 from numpy import std, sqrt, mean, array
 
-from .clean import *
-from .scrape import *
+from clean import *
+from scrape import *
 
 
-def main():
-    if len(sys.argv) > 1:
-        eval(sys.argv[1])
-    return 0
 
 def generic_timeseries():
     five38_data = fetch_538_generic()
@@ -46,7 +50,7 @@ def generic_polls():
 
     field_names = ( 
         'pollster', 'startdate', 'enddate', 'source', 
-        'samplesize', 'D_support', 'R_support', 'subpopulation'
+        'samplesize', 'd_support', 'r_support', 'subpopulation'
     )
     now = datetime.datetime.now()
 
@@ -59,16 +63,13 @@ def generic_polls():
             writer.writerow(row)
  
 def senate_polls():
-    evote_data = remove_dups_senate(fetch_evote_senate())
-    rcp_data = remove_dups_senate(fetch_rcp_senate())
     five38_data = remove_dups_senate(fetch_538_senate())
-    senate_data = merge_senate(five38_data, merge_senate(evote_data, rcp_data))
-    data_sorted = sorted(senate_data, key=lambda k: k["enddate"], reverse=True)
+    data_sorted = sorted(five38_data, key=lambda k: k["enddate"], reverse=True)
 
     field_names = ( 
         'pollster', 'startdate', 'enddate', 'source', 
-        'samplesize', 'D_support', 'R_support', 'subpopulation'
-        'Rep_cand','Dem_cand', 'State_code', 'poll_URL', 'middate'
+        'samplesize', 'd_support', 'r_support', 'subpopulation'
+        'rep_cand','dem_cand', 'state_code', 'poll_url', 'middate'
     )
     now = datetime.datetime.now()
 
@@ -79,11 +80,8 @@ def senate_polls():
             writer.writerow(row)
 
 def senate_medians():
-    evote_data = remove_dups_senate(fetch_evote_senate())
-    rcp_data = remove_dups_senate(fetch_rcp_senate())
     five38_data = remove_dups_senate(fetch_538_senate())
-    senate_data = merge_senate(five38_data, merge_senate(evote_data, rcp_data))
-    data = sorted(senate_data, key=lambda k: k["enddate"], reverse=True)
+    data = sorted(five38_data, key=lambda k: k["enddate"], reverse=True)
 
     # hardcoded for now
     CANDIDATES = {
@@ -232,14 +230,14 @@ def write_statistics(pfile, polls):
     if num == 0:
         assert False
     elif num == 1:
-        margin = float(polls[0]['D_support']) - float(polls[0]['R_support'])
+        margin = float(polls[0]['d_support']) - float(polls[0]['r_support'])
         sem = 0.05
         w(num, date, (margin, sem))
     elif num == 2:
-        margins = [float(poll['D_support']) - float(poll['R_support']) for poll in polls]
+        margins = [float(poll['d_support']) - float(poll['r_support']) for poll in polls]
         w(num, date, get_two_statistics(array(margins)))
     else:
-        margins = [float(poll['D_support']) - float(poll['R_support']) for poll in polls]
+        margins = [float(poll['d_support']) - float(poll['r_support']) for poll in polls]
         w(num, date, get_statistics(array(margins)))
 
 
@@ -259,7 +257,7 @@ def generic_timeseries_data(data):
         start_date = min([d['startdate'] for d in agg_data])
         end_date = max([d['enddate'] for d in agg_data])
 
-        dminusr_data = [float(d['D_support']) - float(d['R_support']) for d in agg_data]
+        dminusr_data = [float(d['d_support']) - float(d['r_support']) for d in agg_data]
         dminusr_median = median(dminusr_data) 
         mad = median([abs(d - dminusr_median) for d in dminusr_data])
 
@@ -268,6 +266,12 @@ def generic_timeseries_data(data):
         output.append(row)
         current_date += delta
     return output
+
+
+def main():
+    if len(sys.argv) > 1:
+        eval(sys.argv[1])
+    return 0
 
 # Main function boilerplate
 if __name__ == "__main__":
