@@ -6,14 +6,14 @@
 # 
 # Script written for election.princeton.edu run by Samuel S.-H. Wang under
 # noncommercial-use-only license:
-# You may use or modify this software, but only for noncommericial purposes.
+# You may use or modify this software, but only for non-commericial purposes.
 # To seek a commercial-use license, contact sswang@princeton.edu
 
 # individual senate
 
 # all senate aggregate
 
-# presidential geneeric
+# presidential generic
 
 # presidential jersey votes
 
@@ -26,7 +26,6 @@ from numpy import std, sqrt, mean, array
 
 from clean import *
 from scrape import *
-
 
 
 def generic_timeseries():
@@ -78,6 +77,26 @@ def senate_polls():
         writer.writeheader()
         for row in data_sorted:
             writer.writerow(row)
+
+def presidential_polls():
+    five38_data = fetch_538_presidential()
+    data_sorted = sorted(five38_data, key=lambda k: k["enddate"], reverse=True)
+
+    field_names = ( 
+        'pollster', 'startdate', 'enddate', 'source', 
+        'samplesize', 'd_support', 'r_support', 'subpopulation'
+        'rep_cand','dem_cand', 'state_code', 'poll_url', 'middate'
+    )
+    now = datetime.datetime.now()
+
+    with open(f"out/allpolls-presidential-{now.year}.csv", 'w', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=field_names)            
+        writer.writeheader()
+        for row in data_sorted:
+            writer.writerow(row)
+
+def presidential_medians():
+    pass
 
 def senate_medians():
     five38_data = remove_dups_senate(fetch_538_senate())
