@@ -36,6 +36,10 @@ width = 8 # inches
 height_to_width = 0.8 # ratio
 width_pixels_save = 2000
 axes_box = [0.24, 0.16, 0.73, 0.75]
+col_D = '#1660CE'
+col_R = '#C62535'
+watermark = 'election.princeton.edu'
+watermark_pos = (0.79, 0.96)
 out_path = '.'
 out_format = 'png'
 
@@ -63,6 +67,9 @@ def generate_line_plot(
                   ylab_txt = '',
                   ylab_rotation = 0,
                   hline_labels = None,
+                  hline_lab_xpos = 0.85,
+                  watermark = watermark,
+                  watermark_pos = watermark_pos,
 
                   # size parameters
                   size_scale = size_scale,
@@ -77,10 +84,10 @@ def generate_line_plot(
                   tick_lw = 0.25,
 
                   # color parameters
-                  col_D = '#1660CE',
-                  col_R = '#C62535',
-                  shading = False,
-                  shading_reverse = False,
+                  col_D = col_D,
+                  col_R = col_R,
+                  shading = True,
+                  color_reverse = False,
                   shading_kw = dict(zorder=0, alpha=0.15, lw=0),
                   yerr_kw = dict(color='grey', alpha=0.3, lw=0),
                   hline_color = 'dimgrey',
@@ -100,7 +107,7 @@ def generate_line_plot(
                   title_pad = 3,
                   ylab_pad = 0.1,
                   xtick_pad = 0.015,
-                  hline_lab_pad = 12,
+                  hline_lab_pad = 0.06,
 
                   # output parameters
                   out_path = out_path,
@@ -118,6 +125,10 @@ def generate_line_plot(
 
     # specify data to plot
     vals = data.iloc[:, y_column].values
+    
+    # use data to fill title text
+    title_fillers = dict(last_value = vals[-1]
+                        )
 
     # prepare figure
     fig = pl.figure(figsize=(width, width * height_to_width))
@@ -137,6 +148,7 @@ def generate_line_plot(
             markeredgewidth=0)
 
     # plot error bars
+    err = None
     if yerr_columns is not None:
         err = data.iloc[:, yerr_columns].values
         ax.fill_between(days,
@@ -153,6 +165,14 @@ def generate_line_plot(
     ax.set_xlim(first_date, last_date)
 
     # y axis limits
+    if ylim is None:
+        mindat = err[:,0] if err is not None else vals
+        maxdat = err[:,1] if err is not None else vals
+        minn = np.floor(np.min(mindat))
+        maxx = np.ceil(np.max(maxdat))
+        pad = np.round((maxx-minn) / 5)
+        ylim = (minn - pad,
+                maxx + pad)
     ax.set_ylim(ylim)
     ylim = ax.get_ylim()
 
@@ -210,38 +230,41 @@ def generate_line_plot(
     ax.spines['top'].set_visible(False)
     pl.setp(ax.spines.values(), linewidth=spine_lw * size_scale)
 
-    # line at zero
+    # colors for hline labels and shading
+    col0, col1 = col_R, col_D
+    if color_reverse:
+        col0, col1 = col1, col0
+
+    # horizontal line
     if hline_ypos is not None:
         ax.axhline(hline_ypos,
                    color=hline_color,
                    lw=hline_lw * size_scale)
         
         if hline_labels is not None:
-            ax.text(0.7,
-                    hline_ypos + hline_lab_pad,
+            pad_data_units = hline_lab_pad * np.diff(ax.get_ylim())
+            txt_kw = dict(fontsize=font_size,
+                          ha='center',
+                          va='center',
+                          transform=blend(ax.transAxes, ax.transData))
+            ax.text(hline_lab_xpos,
+                    hline_ypos - pad_data_units,
                     hline_labels[0],
-                    fontsize=font_size,
-                    ha='center',
-                    va='center',
-                    transform=blend(ax.transAxes, ax.transData))
-            ax.text(0.7,
-                    hline_ypos - hline_lab_pad,
+                    color=col0,
+                    **txt_kw,)
+            ax.text(hline_lab_xpos,
+                    hline_ypos + pad_data_units,
                     hline_labels[1],
-                    fontsize=font_size,
-                    ha='center',
-                    va='center',
-                    transform=blend(ax.transAxes, ax.transData))
+                    color=col1,
+                    **txt_kw,)
 
     # background shading of plot regions
     if shading:
-        col0, col1 = col_D, col_R
-        if shading_reverse:
-            col0, col1 = col1, col0
-        ax.axhspan(hline_ypos, ax.get_ylim()[1], color=col0, **shading_kw)
-        ax.axhspan(ax.get_ylim()[0], hline_ypos, color=col1, **shading_kw)
+        ax.axhspan(ax.get_ylim()[0], hline_ypos, color=col0, **shading_kw)
+        ax.axhspan(hline_ypos, ax.get_ylim()[1], color=col1, **shading_kw)
 
     # text labels
-    ax.set_title(title_txt,
+    ax.set_title(title_txt.format(**title_fillers),
                  pad=title_pad * size_scale,
                  fontsize=font_size,
                  weight='bold')
@@ -255,6 +278,19 @@ def generate_line_plot(
             va='center',
             transform=ax.transAxes)
 
+    # watermark
+    ax.text(watermark_pos[0],
+            watermark_pos[1],
+            watermark,
+            fontsize=font_size-4,
+            color='black',
+            alpha=0.3,
+            style='italic',
+            ha='center',
+            va='center',
+            zorder=200,
+            transform=ax.transAxes)
+
     # save out figure
     dpi = width_pixels_save / width
     if not out_path.endswith(out_format):
@@ -266,9 +302,9 @@ def generate_histogram(
                   # data parametersA
                   data_dir = data_dir,
                   data_file = data_file,
-                  vline_ypos = None,
+                  vline_xpos = None,
                   xvals = None,
-                  data_factor=1.0,
+                  data_factor=100.0,
 
                   # figure parameters
                   width = width,
@@ -282,6 +318,9 @@ def generate_histogram(
                   ylab_rotation = 0,
                   xlab_txt = '',
                   vline_labels = None,
+                  vline_lab_ypos = 0.92,
+                  watermark = watermark,
+                  watermark_pos = watermark_pos,
 
                   # size parameters
                   size_scale = size_scale,
@@ -300,9 +339,12 @@ def generate_histogram(
                   col_R = '#C62535',
                   vline_color = 'dimgrey',
                   grid_alpha = 0.5,
+                  shading = True,
+                  color_reverse = False,
+                  shading_kw = dict(zorder=0, alpha=0.15, lw=0),
 
                   # axes parameters
-                  ylim = (0, 30),
+                  ylim = (0, 1.15),
                   xlim = (0, 100),
 
                   # tick parameters
@@ -314,9 +356,9 @@ def generate_histogram(
                   # distance/pad parameters
                   title_pad = 3,
                   ylab_pad = 6,
-                  xlab_pad = 6,
+                  xlab_pad = 3,
                   xtick_pad = 0.015,
-                  vline_lab_pad = 12,
+                  vline_lab_pad = 0.09,
 
                   # output parameters
                   out_path = out_path,
@@ -331,6 +373,10 @@ def generate_histogram(
     if xvals is None:
         xvals = np.arange(len(data))
 
+    # use data to fill title text
+    title_fillers = dict(mean_value = np.sum(data * xvals) / np.sum(data),
+                        )
+
     # prepare figure
     fig = pl.figure(figsize=(width, width * height_to_width))
     ax = fig.add_axes(axes_box)
@@ -343,16 +389,23 @@ def generate_histogram(
 
     # x axis limits
     if xlim is None:
-        thresh = 1e-1
+        thresh = 0.0001 # cuts of tails below this y value
         cs = np.cumsum(data)
-        x0 = np.argwhere(cs<thresh).squeeze()[-1]
-        cs_r = np.cumsum(data)
-        x1 = len(data) - np.argwhere(cs_r<thresh).squeeze()[-1]
+        try:
+            x0 = np.argwhere(cs<thresh).squeeze()[-1]
+        except IndexError:
+            x0 = 0
+        cs_r = np.cumsum(data[::-1])
+        try:
+            x1 = len(data) - np.argwhere(cs_r<thresh).squeeze()[-1]
+        except IndexError:
+            x1 = len(data) - 1
         xlim = (xvals[x0], xvals[x1])
     ax.set_xlim(xlim)
     xlim = ax.get_xlim()
 
     # y axis limits
+    ylim = [ylim[0], np.max(data) * ylim[1]]
     ax.set_ylim(ylim)
     ylim = ax.get_ylim()
 
@@ -376,33 +429,45 @@ def generate_histogram(
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     pl.setp(ax.spines.values(), linewidth=spine_lw * size_scale)
+    
+    # colors for vline labels and shading
+    col0, col1 = col_R, col_D
+    if color_reverse:
+        col0, col1 = col1, col0
 
-    # line at zero
-    if vline_ypos is not None:
-        ax.axvline(vline_ypos + (bar_width / 2 + (1-bar_width) / 2),
+    # vertical line
+    if vline_xpos is not None:
+        ax.axvline(vline_xpos ,#+ (bar_width / 2 + (1-bar_width) / 2),
                    color=vline_color,
                    lw=vline_lw * size_scale,
                    zorder=100)
+
         if vline_labels is not None:
+            pad_data_units = vline_lab_pad * np.diff(ax.get_xlim())
+            txt_kw = dict(fontsize=font_size,
+                          ha='center',
+                          va='center',
+                          transform=blend(ax.transData, ax.transAxes))
             ax.text(
-                    vline_ypos + vline_lab_pad,
-                    0.9,
+                    vline_xpos - pad_data_units,
+                    vline_lab_ypos,
                     vline_labels[0],
-                    fontsize=font_size,
-                    ha='center',
-                    va='center',
-                    transform=blend(ax.transData, ax.transAxes))
+                    color=col0,
+                    **txt_kw,)
             ax.text(
-                    vline_ypos - vline_lab_pad,
-                    0.9,
+                    vline_xpos + pad_data_units,
+                    vline_lab_ypos,
                     vline_labels[1],
-                    fontsize=font_size,
-                    ha='center',
-                    va='center',
-                    transform=blend(ax.transData, ax.transAxes))
+                    color=col1,
+                    **txt_kw,)
+    
+    # background shading of plot regions
+    if shading:
+        ax.axvspan(ax.get_xlim()[0], vline_xpos, color=col0, **shading_kw)
+        ax.axvspan(vline_xpos, ax.get_xlim()[1], color=col1, **shading_kw)
         
     # text labels
-    ax.set_title(title_txt,
+    ax.set_title(title_txt.format(**title_fillers),
                  pad=title_pad * size_scale,
                  fontsize=font_size,
                  weight='bold')
@@ -420,6 +485,19 @@ def generate_histogram(
                   fontsize=font_size,
                   labelpad=xlab_pad * size_scale,
                  )
+
+    # watermark
+    ax.text(watermark_pos[0],
+            watermark_pos[1],
+            watermark,
+            fontsize=font_size-4,
+            color='black',
+            alpha=0.3,
+            style='italic',
+            ha='center',
+            va='center',
+            zorder=200,
+            transform=ax.transAxes)
 
     # save out figure
     dpi = width_pixels_save / width
