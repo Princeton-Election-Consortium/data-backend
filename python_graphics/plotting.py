@@ -7,6 +7,8 @@ import datetime as dt
 import calendar
 import os
 from skimage.transform import rescale
+from pandas.plotting import register_matplotlib_converters
+register_matplotlib_converters()
 
 # constants
 mo_names = {
@@ -50,6 +52,7 @@ def generate_line_plot(
                   # data parameters
                   data_dir = data_dir,
                   data_file = data_file,
+                  read_csv_kw = {},
                   strike_zone_data_file = None,
                   x_column = 0,
                   y_column = -1,
@@ -96,6 +99,7 @@ def generate_line_plot(
                   shading_kw = dict(zorder=0, alpha=0.15, lw=0),
                   yerr_kw = dict(color='grey', alpha=0.3, lw=0),
                   hline_color = 'dimgrey',
+                  hline_lab_colors = None,
                   data_line_color = 'k',
                   yticklab_format = False,
                   grid_alpha = 0.5,
@@ -118,11 +122,14 @@ def generate_line_plot(
                   # output parameters
                   out_path = out_path,
                   out_format = out_format,
+
+                  # other customs
+                  plot_customization = False,
                 ):
 
     # load data
     data_path = os.path.join(data_dir, data_file)
-    data = pd.read_csv(data_path)
+    data = pd.read_csv(data_path, **read_csv_kw)
 
     # read in column labels
     fname, ext = os.path.splitext(data_file)
@@ -130,6 +137,7 @@ def generate_line_plot(
     column_path = os.path.join(data_dir, column_file)
     columns = pd.read_csv(column_path).columns
     data.columns = columns
+    data.sort_values(by=x_column, inplace=True)
 
     # convert dates to datetimes
     days = data[x_column].values
@@ -143,7 +151,8 @@ def generate_line_plot(
         vals = x_minus_yvalues - vals
     
     # use data to fill title text
-    title_fillers = dict(last_value = vals[-1]
+    title_fillers = dict(last_value = vals[-1],
+                         party = '',
                         )
 
     # prepare figure
@@ -153,7 +162,8 @@ def generate_line_plot(
     # plot main data line
     ax.plot(days, vals,
             color=data_line_color,
-            lw=data_lw * size_scale)
+            lw=data_lw * size_scale,
+            zorder=1000)
 
     # plot circle on most recent data point
     col = zone_colors[1] if vals[-1]>0 else zone_colors[0]
@@ -167,6 +177,11 @@ def generate_line_plot(
     err = None
     if yerr_columns is not None:
         err = data[yerr_columns].values
+        if len(yerr_columns) == 1:
+            # then column with symmetrical value to be added
+            # otherwise abs values were assumed
+            err = err.squeeze()
+            err = np.array([vals - err, vals + err]).T
         if x_minus_yvalues is not None:
             err = x_minus_yvalues - err
             err = err[:,::-1] # keep [lower, upper]
@@ -276,15 +291,17 @@ def generate_line_plot(
                           ha='center',
                           va='center',
                           transform=blend(ax.transAxes, ax.transData))
+            if hline_lab_colors is None:
+                hline_lab_colors = [col0, col1]
             ax.text(hline_lab_xpos,
                     hline_ypos - pad_data_units,
                     hline_labels[0],
-                    color=col0,
+                    color=hline_lab_colors[0],
                     **txt_kw,)
             ax.text(hline_lab_xpos,
                     hline_ypos + pad_data_units,
                     hline_labels[1],
-                    color=col1,
+                    color=hline_lab_colors[1],
                     **txt_kw,)
 
     # background shading of plot regions
@@ -339,6 +356,80 @@ def generate_line_plot(
             va='center',
             zorder=200,
             transform=ax.transAxes)
+
+    # CUSTOM type special plot
+    if plot_customization:
+
+        ax2 = ax.twinx()
+
+        ax.spines['right'].set_visible(True)
+        ax.yaxis.tick_right()
+        ax2.yaxis.tick_left()
+        
+        spec_ypos = 6
+        spec_span = 3
+        spec_col = '#f58025'
+        ax.axhline(spec_ypos,
+                   color=spec_col,
+                   lw=0.5 * size_scale)
+        ax.axhspan(spec_ypos - spec_span,
+                   spec_ypos + spec_span,
+                   color=spec_col,
+                   alpha=0.15,
+                   zorder=0,
+                   lw=0,
+                   )
+
+        pad_data_units = 0.05 * np.diff(ax.get_ylim())
+        ax.text(0.79,
+                spec_ypos - pad_data_units,
+                'Special elections',
+                color=spec_col,
+                fontsize=font_size-4,
+                alpha=0.8,
+                ha='center',
+                va='center',
+                transform=blend(ax.transAxes, ax.transData))
+
+        ax2.set_ylim(ax.get_ylim())
+        ax2.set_yticks(ax.get_yticks())
+        ax2.tick_params(labelsize=font_size,
+                       length=tick_length * size_scale,
+                       pad=tick_pad * size_scale,
+                       width=tick_lw * size_scale)
+        ax2.tick_params(which='minor', length=0)
+
+        # ytick labels with formatting specifications
+        ytls, ytls2 = [], []
+        def make_str(t):
+            plus = '+' if t != 0 else ''
+            let = 'D' if t>0 else 'R'
+            if t==0: let=''
+            return f'{let}{plus}{abs(t):0.0f}%'
+        for t in ax.get_yticks():
+            ytls.append(make_str(t))
+            ytls2.append(make_str(t-3))
+        ax.set_yticklabels(ytls)
+        ax2.set_yticklabels(ytls2)
+
+        ax.text(1 + ylab_pad * size_scale,
+                0.5,
+                '2020\ngeneric\nballot D-R',
+                fontsize=font_size,
+                rotation=ylab_rotation,
+                ha='center',
+                va='center',
+                transform=ax.transAxes)
+        
+        lv = title_fillers['last_value']
+        if lv > 0:
+            title_fillers['party'] = 'D+'
+        elif lv < 0:
+            title_fillers['party'] = 'R+'
+        ax.set_title(title_txt.format(**title_fillers),
+                 pad=title_pad * size_scale,
+                 fontsize=font_size,
+                 weight='bold')
 
     # save out figure
     dpi = width_pixels_save / width
