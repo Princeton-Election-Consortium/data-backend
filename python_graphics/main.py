@@ -109,7 +109,7 @@ generate_line_plot(
         x_column='date',
         y_column='median_margin',
         yerr_columns=['esd'],
-        ylim=(-5, 16),
+        ylim=(-4, 12),
         yticks_interval=4,
         ylab_txt='House\nmeta-\nmargin',
         ylab_pad=0.09,
