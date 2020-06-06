@@ -1,4 +1,4 @@
-from plotting import generate_line_plot, generate_histogram
+from plotting import generate_line_plot, generate_histogram, generate_dual_line_plot
 import numpy as np
 import os
 
@@ -9,9 +9,8 @@ os.makedirs(out_dir, exist_ok=True)
 path = os.path.join(out_dir, 'meta_lead_senate')
 generate_line_plot(
         data_file='Senate_estimate_history.csv',
-        x_column=0,
-        y_column=-1,
-        ylim=None,
+        x_column='date',
+        y_column='meta_margin',
         ylab_txt='Meta-\nmargin',
         ylab_pad=0.06,
         yticklab_format = True,
@@ -25,10 +24,9 @@ generate_line_plot(
 path = os.path.join(out_dir, 'dem_senate_seats')
 generate_line_plot(
         data_file='Senate_estimate_history.csv',
-        x_column=0,
-        y_column=2,
-        yerr_columns=[8,9],
-        ylim=None,
+        x_column='date',
+        y_column='mean_seats',
+        yerr_columns=['1sigma_lower', '1sigma_upper'],
         ylab_txt='Dem/Ind\nseats (%)',
         ylab_pad=0.055,
         ylab_rotation = 0,
@@ -41,19 +39,28 @@ generate_line_plot(
 path = os.path.join(out_dir, 'president_estimator')
 generate_line_plot(
         data_file = 'EV_estimate_history.csv',
-        x_column=0,
-        y_column=2,
-        yerr_columns=None,
-        ylim=(100, 360),
-        yticks_interval=30,
+        strike_zone_data_file = 'EV_prediction.csv',
+        x_column='date',
+        y_column='median_EV0', # 0=biden, 1=trump
+        x_minus_yvalues=533, # to make in terms of trump
+        yerr_columns=['95ci_lower', '95ci_upper'],
+        ylim=None,
+        yticks_interval=40,
         ylab_txt = 'Trump\nelectoral\nvotes',
         ylab_rotation = 0,
-        ylab_pad=0.055,
+        ylab_pad=0.058,
         title_txt='{last_value:.0f} Trump electoral votes expected',
+        strike_colors = ['#909090', '#c8c8c8'],
         hline_ypos = 270,
         hline_labels = ['Biden leads', 'Trump leads'],
+        hline_lab_xpos = 0.35,
+        hline_lab_pad = 0.05,
         color_reverse = True,
         out_path=path)
+'''
+* Electoral vote time series: can it please have the red/yellow strike zone of 1-sigma and 2-sigma November outcomes? The zones can be a more neutral color too, like dark gray/light gray.
+* Electoral vote time series: can there please be a shaded zone, as done for the Senate time series?
+'''
 
 # plot 3
 path = os.path.join(out_dir, 'senate_histogram')
@@ -61,8 +68,8 @@ generate_histogram(
         data_file = 'Senate_histogram.csv',
         xvals=np.arange(44, 61),
         ylim=(0, 1.15),
-        xlim=None,
-        xticks_interval=5,
+        xlim=(46, 56.5),
+        xticks_interval=1,
         yticks_interval=5,
         ylab_txt='Probability\n(%)',
         ylab_pad=0.054,
@@ -79,7 +86,7 @@ generate_histogram(
         xvals=None,
         bar_width=1.0,
         ylim=(0, 1.15),
-        xlim=None,
+        xlim=(230, 431),
         xticks_interval=40,
         yticks_interval=0.4,
         ylab_txt='Prob.\nof exact\n# of EV\n(%)',
@@ -88,4 +95,21 @@ generate_histogram(
         title_txt='Mean: {mean_value:.0f} votes for Biden',
         vline_xpos=270,
         vline_labels = ['Trump\nwins', 'Biden\nwins'],
+        out_path=path)
+
+# plot 5
+path = os.path.join(out_dir, 'house_meta_margin')
+generate_dual_line_plot(
+        data_dir='..',
+        data_file='2020.generic.polls.median.txt',
+        x_column=-1,
+        y_column=2,
+        yerr_columns=[8,9],
+        ylim=None,
+        ylab_txt='Dem/Ind\nseats (%)',
+        ylab_pad=0.055,
+        ylab_rotation = 0,
+        title_txt='{last_value:.0f} Democratic Senate seats expected',
+        hline_ypos = 49.5,
+        hline_labels = ['R control', 'D+I control'],
         out_path=path)

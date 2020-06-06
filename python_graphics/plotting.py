@@ -23,6 +23,7 @@ mo_names = {
             11: 'Nov',
             12: 'Dec',
            }
+election_day = dt.datetime(2020, 11, 3)
 
 # matplotlib settings
 pl.rcParams["font.sans-serif"] = 'Arial'
@@ -38,6 +39,7 @@ width_pixels_save = 2000
 axes_box = [0.24, 0.16, 0.73, 0.75]
 col_D = '#1660CE'
 col_R = '#C62535'
+zone_colors = [col_R, col_D]
 watermark = 'election.princeton.edu'
 watermark_pos = (0.79, 0.96)
 out_path = '.'
@@ -48,12 +50,14 @@ def generate_line_plot(
                   # data parameters
                   data_dir = data_dir,
                   data_file = data_file,
+                  strike_zone_data_file = None,
                   x_column = 0,
                   y_column = -1,
+                  x_minus_yvalues = None,
                   yerr_columns = None,
                   year = 2020,
-                  first_month = 3,
-                  last_month = 11,
+                  first_day = None,
+                  last_day = 334,
                   hline_ypos = None,
 
                   # figure parameters
@@ -86,6 +90,7 @@ def generate_line_plot(
                   # color parameters
                   col_D = col_D,
                   col_R = col_R,
+                  zone_colors = zone_colors,
                   shading = True,
                   color_reverse = False,
                   shading_kw = dict(zorder=0, alpha=0.15, lw=0),
@@ -94,9 +99,10 @@ def generate_line_plot(
                   data_line_color = 'k',
                   yticklab_format = False,
                   grid_alpha = 0.5,
+                  strike_colors = ['dimgrey', 'lightgrey'],
 
                   # axes parameters
-                  ylim = (-2, 5),
+                  ylim = None,
 
                   # tick parameters
                   tick_length = 3,
@@ -118,13 +124,23 @@ def generate_line_plot(
     data_path = os.path.join(data_dir, data_file)
     data = pd.read_csv(data_path)
 
+    # read in column labels
+    fname, ext = os.path.splitext(data_file)
+    column_file = fname + '_columns' + ext
+    column_path = os.path.join(data_dir, column_file)
+    columns = pd.read_csv(column_path).columns
+    data.columns = columns
+
     # convert dates to datetimes
-    days = data.iloc[:, x_column].values
+    days = data[x_column].values
     doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d))
+    day_of_year = days
     days = np.array([doy2dt(int(d)) for d in days])
 
     # specify data to plot
-    vals = data.iloc[:, y_column].values
+    vals = data[y_column].values
+    if x_minus_yvalues is not None:
+        vals = x_minus_yvalues - vals
     
     # use data to fill title text
     title_fillers = dict(last_value = vals[-1]
@@ -140,7 +156,7 @@ def generate_line_plot(
             lw=data_lw * size_scale)
 
     # plot circle on most recent data point
-    col = col_D if vals[-1]>0 else col_R
+    col = zone_colors[1] if vals[-1]>0 else zone_colors[0]
     ax.plot(days[-1], vals[-1],
             marker='o',
             markersize=circle_size * size_scale,
@@ -150,7 +166,10 @@ def generate_line_plot(
     # plot error bars
     err = None
     if yerr_columns is not None:
-        err = data.iloc[:, yerr_columns].values
+        err = data[yerr_columns].values
+        if x_minus_yvalues is not None:
+            err = x_minus_yvalues - err
+            err = err[:,::-1] # keep [lower, upper]
         ax.fill_between(days,
                         err[:,0],
                         err[:,1],
@@ -158,10 +177,10 @@ def generate_line_plot(
                         )
 
     # x axis limits
-    first_month = first_month or np.min([d.month for d in days])
-    last_month_end = calendar.monthrange(year, last_month)[-1]
-    first_date = dt.datetime(year, first_month, 1)
-    last_date = dt.datetime(year, last_month, last_month_end)
+    first_day = first_day or np.min(day_of_year)
+    last_day = last_day or np.max(day_of_year)
+    first_date = doy2dt(first_day)
+    last_date = doy2dt(last_day)
     ax.set_xlim(first_date, last_date)
 
     # y axis limits
@@ -171,8 +190,13 @@ def generate_line_plot(
         minn = np.floor(np.min(mindat))
         maxx = np.ceil(np.max(maxdat))
         pad = np.round((maxx-minn) / 5)
-        ylim = (minn - pad,
-                maxx + pad)
+        y0, y1 = minn-pad, maxx+pad
+        if pad > 10:
+            def r210(val, fx=np.ceil):
+                return int(fx(val / 10.0)) * 10
+            y0 = r210(y0, np.ceil)
+            y1 = r210(y1, np.floor)
+        ylim = (y0, y1)
     ax.set_ylim(ylim)
     ylim = ax.get_ylim()
 
@@ -184,9 +208,14 @@ def generate_line_plot(
     ax.set_xticklabels([])
 
     # x tick labels at centers of months
-    for td in tick_dates:
+    def get_mid(mo):
+        rang = calendar.monthrange(year, mo)
+        return int(np.round(rang[-1]/2))
+    mid_months = np.array([get_mid(d.month) for d in date_range])
+    tick_label_dates = date_range[date_range.day == mid_months]
+    for td in tick_label_dates:
         loc = td.to_datetime64()
-        ax.text(loc + np.timedelta64(15, 'D'), -xtick_pad * size_scale,
+        ax.text(loc, -xtick_pad * size_scale,
                 mo_names[td.month],
                 color='k',
                 ha='center',
@@ -210,9 +239,9 @@ def generate_line_plot(
         # color ytick labels
         for lab, pos in zip(ax.get_yticklabels(), ax.get_yticks()):
             if pos > 0:
-                col = col_D
+                col = zone_colors[1]
             elif pos < 0:
-                col = col_R
+                col = zone_colors[0]
             else:
                 col = 'k'
             lab.set_color(col)
@@ -231,7 +260,7 @@ def generate_line_plot(
     pl.setp(ax.spines.values(), linewidth=spine_lw * size_scale)
 
     # colors for hline labels and shading
-    col0, col1 = col_R, col_D
+    col0, col1 = zone_colors
     if color_reverse:
         col0, col1 = col1, col0
 
@@ -262,6 +291,26 @@ def generate_line_plot(
     if shading:
         ax.axhspan(ax.get_ylim()[0], hline_ypos, color=col0, **shading_kw)
         ax.axhspan(hline_ypos, ax.get_ylim()[1], color=col1, **shading_kw)
+
+    # target bar
+    if strike_zone_data_file is not None:
+        strike_path = os.path.join(data_dir, strike_zone_data_file)
+        strike_data = pd.read_csv(strike_path)
+        values = np.array(strike_data.columns).astype(float)
+        if x_minus_yvalues is not None:
+            values = x_minus_yvalues - values
+        s1_lo, s1_hi, s2_lo, s2_hi = values
+        pairs = [s1_lo, s1_hi], [s2_lo, s2_hi]
+        zorders = [150, 149]
+
+        for (lo, hi), col, zo in zip(pairs, strike_colors, zorders):
+            ax.plot([election_day] * 2,
+                    [lo, hi],
+                    lw=2*size_scale,
+                    color=col,
+                    zorder=zo,
+                    alpha=0.7,
+                    transform=blend(ax.transData, ax.transData))
 
     # text labels
     ax.set_title(title_txt.format(**title_fillers),
@@ -337,6 +386,7 @@ def generate_histogram(
                   bar_color = 'black',
                   col_D = '#1660CE',
                   col_R = '#C62535',
+                  zone_colors = zone_colors,
                   vline_color = 'dimgrey',
                   grid_alpha = 0.5,
                   shading = True,
@@ -410,7 +460,7 @@ def generate_histogram(
     ylim = ax.get_ylim()
 
     # x ticks
-    ax.set_xticks(np.arange(xlim[0], xlim[1]+xticks_interval, xticks_interval))
+    ax.set_xticks(np.arange(xlim[0], xlim[1], xticks_interval))
 
     # x tick labels
 
@@ -431,7 +481,7 @@ def generate_histogram(
     pl.setp(ax.spines.values(), linewidth=spine_lw * size_scale)
     
     # colors for vline labels and shading
-    col0, col1 = col_R, col_D
+    col0, col1 = zone_colors
     if color_reverse:
         col0, col1 = col1, col0
 
@@ -505,3 +555,6 @@ def generate_histogram(
         out_path = f'{out_path}.{out_format}'
     pl.savefig(out_path, dpi=dpi)
     pl.close(fig)
+
+def generate_dual_line_plot(*args, **kwargs):
+    pass
