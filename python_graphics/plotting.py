@@ -26,6 +26,8 @@ mo_names = {
             12: 'Dec',
            }
 election_day = dt.datetime(2020, 11, 3)
+year = 2020
+doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d))
 
 # matplotlib settings
 pl.rcParams["font.sans-serif"] = 'Arial'
@@ -58,7 +60,7 @@ def generate_line_plot(
                   y_column = -1,
                   x_minus_yvalues = None,
                   yerr_columns = None,
-                  year = 2020,
+                  year = year,
                   first_day = None,
                   last_day = 334,
                   hline_ypos = None,
@@ -141,7 +143,6 @@ def generate_line_plot(
 
     # convert dates to datetimes
     days = data[x_column].values
-    doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d))
     day_of_year = days
     days = np.array([doy2dt(int(d)) for d in days])
 
@@ -171,7 +172,8 @@ def generate_line_plot(
             marker='o',
             markersize=circle_size * size_scale,
             markerfacecolor=col,
-            markeredgewidth=0)
+            markeredgewidth=0,
+            zorder=1001)
 
     # plot error bars
     err = None
@@ -359,6 +361,7 @@ def generate_line_plot(
 
     # CUSTOM type special plot
     if plot_customization:
+        new_ax_offset = 3
 
         ax2 = ax.twinx()
 
@@ -408,7 +411,7 @@ def generate_line_plot(
             return f'{let}{plus}{abs(t):0.0f}%'
         for t in ax.get_yticks():
             ytls.append(make_str(t))
-            ytls2.append(make_str(t-3))
+            ytls2.append(make_str(t-new_ax_offset))
         ax.set_yticklabels(ytls)
         ax2.set_yticklabels(ytls2)
 
@@ -422,10 +425,12 @@ def generate_line_plot(
                 transform=ax.transAxes)
         
         lv = title_fillers['last_value']
+        lv = lv - new_ax_offset
         if lv > 0:
             title_fillers['party'] = 'D+'
         elif lv < 0:
             title_fillers['party'] = 'R+'
+        title_fillers['last_value'] = lv
         ax.set_title(title_txt.format(**title_fillers),
                  pad=title_pad * size_scale,
                  fontsize=font_size,
@@ -459,6 +464,7 @@ def generate_histogram(
                   xlab_txt = '',
                   vline_labels = None,
                   vline_lab_ypos = 0.92,
+                  last_date_label_pos = (0.01, 0.01),
                   watermark = watermark,
                   watermark_pos = watermark_pos,
 
@@ -515,7 +521,14 @@ def generate_histogram(
         xvals = np.arange(len(data))
 
     # use data to fill title text
+    def compute_rv_median(p, xs):
+        p = p/np.sum(p)
+        cum = np.cumsum(p)
+        x1 = xs[np.argwhere(cum <= 0.5).squeeze()[-1]]
+        x2 = xs[np.argwhere(cum >= 0.5).squeeze()[0]]
+        return np.mean([x1, x2])
     title_fillers = dict(mean_value = np.sum(data * xvals) / np.sum(data),
+                         median_value = compute_rv_median(data, xvals),
                         )
 
     # prepare figure
@@ -626,6 +639,33 @@ def generate_histogram(
                   fontsize=font_size,
                   labelpad=xlab_pad * size_scale,
                  )
+
+    # last date label
+    if last_date_label_pos is not None:
+        h_filename = data_file.split('_')[0] + '_estimate_history'
+        c_filename = h_filename + '_columns'
+        hdata_path = os.path.join(data_dir, h_filename+'.csv')
+        cdata_path = os.path.join(data_dir, c_filename+'.csv')
+        try:
+            hist = pd.read_csv(hdata_path)
+            columns = pd.read_csv(cdata_path).columns
+            hist.columns = columns
+            last_date = doy2dt(np.max(hist.date.values))
+            datestr = last_date.strftime('%Y/%m/%d')
+            txt = f'Data date: {datestr}'
+        except:
+            txt = ''
+        ax.text(last_date_label_pos[0],
+                last_date_label_pos[1],
+                txt,
+                fontsize=font_size-10,
+                color='black',
+                alpha=0.3,
+                style='italic',
+                ha='left',
+                va='bottom',
+                zorder=200,
+                transform=fig.transFigure)
 
     # watermark
     ax.text(watermark_pos[0],
