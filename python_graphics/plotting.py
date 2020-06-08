@@ -524,9 +524,10 @@ def generate_histogram(
     def compute_rv_median(p, xs):
         p = p/np.sum(p)
         cum = np.cumsum(p)
-        x1 = xs[np.argwhere(cum <= 0.5).squeeze()[-1]]
-        x2 = xs[np.argwhere(cum >= 0.5).squeeze()[0]]
-        return np.mean([x1, x2])
+        #x1 = xs[np.argwhere(cum <= 0.5).squeeze()[-1]]
+        #x2 = xs[np.argwhere(cum >= 0.5).squeeze()[0]]
+        #return np.mean([x1, x2])
+        return xs[np.argwhere(cum>=0.5).squeeze()[0]]
     title_fillers = dict(mean_value = np.sum(data * xvals) / np.sum(data),
                          median_value = compute_rv_median(data, xvals),
                         )

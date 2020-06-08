@@ -57,10 +57,6 @@ generate_line_plot(
         hline_lab_pad = 0.05,
         color_reverse = True,
         out_path=path)
-'''
-* Electoral vote time series: can it please have the red/yellow strike zone of 1-sigma and 2-sigma November outcomes? The zones can be a more neutral color too, like dark gray/light gray.
-* Electoral vote time series: can there please be a shaded zone, as done for the Senate time series?
-'''
 
 # plot 3
 path = os.path.join(out_dir, 'senate_histogram')
@@ -74,7 +70,7 @@ generate_histogram(
         ylab_txt='Probability\n(%)',
         ylab_pad=0.054,
         xlab_txt = 'Democratic + Independent Senate seats',
-        title_txt='Median: {median_value:.1f} D+I Senate seats',
+        title_txt='Median: {median_value:.0f} D+I Senate seats',
         vline_xpos = 49.6,
         vline_labels = ['R\ncontrol', 'D+I\ncontrol'],
         out_path=path)
