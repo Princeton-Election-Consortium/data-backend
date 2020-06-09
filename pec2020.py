@@ -107,6 +107,8 @@ def write_state_day_stats(day=None, state=None, polls=None, file=None):
 
     file.write('%-3d %-4s %-7.2f %-7.2f %-4s %-3d\n' % (num_polls, date_most_recent_poll, median_margin, 
         esd, julian_date, state_num))
+    
+    return dict(num_polls=num_polls, julian_date=julian_date, date_most_recent_poll=date_most_recent_poll, median_margin=median_margin, esd=esd, state_num=state_num)
 
 def presidential(polls):
     pres_polls = polls[polls['type'] == 'president-general']
@@ -115,7 +117,8 @@ def presidential(polls):
     pres_polls = pres_polls[pres_polls['dem_cand'] == 'Biden']
     # exclude national polls
     pres_polls = pres_polls[pres_polls['state'] != 'National']
-
+    
+    all_output = []
     f = open('matlab/2020.EV.polls.median.txt', 'w')
     for idx in range((datetime.today() - start_date).days):
         for state in states:
@@ -123,7 +126,12 @@ def presidential(polls):
             day = datetime.today() - timedelta(days=idx)
             
             final_polls = clean_and_filter_polls(day=day, polls=pres_polls_state)
-            write_state_day_stats(day=day, state=state, polls=final_polls, file=f)
+            row = write_state_day_stats(day=day, state=state, polls=final_polls, file=f)
+            all_output.append(row)
+    
+    df = pd.DataFrame(all_output)
+    df.to_csv('2020.EV.polls.median.csv', index=False, float_format='%.2f')
+
     f.close()
 
 def senate(polls):
@@ -131,7 +139,8 @@ def senate(polls):
     sen_polls = sen_polls.assign(dminusr=lambda x: x.apply(parse_dminusr, axis=1),
         dem_cand=lambda x: x.apply(parse_candidate, axis=1, party='Dem'),
         rep_cand=lambda x: x.apply(parse_candidate, axis=1, party='Rep'))
-    
+
+    all_output = [] 
     f = open('matlab/2020.Senate.polls.median.txt', 'w')
     for idx in range((datetime.today() - start_date).days):
         for state in sen_states:
@@ -146,7 +155,12 @@ def senate(polls):
             day = datetime.today() - timedelta(days=idx)
 
             final_polls = clean_and_filter_polls(day=day, state=state, polls=sen_polls_state)
-            write_state_day_stats(day=day, state=state, polls=final_polls, file=f)
+            row = write_state_day_stats(day=day, state=state, polls=final_polls, file=f)
+            all_output.append(row)
+
+    df = pd.DataFrame(all_output)
+    df.to_csv('2020.Senate.polls.median.csv', index=False, float_format='%.2f')
+
     f.close()
 
 def generic(polls):
@@ -154,6 +168,7 @@ def generic(polls):
     gen_polls = gen_polls.assign(dminusr=lambda x: x.apply(parse_dminusr, axis=1, generic=True))
 
     f = open('matlab/2020.generic.polls.median.txt', 'w')
+    all_output = []
     for idx in range((datetime.today() - start_date).days):
         day = datetime.today() - timedelta(days=idx)
 
@@ -165,8 +180,13 @@ def generic(polls):
         median_margin = final_polls['dminusr'].median()
         esd = final_polls['dminusr'].mad() * 1.4826
 
+        all_output.append(dict(num_polls=num_polls, julian_date=julian_date, date_most_recent_poll=date_most_recent_poll, median_margin=median_margin, esd=esd))
+
         f.write('%-3d %-4s %-7.2f %-7.2f %-4s\n' % (num_polls, date_most_recent_poll, median_margin, 
             esd, julian_date))
+    
+    df = pd.DataFrame(all_output)
+    df.to_csv('2020.generic.polls.median.csv', index=False, float_format='%.2f')
 
     f.close()
 
