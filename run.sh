@@ -5,7 +5,9 @@ if [ $1 = "local" ]; then
     cp scraping/outputs/*.txt matlab
     matlab -r matlab/federal_runner
     matlab -r matlab/senate_estimator
-    python3 python_graphics/main.py
+    cd python_graphics
+    python3 main.py
+    cd ..
 else
     python3 /web/data-backend/scraping/pec2020.py
     cp /web/data-backend/scraping/outputs/*.txt /web/data-backend/matlab
