@@ -27,7 +27,7 @@ mo_names = {
            }
 election_day = dt.datetime(2020, 11, 3)
 year = 2020
-doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d))
+doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d)-1)
 
 # matplotlib settings
 pl.rcParams["font.sans-serif"] = 'Arial'
