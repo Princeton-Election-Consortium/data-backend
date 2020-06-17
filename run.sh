@@ -15,7 +15,9 @@ cd ..
 cd python_graphics
 python main.py
 
-cp /web/data-backend/matlab/*.txt /web/www/data/election2020
-cp /web/data-backend/scraping/outputs/*.csv /web/www/data/election2020
-cp /web/data-backend/python_graphics/outputs/*.png /web/www/data/election2020
-cp /web/data-backend/banner/banner.html /web/www/data/election2020
+cp /web/data-backend/matlab/*.txt /web/www/election2020/data
+cp /web/data-backend/scraping/outputs/*.csv /web/www/election2020/data
+cp /web/data-backend/matlab/outputs/*.csv /web/www/election2020/data
+
+cp /web/data-backend/python_graphics/outputs/*.png /web/www/election2020/outputs
+cp /web/data-backend/banner/banner.html /web/www/election2020/outputs
