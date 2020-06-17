@@ -28,7 +28,7 @@ generate_line_plot(
         x_column='date',
         y_column='mean_seats',
         yerr_columns=['1sigma_lower', '1sigma_upper'],
-        ylab_txt='Dem/Ind seats (%)',
+        ylab_txt='Dem/Ind seats',
         ylab_pad=0.04,
         ylab_rotation=90,
         title_txt='{last_value:.0f} Democratic Senate seats expected',
