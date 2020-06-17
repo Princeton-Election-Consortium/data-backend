@@ -68,7 +68,7 @@ def main():
     gen_mm_str = f'{gen_ahead_str}{abs(gen_metamargin)}%'
 
     banner = f"""
-    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 40px; font-family: Helvetica; font-size: 20px">
+    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span>{datestring}: Biden {ev_dem} EV ({ev_mm_str}), Senate {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), House control {gen_mm_str}</span>
         <br>
         <span>Moneyball states: President NV GA AZ, <a href="https://secure.actblue.com/donate/pec2020federal?refcode=thermometer">Senate</a> MT ME IA, <a href="https://secure.actblue.com/donate/pec2020?refcode=thermometer">Legislatures</a> KS TX NC</span>

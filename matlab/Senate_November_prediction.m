@@ -1,4 +1,4 @@
-whereoutputs='outputs\';
+whereoutputs='outputs/';
 Senate_history=load(strcat(whereoutputs,'Senate_estimate_history.csv'));
 d=Senate_history(:,1);
 mm=Senate_history(:,12);
