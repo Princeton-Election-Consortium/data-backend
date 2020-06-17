@@ -40,7 +40,7 @@ font_size = size_scale * 5
 width = 8 # inches
 height_to_width = 0.8 # ratio
 width_pixels_save = 2000
-axes_box = [0.24, 0.16, 0.73, 0.75]
+axes_box = [0.18, 0.16, 0.79, 0.75]
 col_D = '#1660CE'
 col_R = '#C62535'
 zone_colors = [col_R, col_D]
@@ -417,9 +417,9 @@ def generate_line_plot(
 
         ax.text(1 + ylab_pad * size_scale,
                 0.5,
-                '2020\ngeneric\nballot D-R',
+                '2020 generic ballot D-R',
                 fontsize=font_size,
-                rotation=ylab_rotation,
+                rotation=-ylab_rotation,
                 ha='center',
                 va='center',
                 transform=ax.transAxes)
