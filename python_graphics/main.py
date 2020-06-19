@@ -1,4 +1,4 @@
-from plotting import generate_line_plot, generate_histogram, generate_dual_line_plot
+from plotting import generate_line_plot, generate_histogram
 import numpy as np
 import os
 
