@@ -20,6 +20,24 @@ generate_line_plot(
         shading = True,
         out_path=path)
 
+## generate thumbnail version
+#  suitable for reproduction at 200 pixel width. No axis labels. No tick marks
+path = os.path.join(out_dir, 'thumb_meta_lead_senate')
+generate_line_plot(
+        data_file='Senate_estimate_history.csv',
+        x_column='date',
+        y_column='meta_margin',
+        ylab_pad=0.00,
+        ylab_rotation=90,
+        title_txt = 'Popular meta-lead for Senate control',
+        hline_ypos = 0,
+        hline_labels = ['R control', 'D+I control'],
+        hline_lab_xpos = 0.75,
+        title_pad = 0,
+        shading = True,
+        thumbnail = True,
+        out_path=path)
+
 path = os.path.join(out_dir, 'meta_lead_president')
 generate_line_plot(
         data_file='EV_estimate_history.csv',
@@ -36,6 +54,25 @@ generate_line_plot(
         shading = True,
         out_path=path)
 
+## generate thumbnail version
+path = os.path.join(out_dir, 'thumb_meta_lead_president')
+generate_line_plot(
+        data_file='EV_estimate_history.csv',
+        x_column='date',
+        y_column='meta_margin',
+        ylim=(-1, 7),
+        ylab_pad=0.00,
+        ylab_rotation=90,
+        yticklab_format = True,
+        title_txt = 'Popular meta-lead for President',
+        hline_ypos = 0,
+        hline_labels = ['R control', 'D+I control'],
+        hline_lab_xpos = 0.75,
+        title_pad = 0,
+        shading = True,
+        thumbnail = True,
+        out_path=path)
+
 path = os.path.join(out_dir, 'dem_senate_seats')
 generate_line_plot(
         data_file='Senate_estimate_history.csv',
@@ -49,6 +86,35 @@ generate_line_plot(
         hline_ypos = 49.5,
         hline_labels = ['R control', 'D+I control'],
         out_path=path)
+
+## generate thumbnail version
+path = os.path.join(out_dir, 'thumb_dem_senate_seats')
+generate_line_plot(
+        data_file='Senate_estimate_history.csv',
+        x_column='date',
+        y_column='mean_seats',
+        yerr_columns=['1sigma_lower', '1sigma_upper'],
+        ylab_pad=0.00,
+        ylab_rotation=90,
+        title_txt='{last_value:.0f} Democratic Senate seats expected',
+        hline_ypos = 49.5,
+        hline_labels = ['R control', 'D+I control'],
+        hline_label_units = "seats",
+        hline_lab_xpos = 0.75,
+        title_pad = 0,
+        thumbnail = True,
+        out_path=path)
+
+
+print("plotted all")
+quit()
+
+
+
+
+
+
+
 
 path = os.path.join(out_dir, 'president_estimator')
 generate_line_plot(
