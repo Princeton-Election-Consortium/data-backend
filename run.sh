@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source /tmp/update/python/anaconda3/bin/activate
+source /mysql0/python/anaconda3/bin/activate
 
 cd /web/data-backend
 
