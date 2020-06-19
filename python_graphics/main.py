@@ -5,7 +5,6 @@ import os
 out_dir = './outputs'
 os.makedirs(out_dir, exist_ok=True)
 
-# plot 0
 path = os.path.join(out_dir, 'meta_lead_senate')
 generate_line_plot(
         data_file='Senate_estimate_history.csv',
@@ -21,7 +20,22 @@ generate_line_plot(
         shading = True,
         out_path=path)
 
-# plot 1
+path = os.path.join(out_dir, 'meta_lead_president')
+generate_line_plot(
+        data_file='EV_estimate_history.csv',
+        x_column='date',
+        y_column='meta_margin',
+        ylim=(-1, 7),
+        ylab_txt='Meta-margin',
+        ylab_pad=0.05,
+        ylab_rotation=90,
+        yticklab_format = True,
+        title_txt = 'Popular meta-lead for President',
+        hline_ypos = 0,
+        hline_labels = ['R control', 'D+I control'],
+        shading = True,
+        out_path=path)
+
 path = os.path.join(out_dir, 'dem_senate_seats')
 generate_line_plot(
         data_file='Senate_estimate_history.csv',
@@ -36,7 +50,6 @@ generate_line_plot(
         hline_labels = ['R control', 'D+I control'],
         out_path=path)
 
-# plot 2
 path = os.path.join(out_dir, 'president_estimator')
 generate_line_plot(
         data_file = 'EV_estimate_history.csv',
@@ -59,7 +72,6 @@ generate_line_plot(
         color_reverse = True,
         out_path=path)
 
-# plot 3
 path = os.path.join(out_dir, 'senate_histogram')
 generate_histogram(
         data_file = 'Senate_histogram.csv',
@@ -77,7 +89,6 @@ generate_histogram(
         vline_labels = ['R\ncontrol', 'D+I\ncontrol'],
         out_path=path)
 
-# plot 4
 path = os.path.join(out_dir, 'ev_histogram')
 generate_histogram(
         data_file = 'EV_histogram.csv',
@@ -96,7 +107,6 @@ generate_histogram(
         vline_labels = ['Trump\nwins', 'Biden\nwins'],
         out_path=path)
 
-# plot 5
 path = os.path.join(out_dir, 'house_meta_margin')
 generate_line_plot(
         data_dir='../matlab',
