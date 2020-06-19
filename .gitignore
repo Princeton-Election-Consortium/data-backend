@@ -1,6 +1,10 @@
-*.png
-*.csv
-*.txt
+**.png
+**.csv
+**.txt
+**.jpg
+**.jpeg
+**.html
+**.mat
 out
 __pycache__
 .vscode
