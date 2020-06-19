@@ -132,6 +132,7 @@ def generate_line_plot(
     # load data
     data_path = os.path.join(data_dir, data_file)
     data = pd.read_csv(data_path, **read_csv_kw)
+    data.drop_duplicates(x_column, inplace=True)
 
     # read in column labels
     fname, ext = os.path.splitext(data_file)
@@ -687,6 +688,3 @@ def generate_histogram(
         out_path = f'{out_path}.{out_format}'
     pl.savefig(out_path, dpi=dpi)
     pl.close(fig)
-
-def generate_dual_line_plot(*args, **kwargs):
-    pass
