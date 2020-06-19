@@ -79,7 +79,7 @@ def get_formatted_state(state_name, inverse=False, url_format=False):
         for key, value in states_hash.items() :
             if value == state_name:
                 state = key
-            break
+                break
         return state
 
     return states_hash[state_name]
