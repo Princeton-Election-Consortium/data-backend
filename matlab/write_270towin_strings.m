@@ -23,36 +23,16 @@ thresholds270=[-0.1 5 20 40 60 80 95];
 
 PEC_order='AL,AK,AZ,AR,CA,CO,CT,DC,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,M1,M2,N1,N2,N3 ';
 towin_ord='AK AL AR AZ CA CO CT DC DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE NH NJ NM NV NY OH OK OR PA RI SC SD TN TX UT VA VT WA WI WV WY M1 M2 N1 N2 N3 ';
-for iPEC=1:51
+for iPEC=1:56
     P270(iPEC)=(findstr(towin_ord(iPEC*3-2:iPEC*3-1),PEC_order)+2)/3;
 end
 
 str270=path270; str270_D=path270; str270_R=path270;
-for i270=1:51
+for i270=1:56
     str270=[str270 colors270(max([find(statep(P270(i270))>=thresholds270) 1]))];
     str270_D=[str270_D colors270(max([find(Dprobs(P270(i270))>=thresholds270) 1]))];
     str270_R=[str270_R colors270(max([find(Rprobs(P270(i270))>=thresholds270) 1]))];
 end
-
-% Code positions 22, 52, and 53 the same as one another (based on the Maine probability) and 30, 54, 55, and 56 the same (based on the Nebraska probability).
-% Maine (22)
-    str270=[str270 colors270(max([find(statep(P270(22))>=thresholds270) 1]))];
-    str270_D=[str270_D colors270(max([find(Dprobs(P270(22))>=thresholds270) 1]))];
-    str270_R=[str270_R colors270(max([find(Rprobs(P270(22))>=thresholds270) 1]))];
-    str270=[str270 colors270(max([find(statep(P270(22))>=thresholds270) 1]))];
-    str270_D=[str270_D colors270(max([find(Dprobs(P270(22))>=thresholds270) 1]))];
-    str270_R=[str270_R colors270(max([find(Rprobs(P270(22))>=thresholds270) 1]))];
-% Nebraska (30)
-    str270=[str270 colors270(max([find(statep(P270(30))>=thresholds270) 1]))];
-    str270_D=[str270_D colors270(max([find(Dprobs(P270(30))>=thresholds270) 1]))];
-    str270_R=[str270_R colors270(max([find(Rprobs(P270(30))>=thresholds270) 1]))];
-    str270=[str270 colors270(max([find(statep(P270(30))>=thresholds270) 1]))];
-    str270_D=[str270_D colors270(max([find(Dprobs(P270(30))>=thresholds270) 1]))];
-    str270_R=[str270_R colors270(max([find(Rprobs(P270(30))>=thresholds270) 1]))];
-    str270=[str270 colors270(max([find(statep(P270(30))>=thresholds270) 1]))];
-    str270_D=[str270_D colors270(max([find(Dprobs(P270(30))>=thresholds270) 1]))];
-    str270_R=[str270_R colors270(max([find(Rprobs(P270(30))>=thresholds270) 1]))];
-% finished with special cases
 
 % write outputs
     if exist('pathhere','var')
