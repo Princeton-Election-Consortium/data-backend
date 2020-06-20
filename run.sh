@@ -4,6 +4,8 @@ source /mysql0/python/anaconda3/bin/activate
 
 cd /web/data-backend
 
+git pull origin master
+
 python scraping/pec2020.py
 python banner/banner.py
 
