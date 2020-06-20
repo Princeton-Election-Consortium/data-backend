@@ -164,9 +164,11 @@ def generate_line_plot(
     # for hline labels
     hlabel_font_size = font_size
     if thumbnail and hline_label_units == "given":
-        hlabel_font_size = font_size * 1.25
+        font_size = font_size * 1.25
+        hlabel_font_size = font_size * 1.5
     elif thumbnail and not plot_customization and hline_labels is not None:
-        hlabel_font_size = font_size * 1.25
+        font_size = font_size * 1.25
+        hlabel_font_size = font_size * 1.5
         rounded_last_value = round(float(title_fillers['last_value']), 1)
         if presidential_2020:
             if rounded_last_value > 0:
@@ -175,18 +177,18 @@ def generate_line_plot(
 
         elif rounded_last_value > 0:
             if hline_label_units == "seats":
-                hline_labels[1] = "Current D+" + str(round(rounded_last_value/10,1)) + " " + hline_label_units
+                hline_labels[1] = "D+" + str(round(rounded_last_value/10,1)) + " " + hline_label_units
             else:
-                hline_labels[1] = "Current D+" + str(rounded_last_value) + hline_label_units 
+                hline_labels[1] = "D+" + str(rounded_last_value) + hline_label_units 
         elif rounded_last_value < 0:
             if hline_label_units == "seats":
-                hline_labels[1] = "Current R+" + str(round(rounded_last_value/10,1)) + " " + hline_label_units
+                hline_labels[1] = "R+" + str(round(rounded_last_value/10,1)) + " " + hline_label_units
             else:
                 hline_labels[1] = "Current R+" + str(rounded_last_value) + hline_label_units 
         else: hline_labels[1] = "Currently Tie"
         hline_labels[0] = ""
 
-    # prepare figure
+    # prepare figurex
     fig = pl.figure(figsize=(width, width * height_to_width))
     ax = fig.add_axes(axes_box)
 
@@ -329,12 +331,12 @@ def generate_line_plot(
                 hline_lab_colors = [col0, col1]
             ax.text(hline_lab_xpos,
                     hline_ypos - pad_data_units,
-                    hline_labels[0],
+                    hline_labels[0].format(**title_fillers),
                     color=hline_lab_colors[0],
                     **txt_kw,)
             ax.text(hline_lab_xpos,
                     hline_ypos + pad_data_units,
-                    hline_labels[1],
+                    hline_labels[1].format(**title_fillers),
                     color=hline_lab_colors[1],
                     **txt_kw,)
 
@@ -565,6 +567,7 @@ def generate_histogram(
                   xlab_pad = 3,
                   xtick_pad = 0.015,
                   vline_lab_pad = 0.09,
+                  vline_font_size = font_size,
 
                   # output parameters
                   out_path = out_path,
@@ -581,6 +584,10 @@ def generate_histogram(
     data = data * data_factor
     if xvals is None:
         xvals = np.arange(len(data))
+    
+    if thumbnail:
+        font_size = font_size * 1.25
+        vline_font_size = font_size * 1.25
 
     # use data to fill title text
     def compute_rv_median(p, xs):
@@ -661,7 +668,7 @@ def generate_histogram(
 
         if vline_labels is not None:
             pad_data_units = vline_lab_pad * np.diff(ax.get_xlim())
-            txt_kw = dict(fontsize=font_size,
+            txt_kw = dict(fontsize=vline_font_size,
                           ha='center',
                           va='center',
                           transform=blend(ax.transData, ax.transAxes))
