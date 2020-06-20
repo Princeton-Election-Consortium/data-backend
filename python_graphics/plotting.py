@@ -76,6 +76,9 @@ def generate_line_plot(
                   ylab_txt = '',
                   ylab_rotation = 0,
                   hline_labels = None,
+                  hline_label_units = '',
+                  presidential_2020 = False,
+
                   hline_lab_xpos = 0.85,
                   watermark = watermark,
                   watermark_pos = watermark_pos,
@@ -127,6 +130,7 @@ def generate_line_plot(
 
                   # other customs
                   plot_customization = False,
+                  thumbnail = False,
                 ):
 
     # load data
@@ -156,8 +160,36 @@ def generate_line_plot(
     title_fillers = dict(last_value = vals[-1],
                          party = '',
                         )
+    
+    # change hline_labels for thumnail versions, set fontsizes 
+    # for hline labels
+    hlabel_font_size = font_size
+    if thumbnail and hline_label_units == "given":
+        font_size = font_size * 1.25
+        hlabel_font_size = font_size * 1.5
+    elif thumbnail and not plot_customization and hline_labels is not None:
+        font_size = font_size * 1.25
+        hlabel_font_size = font_size * 1.5
+        rounded_last_value = round(float(title_fillers['last_value']), 1)
+        if presidential_2020:
+            if rounded_last_value > 0:
+                hline_labels[1] = "Biden +" + str(rounded_last_value) + hline_label_units 
+            else: hline_labels[1] = "Trump +" + str(rounded_last_value) + hline_label_units 
 
-    # prepare figure
+        elif rounded_last_value > 0:
+            if hline_label_units == "seats":
+                hline_labels[1] = "D+" + str(round(rounded_last_value/10,1)) + " " + hline_label_units
+            else:
+                hline_labels[1] = "D+" + str(rounded_last_value) + hline_label_units 
+        elif rounded_last_value < 0:
+            if hline_label_units == "seats":
+                hline_labels[1] = "R+" + str(round(rounded_last_value/10,1)) + " " + hline_label_units
+            else:
+                hline_labels[1] = "Current R+" + str(rounded_last_value) + hline_label_units 
+        else: hline_labels[1] = "Currently Tie"
+        hline_labels[0] = ""
+
+    # prepare figurex
     fig = pl.figure(figsize=(width, width * height_to_width))
     ax = fig.add_axes(axes_box)
 
@@ -229,17 +261,18 @@ def generate_line_plot(
     def get_mid(mo):
         rang = calendar.monthrange(year, mo)
         return int(np.round(rang[-1]/2))
-    mid_months = np.array([get_mid(d.month) for d in date_range])
-    tick_label_dates = date_range[date_range.day == mid_months]
-    for td in tick_label_dates:
-        loc = td.to_datetime64()
-        ax.text(loc, -xtick_pad * size_scale,
-                mo_names[td.month],
-                color='k',
-                ha='center',
-                va='center',
-                fontsize=font_size,
-                transform=blend(ax.transData, ax.transAxes))
+    if not thumbnail:
+        mid_months = np.array([get_mid(d.month) for d in date_range])
+        tick_label_dates = date_range[date_range.day == mid_months]
+        for td in tick_label_dates:
+            loc = td.to_datetime64()
+            ax.text(loc, -xtick_pad * size_scale,
+                    mo_names[td.month],
+                    color='k',
+                    ha='center',
+                    va='center',
+                    fontsize=font_size,
+                    transform=blend(ax.transData, ax.transAxes))
 
     # y ticks at integer values
     ax.set_yticks(np.arange(ylim[0], ylim[1]+yticks_interval, yticks_interval))
@@ -288,9 +321,10 @@ def generate_line_plot(
                    color=hline_color,
                    lw=hline_lw * size_scale)
         
+        #***************
         if hline_labels is not None:
             pad_data_units = hline_lab_pad * np.diff(ax.get_ylim())
-            txt_kw = dict(fontsize=font_size,
+            txt_kw = dict(fontsize=hlabel_font_size,
                           ha='center',
                           va='center',
                           transform=blend(ax.transAxes, ax.transData))
@@ -298,12 +332,12 @@ def generate_line_plot(
                 hline_lab_colors = [col0, col1]
             ax.text(hline_lab_xpos,
                     hline_ypos - pad_data_units,
-                    hline_labels[0],
+                    hline_labels[0].format(**title_fillers),
                     color=hline_lab_colors[0],
                     **txt_kw,)
             ax.text(hline_lab_xpos,
                     hline_ypos + pad_data_units,
-                    hline_labels[1],
+                    hline_labels[1].format(**title_fillers),
                     color=hline_lab_colors[1],
                     **txt_kw,)
 
@@ -333,10 +367,18 @@ def generate_line_plot(
                     transform=blend(ax.transData, ax.transData))
 
     # text labels
-    ax.set_title(title_txt.format(**title_fillers),
-                 pad=title_pad * size_scale,
-                 fontsize=font_size,
-                 weight='bold')
+    if thumbnail:
+        ax.set_title(title_txt.format(**title_fillers),
+            y = 0.9,
+            fontsize=font_size,
+            weight='bold')
+    else:
+        ax.set_title(title_txt.format(**title_fillers),
+                    pad=title_pad * size_scale,
+                    fontsize=font_size,
+                    weight='bold')
+
+
 
     ax.text(-ylab_pad * size_scale,
             0.5,
@@ -348,17 +390,18 @@ def generate_line_plot(
             transform=ax.transAxes)
 
     # watermark
-    ax.text(watermark_pos[0],
-            watermark_pos[1],
-            watermark,
-            fontsize=font_size-4,
-            color='black',
-            alpha=0.3,
-            style='italic',
-            ha='center',
-            va='center',
-            zorder=200,
-            transform=ax.transAxes)
+    if not thumbnail:
+        ax.text(watermark_pos[0],
+                watermark_pos[1],
+                watermark,
+                fontsize=font_size-4,
+                color='black',
+                alpha=0.3,
+                style='italic',
+                ha='center',
+                va='center',
+                zorder=200,
+                transform=ax.transAxes)
 
     # CUSTOM type special plot
     if plot_customization:
@@ -413,17 +456,18 @@ def generate_line_plot(
         for t in ax.get_yticks():
             ytls.append(make_str(t))
             ytls2.append(make_str(t-new_ax_offset))
-        ax.set_yticklabels(ytls)
-        ax2.set_yticklabels(ytls2)
+        if not thumbnail:
+            ax.set_yticklabels(ytls)
+            ax2.set_yticklabels(ytls2)
 
-        ax.text(1 + ylab_pad * size_scale,
-                0.5,
-                '2020 generic ballot D-R',
-                fontsize=font_size,
-                rotation=-ylab_rotation,
-                ha='center',
-                va='center',
-                transform=ax.transAxes)
+            ax.text(1 + ylab_pad * size_scale,
+                    0.5,
+                    '2020 generic ballot D-R',
+                    fontsize=font_size,
+                    rotation=-ylab_rotation,
+                    ha='center',
+                    va='center',
+                    transform=ax.transAxes)
         
         lv = title_fillers['last_value']
         lv = lv - new_ax_offset
@@ -432,20 +476,37 @@ def generate_line_plot(
         elif lv < 0:
             title_fillers['party'] = 'R+'
         title_fillers['last_value'] = lv
-        ax.set_title(title_txt.format(**title_fillers),
-                 pad=title_pad * size_scale,
-                 fontsize=font_size,
-                 weight='bold')
+        if not thumbnail:
+            ax.set_title(title_txt.format(**title_fillers),
+                    pad=title_pad * size_scale,
+                    fontsize=font_size,
+                    weight='bold')
+        else:
+            ax.set_title(title_txt.format(**title_fillers),
+                    y = 0.9,
+                    fontsize=font_size,
+                    weight='bold')
+        
+        if thumbnail:
+            ax2.get_xaxis().set_visible(False)
+            ax2.get_yaxis().set_visible(False)
+
+    if thumbnail:
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
 
     # save out figure
     dpi = width_pixels_save / width
     if not out_path.endswith(out_format):
         out_path = f'{out_path}.{out_format}'
-    pl.savefig(out_path, dpi=dpi)
+    if thumbnail:
+        pl.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    else:
+        pl.savefig(out_path, dpi=dpi)
     pl.close(fig)
 
 def generate_histogram(
-                  # data parametersA
+                  # data parameters
                   data_dir = data_dir,
                   data_file = data_file,
                   vline_xpos = None,
@@ -507,10 +568,14 @@ def generate_histogram(
                   xlab_pad = 3,
                   xtick_pad = 0.015,
                   vline_lab_pad = 0.09,
+                  vline_font_size = font_size,
 
                   # output parameters
                   out_path = out_path,
                   out_format = out_format,
+
+                  # generate a thumnail image
+                  thumbnail = False,
                 ):
 
     # load data
@@ -520,6 +585,10 @@ def generate_histogram(
     data = data * data_factor
     if xvals is None:
         xvals = np.arange(len(data))
+    
+    if thumbnail:
+        font_size = font_size * 1.25
+        vline_font_size = font_size * 1.25
 
     # use data to fill title text
     def compute_rv_median(p, xs):
@@ -600,7 +669,7 @@ def generate_histogram(
 
         if vline_labels is not None:
             pad_data_units = vline_lab_pad * np.diff(ax.get_xlim())
-            txt_kw = dict(fontsize=font_size,
+            txt_kw = dict(fontsize=vline_font_size,
                           ha='center',
                           va='center',
                           transform=blend(ax.transData, ax.transAxes))
@@ -643,6 +712,7 @@ def generate_histogram(
                  )
 
     # last date label
+    if thumbnail: last_date_label_pos = None
     if last_date_label_pos is not None:
         h_filename = data_file.split('_')[0] + '_estimate_history'
         c_filename = h_filename + '_columns'
@@ -670,21 +740,30 @@ def generate_histogram(
                 transform=fig.transFigure)
 
     # watermark
-    ax.text(watermark_pos[0],
-            watermark_pos[1],
-            watermark,
-            fontsize=font_size-4,
-            color='black',
-            alpha=0.3,
-            style='italic',
-            ha='center',
-            va='center',
-            zorder=200,
-            transform=ax.transAxes)
+    if not thumbnail:
+        ax.text(watermark_pos[0],
+                watermark_pos[1],
+                watermark,
+                fontsize=font_size-4,
+                color='black',
+                alpha=0.3,
+                style='italic',
+                ha='center',
+                va='center',
+                zorder=200,
+                transform=ax.transAxes)
+    
+    # adjustments if a thumbnail image
+    if thumbnail:
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
 
     # save out figure
     dpi = width_pixels_save / width
     if not out_path.endswith(out_format):
         out_path = f'{out_path}.{out_format}'
-    pl.savefig(out_path, dpi=dpi)
+    if thumbnail:
+        pl.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    else:
+        pl.savefig(out_path, dpi=dpi)
     pl.close(fig)
