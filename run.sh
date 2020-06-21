@@ -7,7 +7,6 @@ cd /web/data-backend
 git pull origin master
 
 python scraping/pec2020.py
-python banner/banner.py
 
 cp /web/data-backend/scraping/outputs/*.txt /web/data-backend/matlab
 cd matlab
@@ -16,6 +15,9 @@ cd ..
 
 cd python_graphics
 python main.py
+
+cd /web/data-backend
+python banner/banner.py
 
 cp /web/data-backend/matlab/*.txt /web/www/election2020/data
 cp /web/data-backend/scraping/outputs/*.csv /web/www/election2020/data
