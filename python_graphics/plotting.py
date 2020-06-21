@@ -135,7 +135,7 @@ def generate_line_plot(
 
     # load data
     data_path = os.path.join(data_dir, data_file)
-    data = pd.read_csv(data_path, **read_csv_kw)
+    data = pd.read_csv(data_path, header=None, **read_csv_kw)
     #data.drop_duplicates(x_column, inplace=True)
 
     # read in column labels
