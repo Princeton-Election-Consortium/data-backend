@@ -130,6 +130,7 @@ def generate_line_plot(
 
                   # other customs
                   plot_customization = False,
+                  se_xpos = 0.79,
                   thumbnail = False,
                 ):
 
@@ -158,6 +159,8 @@ def generate_line_plot(
     
     # use data to fill title text
     title_fillers = dict(last_value = vals[-1],
+                         inv_last_value = 100 - vals[-1],
+                         inv_pres_last_value = 538- vals[-1],
                          party = '',
                         )
     
@@ -165,11 +168,11 @@ def generate_line_plot(
     # for hline labels
     hlabel_font_size = font_size
     if thumbnail and hline_label_units == "given":
-        font_size = font_size * 1.25
-        hlabel_font_size = font_size * 1.5
+        font_size = font_size * 1.5
+        hlabel_font_size = font_size
     elif thumbnail and not plot_customization and hline_labels is not None:
-        font_size = font_size * 1.25
-        hlabel_font_size = font_size * 1.5
+        font_size = font_size * 1.5
+        hlabel_font_size = font_size 
         rounded_last_value = round(float(title_fillers['last_value']), 1)
         if presidential_2020:
             if rounded_last_value > 0:
@@ -322,7 +325,7 @@ def generate_line_plot(
                    lw=hline_lw * size_scale)
         
         #***************
-        if hline_labels is not None:
+        if hline_labels is not None and not plot_customization:
             pad_data_units = hline_lab_pad * np.diff(ax.get_ylim())
             txt_kw = dict(fontsize=hlabel_font_size,
                           ha='center',
@@ -428,7 +431,9 @@ def generate_line_plot(
                    )
 
         pad_data_units = 0.05 * np.diff(ax.get_ylim())
-        ax.text(0.79,
+        if thumbnail:
+            pad_data_units *= 1.3
+        ax.text(se_xpos,
                 spec_ypos - pad_data_units,
                 'Special elections',
                 color=spec_col,
@@ -476,6 +481,7 @@ def generate_line_plot(
         elif lv < 0:
             title_fillers['party'] = 'R+'
         title_fillers['last_value'] = lv
+
         if not thumbnail:
             ax.set_title(title_txt.format(**title_fillers),
                     pad=title_pad * size_scale,
@@ -483,9 +489,25 @@ def generate_line_plot(
                     weight='bold')
         else:
             ax.set_title(title_txt.format(**title_fillers),
-                    y = 0.9,
+                    y = 0.885,
                     fontsize=font_size,
                     weight='bold')
+
+        # add formatted hlin_label if thumbnail
+        if thumbnail:
+            pad_data_units = hline_lab_pad * np.diff(ax.get_ylim())
+            txt_kw = dict(fontsize=hlabel_font_size,
+                          ha='center',
+                          va='center',
+                          transform=blend(ax.transAxes, ax.transData))
+            if hline_lab_colors is None:
+                hline_lab_colors = [col0, col1]
+            ax.text(hline_lab_xpos,
+                    hline_ypos + pad_data_units,
+                    hline_labels[1].format(**title_fillers),
+                    color=hline_lab_colors[1],
+                    **txt_kw,)
+            
         
         if thumbnail:
             ax2.get_xaxis().set_visible(False)
