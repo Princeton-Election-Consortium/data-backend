@@ -134,7 +134,10 @@ def main():
         ## set jerseyvote threshold here: defaulting to 10 jersey votes
         if votes[key]['jersey_votes'] >= 10:
             postal_code = key
-            state_full = get_formatted_state(key, inverse=True)
+            # state_full = get_formatted_state(key, inverse=True)
+            state_full = key 
+            if "1" in key or "2" in key or "3" in key:
+                state_full = get_formatted_state(key, electoral_district=True)
             hyperlink = get_538_link(postal_code)
             candiate_str = ""
             link_color = "#000000"
