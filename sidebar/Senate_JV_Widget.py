@@ -94,7 +94,6 @@ def get_jerseyvotes(path):
 
 
 def main():
-    # realpath arg had been __file__ serverside
     dir_path = os.path.join(os.path.dirname(__file__), '..')
     
     path = os.path.join(dir_path, './scraping/outputs/2020.Senate.priors.csv')
@@ -107,7 +106,8 @@ def main():
     html = style_and_start
 
     for key in votes:
-        if votes[key]['jersey_votes'] >= 0:
+        ## set jerseyvote threshold here: defaulting to 20 jersey votes
+        if votes[key]['jersey_votes'] >= 20:
             postal_code = key
             state_full = get_formatted_state(key, inverse=True)
             hyperlink = fivethirtyeight +  get_formatted_state(key, url_format=True)
