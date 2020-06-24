@@ -609,8 +609,8 @@ def generate_histogram(
         xvals = np.arange(len(data))
     
     if thumbnail:
-        font_size = font_size * 1.25
-        vline_font_size = font_size * 1.25
+        font_size = font_size * 1.5
+        vline_font_size = font_size
 
     # use data to fill title text
     def compute_rv_median(p, xs):
