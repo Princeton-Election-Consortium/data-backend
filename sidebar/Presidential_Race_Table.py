@@ -130,9 +130,12 @@ def main():
     ## append style + table start, iteratively add rows, append close
     html = style_and_start
 
+    n = 0
+
     for key in votes:
+        
         ## set jerseyvote threshold here: defaulting to 10 jersey votes
-        if votes[key]['jersey_votes'] >= 10:
+        if votes[key]['jersey_votes'] >= 30 or n<10:
             postal_code = key
             # state_full = get_formatted_state(key, inverse=True)
             state_full = key 
@@ -158,6 +161,8 @@ def main():
             html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
             html += "\n\t\t" + f"<td>{jersey_votes}</td>"
             html += "\n\t" + "</tr>"
+
+            n += 1
     
     html += close
 
