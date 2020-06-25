@@ -94,12 +94,12 @@ def get_jerseyvotes(path):
 
 
 def main():
-    dir_path = os.path.join(os.path.dirname(__file__), '..')
+    dir_path = os.path.dirname(os.path.realpath(__file__))
     
-    path = os.path.join(dir_path, './scraping/outputs/2020.Senate.priors.csv')
+    path = os.path.join(dir_path, '../scraping/outputs/2020.Senate.priors.csv')
     names = get_candidates(path)
 
-    path = os.path.join(dir_path, './matlab/outputs/Senate_jerseyvotes.csv')
+    path = os.path.join(dir_path, '../matlab/outputs/Senate_jerseyvotes.csv')
     votes = get_jerseyvotes(path)
 
     ## append style + table start, iteratively add rows, append close
@@ -137,7 +137,8 @@ def main():
     
     html += close
 
-    path = os.path.join(dir_path, './sidebar/Senate_JV_Widget.html')
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'Senate_JV_Widget.html')
     with open(path, 'w') as widget:
         widget.write(html)
 

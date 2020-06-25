@@ -114,12 +114,12 @@ def get_538_link(postal_code):
 
 
 def main():
-    dir_path = os.path.join(os.path.dirname(__file__), '..')
+    dir_path = os.path.dirname(os.path.realpath(__file__))
 
-    path = os.path.join(dir_path, './matlab/outputs/EV_jerseyvotes.csv')
+    path = os.path.join(dir_path, '../matlab/outputs/EV_jerseyvotes.csv')
     votes = get_jerseyvotes(path)
 
-    path = os.path.join(dir_path, './matlab/outputs/EV_stateprobs.csv')
+    path = os.path.join(dir_path, '../matlab/outputs/EV_stateprobs.csv')
     margins = get_margins(path)
 
     # for key in votes:
@@ -166,14 +166,11 @@ def main():
     
     html += close
 
-    path = os.path.join(dir_path, './sidebar/Presidential_Race_Table.html')
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'Presidential_Race_Table.html')
     with open(path, 'w') as widget:
         widget.write(html)
     
-
-
-
-
 
 if __name__ == "__main__":
     main()
