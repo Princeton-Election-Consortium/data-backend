@@ -160,7 +160,7 @@ def generate_line_plot(
                          party = '',
                         )
     
-    # change hline_labels for thumnail versions, set fontsizes 
+    # change hline_labels for thumbnail versions, set fontsizes 
     # for hline labels
     hlabel_font_size = font_size
     if thumbnail and hline_label_units == "given":
@@ -573,7 +573,7 @@ def generate_histogram(
                   out_path = out_path,
                   out_format = out_format,
 
-                  # generate a thumnail image
+                  # generate a thumbnail image
                   thumbnail = False,
                 ):
 
