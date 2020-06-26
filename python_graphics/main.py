@@ -45,7 +45,7 @@ generate_line_plot(
         data_file='EV_estimate_history.csv',
         x_column='date',
         y_column='meta_margin',
-        ylim=(-1, 7),
+        ylim=(-1, 9),
         ylab_txt='Meta-margin',
         ylab_pad=0.05,
         ylab_rotation=90,
