@@ -237,7 +237,15 @@ def generate_line_plot(
     ax.set_xlim(first_date, last_date)
 
     # y axis limits
-    if ylim is None:
+    if ylim is None and presidential_2020:
+        y0 = min(np.floor(np.min(vals)), -1)
+        y1 = max(np.max(np.ceil(vals + 0.1)), 7)
+        if thumbnail:
+            y1 += 1
+        ylim = (y0, y1)
+
+
+    elif ylim is None:
         mindat = err[:,0] if err is not None else vals
         maxdat = err[:,1] if err is not None else vals
         minn = np.floor(np.min(mindat))
