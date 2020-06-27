@@ -15,6 +15,45 @@ def get_estimates(path, dict_csv=False):
             break
     return estimates
 
+def get_pres_moneyball_states(n):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, '../matlab/outputs/EV_jerseyvotes.csv')
+    pres_string = ""
+    read = 0
+
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader: 
+            if read == n:
+                return pres_string
+            if read == n - 1:
+                pres_string += row[1]
+            else:
+                pres_string += row[1] + " "
+            read += 1
+    
+    return pres_string
+
+def get_sen_moneyball_states(n):
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, '../matlab/outputs/Senate_jerseyvotes.csv')
+    sen_string = ""
+    read = 0
+
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader: 
+            if read == n:
+                return sen_string
+            if read == n - 1:
+                sen_string += row[1]
+            else:
+                sen_string += row[1] + " "
+            read += 1
+    
+    return sen_string
+
+
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, '../matlab/outputs/EV_estimates.csv')
@@ -67,11 +106,17 @@ def main():
     sen_mm_str = f'{sen_ahead_str}{abs(sen_metamargin)}%'
     gen_mm_str = f'{gen_ahead_str}{abs(gen_metamargin)}%'
 
+    pres_moneyball_states = get_pres_moneyball_states(3)
+    sen_moneyball_states = get_sen_moneyball_states(3)
+
+    print(pres_moneyball_states)
+    print(sen_moneyball_states)
+
     banner = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span>{datestring}: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
         <br>
-        <span>Moneyball states: President NV GA AZ, <a href="/election-tracking-2020-u-s-senate/">Senate</a> MT ME IA, <a href="https://secure.actblue.com/donate/pec2020?refcode=thermometer">Legislatures</a> KS TX NC</span>
+        <span>Moneyball states: President {pres_moneyball_states}, <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="https://secure.actblue.com/donate/pec2020?refcode=thermometer">Legislatures</a> KS TX NC</span>
     </div>
     """
 
