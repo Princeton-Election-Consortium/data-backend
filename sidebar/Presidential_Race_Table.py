@@ -91,9 +91,14 @@ def get_jerseyvotes(path):
         reader = csv.reader(f)
         for row in reader:
             #print(row[1] + " " + str(round(float(row[2]), 1)))
-            votes[row[1]] = {
-                'jersey_votes' : round(float(row[2]), 1)
-            }
+            if row[1] == "NJ":
+                votes[row[1]] = {
+                    'jersey_votes' : round(float(row[2]), 3)
+                }
+            else :
+                votes[row[1]] = {
+                    'jersey_votes' : round(float(row[2]), 1)
+                }
     return votes
 
 def get_margins(path):
@@ -135,7 +140,7 @@ def main():
     for key in votes:
         
         ## set jerseyvote threshold here: defaulting to 10 jersey votes
-        if votes[key]['jersey_votes'] >= 30 or n<10:
+        if votes[key]['jersey_votes'] >= 30 or n<10 or key=="NJ":
             postal_code = key
             # state_full = get_formatted_state(key, inverse=True)
             state_full = key 
