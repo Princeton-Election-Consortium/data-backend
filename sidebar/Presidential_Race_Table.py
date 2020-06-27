@@ -114,9 +114,11 @@ def get_margins(path):
     return margins
 
 def get_538_link(postal_code):
-    return fivethirtyeight #+  get_formatted_state(key, url_format=True)
-
-
+    # no links available for following states:
+    # DC, HI, ID, IL, LA, OR, RI, SD, VT, WY
+    if postal_code not in ["DC", "HI", "ID", "IL", "LA", "OR", "RI", "SD", "VT", "WY"]:
+        return fivethirtyeight + get_formatted_state(postal_code, url_format=True)
+    return fivethirtyeight 
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
