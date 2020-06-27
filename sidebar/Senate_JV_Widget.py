@@ -128,7 +128,7 @@ def main():
             jersey_votes = votes[key]['jersey_votes']
 
             html += "\n\t" + "<tr>"
-            html += "\n\t\t" + f"<td>{state_full}</td>"
+            html += "\n\t\t" + f"<td>{postal_code}</td>"
             html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
             html += "\n\t\t" + f"<td>{jersey_votes}</td>"
             html += "\n\t" + "</tr>"
