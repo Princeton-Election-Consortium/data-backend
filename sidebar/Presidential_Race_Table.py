@@ -140,7 +140,7 @@ def main():
     for key in votes:
         
         ## set jerseyvote threshold here: defaulting to 10 jersey votes
-        if votes[key]['jersey_votes'] >= 30 or n<10 or key=="NJ":
+        if votes[key]['jersey_votes'] >= 50 or n<6 or key=="NJ":
             postal_code = key
             # state_full = get_formatted_state(key, inverse=True)
             state_full = key 
