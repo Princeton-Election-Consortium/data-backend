@@ -198,12 +198,56 @@ def generic(polls):
 
     f.close()
 
+def clean_districts(polls):
+    dropped = 0
+    adjusted = 0
+
+    for index in polls.index: 
+        # get all polls with a specified district
+        if polls.loc[index, 'district'] > 0:
+            adjusted += 1
+            if polls.loc[index, 'type'] == 'president-general':
+                # Maine: District 1 subtract 10, District 2 add 10 to convert to statewide
+                if polls.loc[index, 'state'] == "Maine":
+                    if polls.loc[index, 'district'] == 2:
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) + 10
+                    elif polls.loc[index, 'district'] == 1:
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) - 10
+                    else: 
+                        polls = polls.drop(index)
+                        dropped+=1
+
+                # Nebraska: District 1 subtract 6, District 2 subtract 20, District 3 add 26 to convert to statewide
+                elif polls.loc[index, 'state'] == "Nebraska":
+                    if polls.loc[index, 'district'] == 1:
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) -6
+                    elif polls.loc[index, 'district'] == 2:
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) - 20
+                    elif polls.loc[index, 'district'] == 3:
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) + 26
+                    else: 
+                        polls = polls.drop(index)
+                        dropped+=1
+                else: 
+                    polls = polls.drop(index)
+                    dropped+=1
+            else: 
+                polls = polls.drop(index) 
+                dropped+=1
+
+    print(f"District Clean: Dropped {dropped}  Adjusted {adjusted - dropped}")
+
+    return polls 
+
+
 def main():
     data_url = 'https://projects.fivethirtyeight.com/polls/polls.json'
     all_polls = pd.read_json(data_url)
     all_polls.loc[:, 'endDate'] = pd.to_datetime(all_polls['endDate'])
     all_polls.loc[:, 'startDate'] = pd.to_datetime(all_polls['startDate'])
     all_2020_polls = all_polls[all_polls['endDate'] > datetime(year=2020, month=1, day=1)]
+    all_2020_polls = clean_districts(all_2020_polls)
+
 
     path = os.path.join(dir_path, '2020.Senate.priors.csv')
     with open(path, 'r') as f:
