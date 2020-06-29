@@ -122,7 +122,7 @@ totalpollsused=sum(polldata(:,1));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 polls.margin(52:53)=polls.margin(20)+[10 -10]; % 2* the differences in Cook PVI
 polls.SEM(52:53)=sqrt(polls.SEM(20)^2+4);
-polls.margin(54:56)=polls.margin(28)+[6 20 -26];
+polls.margin(54:56)=polls.margin(28)+[-6 20 -26];
 polls.SEM(54:56)=sqrt(polls.SEM(28)^2+4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
