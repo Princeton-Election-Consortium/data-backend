@@ -58,8 +58,8 @@ def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, '../matlab/outputs/EV_estimates.csv')
     estimates = get_estimates(path)
-    ev_rep = int(estimates[0])
-    ev_dem = int(estimates[2])
+    ev_rep = int(estimates[1])
+    ev_dem = int(estimates[0])
 
     ev_metamargin = Decimal(estimates[12]).quantize(Decimal('0.1'))
 
