@@ -208,6 +208,7 @@ generate_histogram(
         ylab_pad=0.045,
         xlab_txt = 'Electoral votes for Biden',
         title_txt='Today\'s median: {median_value:.0f} EV for Biden',
+        hard_median = True,
         vline_xpos=270,
         vline_labels = ['Trump\nwins', 'Biden\nwins'],
         out_path=path)
@@ -226,6 +227,7 @@ generate_histogram(
         ylab_pad=0.00,
         xlab_txt = 'Electoral votes for Biden',
         # title_txt='Today\'s median: {median_value:.0f} votes for Biden',
+        hard_median = True,
         vline_xpos=270,
         vline_labels = ['Trump', 'Biden'],
         vline_lab_pad = 0.105,

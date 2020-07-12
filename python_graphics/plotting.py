@@ -6,6 +6,7 @@ from matplotlib.transforms import blended_transform_factory as blend
 import datetime as dt
 import calendar
 import os
+import csv
 from skimage.transform import rescale
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
@@ -156,6 +157,9 @@ def generate_line_plot(
     vals = data[y_column].values
     if x_minus_yvalues is not None:
         vals = x_minus_yvalues - vals
+
+    if data_file == 'EV_estimate_history.csv':
+        print(vals)
     
     # use data to fill title text
     title_fillers = dict(last_value = vals[-1],
@@ -163,6 +167,7 @@ def generate_line_plot(
                          inv_pres_last_value = 538- vals[-1],
                          party = '',
                         )
+
     
     # change hline_labels for thumbnail versions, set fontsizes 
     # for hline labels
@@ -525,6 +530,9 @@ def generate_line_plot(
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
 
+    ### debugging 
+    print(data_file + " " + str(title_fillers['last_value']) + " " + str(vals[-1]))
+
     # save out figure
     dpi = width_pixels_save / width
     if not out_path.endswith(out_format):
@@ -606,6 +614,9 @@ def generate_histogram(
 
                   # generate a thumbnail image
                   thumbnail = False,
+
+                  # use external median
+                  hard_median = False,
                 ):
 
     # load data
@@ -628,9 +639,32 @@ def generate_histogram(
         #x2 = xs[np.argwhere(cum >= 0.5).squeeze()[0]]
         #return np.mean([x1, x2])
         return xs[np.argwhere(cum>=0.5).squeeze()[0]]
+    
     title_fillers = dict(mean_value = np.sum(data * xvals) / np.sum(data),
                          median_value = compute_rv_median(data, xvals),
                         )
+
+    ## hard set pres median to matlab median
+    def get_estimates(path):
+        estimates = None
+        with open(path, 'r') as est_file:
+            reader = csv.reader(est_file)
+            # only one line
+            for row in reader:
+                estimates = row
+                break
+        return estimates
+
+    if hard_median:
+        dir_path = os.path.dirname(os.path.realpath(__file__))
+        path = os.path.join(dir_path, '../matlab/outputs/EV_estimates.csv')   
+        estimates = get_estimates(path)
+        ev_rep = int(estimates[1])
+        ev_dem = int(estimates[0])
+        title_fillers['median_value'] = ev_dem
+
+
+
 
     # prepare figure
     fig = pl.figure(figsize=(width, width * height_to_width))
