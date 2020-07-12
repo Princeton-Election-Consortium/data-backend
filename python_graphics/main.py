@@ -140,7 +140,7 @@ generate_line_plot(
         strike_zone_data_file = 'EV_prediction.csv',
         x_column='date',
         y_column='median_EV0', # 0=biden, 1=trump
-        x_minus_yvalues=533, # to make in terms of trump
+        x_minus_yvalues=538, # to make in terms of trump
         yerr_columns=['95ci_lower', '95ci_upper'],
         ylim=None,
         yticks_interval=40,
