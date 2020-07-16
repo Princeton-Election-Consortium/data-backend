@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset='UTF-8'>
+	
+	<title>D3.js Sortable & Responsive Table</title>
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<!--[if !IE]><!-->
+    <style scoped>
+	* { 
+	  margin: 0; 
+	  padding: 0; 
+     }
+     body { 
+	   font: 14px/1.4 Georgia, Serif; 
+     }
+    #page-wrap {
+	  margin: 50px;
+    }
+    p {
+	 margin: 20px 0; 
+    }
+
+	/* 
+	Generic Styling, for Desktops/Laptops 
+	*/
+	table { 
+		width: 100%; 
+		border-collapse: collapse; 
+	}
+	/* Zebra striping */
+
+	tr:nth-of-type(odd) { 
+		background: #eee; 
+	}
+	th { 
+		background: #333; 
+		color: white; 
+		font-weight: bold; 
+		cursor: s-resize;
+		background-repeat: no-repeat;
+        background-position: 3% center;
+	}
+	td, th { 
+		padding: 6px; 
+		border: 1px solid #ccc; 
+		text-align: left; 
+	}
+	
+	th.des:after {
+      content: " \21D3";
+    }
+    
+    th.aes:after {
+      content: " \21D1";
+    }
+
+	</style>
+	<!--<![endif]-->
+
+</head>
+
+<body>
+	<table id="money-table"></table>
+
+	<!-- 1. fix integer type sorting -->
+	<!-- 2. filter states -->
+	<!-- 3. table length -->
+	
+
+	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript">
+	  d3.csv("TX_voter_power_estimates.csv", function(error, data) {
+		  if (error) throw error;
+
+		  console.log(data);
+
+		  data.forEach(function(d) {
+			  d['NORMALIZED'] = +d['NORMALIZED'];
+			  d['MARGIN'] = +d['MARGIN'];
+			  d['VOTER_POWER'] = +d['VOTER_POWER'];
+			
+			});
+					
+	
+
+		  console.log(data);
+		  
+		  var sortAscending = true;
+		  var table = d3.select('#money-table').append('table');
+		  var titles = ['state', 'district', 'MARGIN', 'VOTER_POWER','NORMALIZED']
+		  var headers = table.append('thead').append('tr')
+		                   .selectAll('th')
+		                   .data(titles).enter()
+		                   .append('th')
+		                   .text(function (d) {
+			                    return d;
+		                    })
+		                   .on('click', function (d) {
+		                	   headers.attr('class', 'header');
+		                	   
+		                	   if (sortAscending) {
+		                	     rows.sort(function(a, b) { return b[d] < a[d]; });
+		                	     sortAscending = false;
+		                	     this.className = 'aes';
+		                	   } else {
+		                		 rows.sort(function(a, b) { return b[d] > a[d]; });
+		                		 sortAscending = true;
+		                		 this.className = 'des';
+		                	   }
+		                	   
+		                   });
+		  
+		  var rows = table.append('tbody').selectAll('tr')
+		               .data(data).enter()
+		               .append('tr');
+		  rows.selectAll('td')
+		    .data(function (d) {
+		    	return titles.map(function (k) {
+		    		return { 'value': d[k], 'name': k};
+		    	});
+		    }).enter()
+		    .append('td')
+		    .attr('data-th', function (d) {
+		    	return d.name;
+		    })
+		    .text(function (d) {
+		    	return d.value;
+		    });
+	  });
+	</script>
+</body>
+
+</html>
