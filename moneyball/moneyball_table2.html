@@ -4,25 +4,25 @@
 <head>
 	<meta charset='UTF-8'>
 	
-	<title>D3.js Sortable & Responsive Table</title>
+	<title>Moneyball Table</title>
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	
 	<!--[if !IE]><!-->
-    <style scoped>
+	<style scoped>
 	* { 
-	  margin: 0; 
-	  padding: 0; 
-     }
-     body { 
-	   font: 14px/1.4 Georgia, Serif; 
-     }
-    #page-wrap {
-	  margin: 50px;
-    }
-    p {
-	 margin: 20px 0; 
-    }
+	margin: 0; 
+	padding: 0; 
+	}
+	body { 
+	font: 14px/1.4 Georgia, Serif; 
+	}
+	#page-wrap {
+	margin: 50px;
+	}
+	p {
+	margin: 20px 0; 
+	}
 
 	/* 
 	Generic Styling, for Desktops/Laptops 
@@ -42,7 +42,7 @@
 		font-weight: bold; 
 		cursor: s-resize;
 		background-repeat: no-repeat;
-        background-position: 3% center;
+		background-position: 3% center;
 	}
 	td, th { 
 		padding: 6px; 
@@ -51,12 +51,16 @@
 	}
 	
 	th.des:after {
-      content: " \21D3";
-    }
-    
-    th.aes:after {
-      content: " \21D1";
-    }
+	content: " \21D3";
+	}
+	
+	th.aes:after {
+	content: " \21D1";
+	}
+
+	.multiselect-container>li>a>label {
+		padding: 4px 20px 3px 20px;
+	}
 
 	</style>
 	<!--<![endif]-->
@@ -64,74 +68,136 @@
 </head>
 
 <body>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/css/bootstrap-multiselect.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
+		
+		<!-- Build your select: -->
+		<h>Select States</h>
+		<select id="example-getting-started" multiple="multiple">
+			<option value="TX">Texas</option>
+			<option value="KS">Kansas</option>
+			<option value="MI">Michigan</option>
+			<option value="GA">Georgia</option>
+		</select>
+
 	<table id="money-table"></table>
+
+	<!-- Initialize the plugin: -->
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#example-getting-started').multiselect(
+				{
+				allSelectedText: 'All',
+				maxHeight: 300,
+				includeSelectAllOption: true,
+				selectAll: true
+			})
+			$('#example-getting-started').multiselect('selectAll', false);
+			$('#example-getting-started').multiselect('updateButtonText');
+
+			
+			$('#example-getting-started').change(function() {
+				console.log($(this).val());
+				d3.selectAll('tr').remove();
+				buildTable();
+			}); 
+		});
+	</script>
 
 	<!-- 1. fix integer type sorting -->
 	<!-- 2. filter states -->
 	<!-- 3. table length -->
-	
+
 
 	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
 	<script type="text/javascript">
-	  d3.csv("TX_voter_power_estimates.csv", function(error, data) {
-		  if (error) throw error;
 
-		  console.log(data);
+		function buildTable(){
+			d3.csv("TX_voter_power_estimates_2.csv", function(error, data) {
+				if (error) throw error;
 
-		  data.forEach(function(d) {
-			  d['NORMALIZED'] = +d['NORMALIZED'];
-			  d['MARGIN'] = +d['MARGIN'];
-			  d['VOTER_POWER'] = +d['VOTER_POWER'];
-			
-			});
+
+
+				console.log($('#example-getting-started').val());
+
+				data.forEach(function(d) {
+					d['NORMALIZED'] = +d['NORMALIZED'];
+					d['MARGIN'] = +d['MARGIN'];
+					d['VOTER_POWER'] = +d['VOTER_POWER'];
 					
-	
+					});
 
-		  console.log(data);
-		  
-		  var sortAscending = true;
-		  var table = d3.select('#money-table').append('table');
-		  var titles = ['state', 'district', 'MARGIN', 'VOTER_POWER','NORMALIZED']
-		  var headers = table.append('thead').append('tr')
-		                   .selectAll('th')
-		                   .data(titles).enter()
-		                   .append('th')
-		                   .text(function (d) {
-			                    return d;
-		                    })
-		                   .on('click', function (d) {
-		                	   headers.attr('class', 'header');
-		                	   
-		                	   if (sortAscending) {
-		                	     rows.sort(function(a, b) { return b[d] < a[d]; });
-		                	     sortAscending = false;
-		                	     this.className = 'aes';
-		                	   } else {
-		                		 rows.sort(function(a, b) { return b[d] > a[d]; });
-		                		 sortAscending = true;
-		                		 this.className = 'des';
-		                	   }
-		                	   
-		                   });
-		  
-		  var rows = table.append('tbody').selectAll('tr')
-		               .data(data).enter()
-		               .append('tr');
-		  rows.selectAll('td')
-		    .data(function (d) {
-		    	return titles.map(function (k) {
-		    		return { 'value': d[k], 'name': k};
-		    	});
-		    }).enter()
-		    .append('td')
-		    .attr('data-th', function (d) {
-		    	return d.name;
-		    })
-		    .text(function (d) {
-		    	return d.value;
-		    });
-	  });
+				console.log(data);
+
+				console.log(data.filter(filterData))
+
+				data = data.filter(filterData)
+				
+				var sortAscending = true;
+				var table = d3.select('#money-table').append('table');
+				var titles = ['state', 'district', 'MARGIN', 'VOTER_POWER','NORMALIZED']
+				var headers = table.append('thead').append('tr')
+								.selectAll('th')
+								.data(titles).enter()
+								.append('th')
+								.text(function (d) {
+										return d;
+									})
+								.on('click', function (d) {
+									headers.attr('class', 'header');
+									
+									if (sortAscending) {
+										rows.sort(function(a, b) { return b[d] < a[d]; });
+										sortAscending = false;
+										this.className = 'aes';
+									} else {
+										rows.sort(function(a, b) { return b[d] > a[d]; });
+										sortAscending = true;
+										this.className = 'des';
+									}
+									
+								});
+				
+				var rows = table.append('tbody').selectAll('tr')
+							.data(data).enter()
+							.append('tr');
+				rows.selectAll('td')
+					.data(function (d) {
+						return titles.map(function (k) {
+							return { 'value': d[k], 'name': k};
+						});
+					}).enter()
+					.append('td')
+					.attr('data-th', function (d) {
+						return d.name;
+					})
+					.text(function (d) {
+						return d.value;
+					});
+			});
+			
+
+			console.log(states)
+			console.log("beep")
+		}
+
+		function filterData(entry) {
+		
+			states = $('#example-getting-started').val()
+
+			if (states.indexOf(entry.state) !== -1) {
+				return true
+			}
+				return false
+		}
+
+		buildTable();
+	
 	</script>
+
 </body>
 
 </html>
