@@ -29,6 +29,7 @@
 	*/
 	table { 
 		width: 100%; 
+		max-width: 400px;
 		border-collapse: collapse; 
 	}
 	/* Zebra striping */
@@ -75,13 +76,18 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.13/js/bootstrap-multiselect.js"></script>
 		
 		<!-- Build your select: -->
-		<h>Select States</h>
+		<span>Select States</span>
 		<select id="example-getting-started" multiple="multiple">
 			<option value="TX">Texas</option>
 			<option value="KS">Kansas</option>
 			<option value="MI">Michigan</option>
 			<option value="GA">Georgia</option>
 		</select>
+		<label>
+			<input id = "normcheckbx" type="checkbox" checked/>
+			<span id = "normcheck">Normalize to Selected Region</span>
+		</label>
+	
 
 	<table id="money-table"></table>
 
@@ -104,12 +110,18 @@
 				d3.selectAll('tr').remove();
 				buildTable();
 			}); 
+
+			$('#normcheckbx').change(function() {
+				console.log($(this).is(':checked'));
+				d3.selectAll('tr').remove();
+				buildTable();
+			}); 
 		});
 	</script>
 
-	<!-- 1. fix integer type sorting -->
-	<!-- 2. filter states -->
-	<!-- 3. table length -->
+	<!-- TODOS ******************* -->
+	<!-- 1. table length regulate (i.e. top N and n per state)-->
+	<!-- 2. Normalize voter power each build (also show % relative to national)-->
 
 
 	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
@@ -134,14 +146,26 @@
 
 				console.log(data.filter(filterData))
 
-				data = data.filter(filterData)
+				for (d in data) {
+					if (data[d]['favored'] == 'FALSE') {
+						data[d]['lean'] = data[d]['confidence']
+					}
+					else {
+						data[d]['lean'] = data[d]['confidence'] + " " + data[d]['favored']
+					}
+				}
+					
+
+				filtered_data = data.filter(filterData)
 				
 				var sortAscending = true;
 				var table = d3.select('#money-table').append('table');
-				var titles = ['state', 'district', 'MARGIN', 'VOTER_POWER','NORMALIZED']
+				// var titles = ['state', 'district', 'lean', 'MARGIN', 'VOTER_POWER','NORMALIZED']
+				var titles = ['district', 'lean', 'NORMALIZED']
+				var display_titles = ['District', 'Rating', 'Normalized Voter Power']
 				var headers = table.append('thead').append('tr')
 								.selectAll('th')
-								.data(titles).enter()
+								.data(display_titles).enter()
 								.append('th')
 								.text(function (d) {
 										return d;
@@ -162,7 +186,7 @@
 								});
 				
 				var rows = table.append('tbody').selectAll('tr')
-							.data(data).enter()
+							.data(filtered_data ).enter()
 							.append('tr');
 				rows.selectAll('td')
 					.data(function (d) {
@@ -177,11 +201,20 @@
 					.text(function (d) {
 						return d.value;
 					});
-			});
-			
 
-			console.log(states)
-			console.log("beep")
+				rows.sort(function(a, b) { return b['NORMALIZED'] > a['NORMALIZED']; });
+
+				console.log(d3.selectAll("[data-th=NORMALIZED]"))
+
+				d3.selectAll("[data-th=NORMALIZED]").
+					text(function (d) {
+						return (d.value / Math.max.apply(Math, extractColumn(
+							$('#normcheckbx').is(':checked')  ? filtered_data : data, 
+							"NORMALIZED")) * 100).toFixed(1);
+					});
+
+				//normalizeColumn(rows, null)
+			});
 		}
 
 		function filterData(entry) {
@@ -193,6 +226,19 @@
 			}
 				return false
 		}
+
+		function extractColumn(arr, column) {
+  			return arr.map(x => x[column])
+		}
+
+		function normalizeColumn(rows, column) {
+			for (row in rows) {
+				console.log(row)
+
+			}
+
+		}
+		
 
 		buildTable();
 	
