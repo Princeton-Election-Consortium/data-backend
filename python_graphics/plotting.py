@@ -131,6 +131,8 @@ def generate_line_plot(
 
                   # other customs
                   plot_customization = False,
+                  ## ***** temporary these two should be merged when final design decision is made
+                  plot_customization_2 = False,
                   se_xpos = 0.79,
                   thumbnail = False,
                 ):
@@ -157,9 +159,6 @@ def generate_line_plot(
     vals = data[y_column].values
     if x_minus_yvalues is not None:
         vals = x_minus_yvalues - vals
-
-    if data_file == 'EV_estimate_history.csv':
-        print(vals)
     
     # use data to fill title text
     title_fillers = dict(last_value = vals[-1],
@@ -364,14 +363,21 @@ def generate_line_plot(
 
     # target bar
     if strike_zone_data_file is not None:
+
         strike_path = os.path.join(data_dir, strike_zone_data_file)
         strike_data = pd.read_csv(strike_path)
         values = np.array(strike_data.columns).astype(float)
         if x_minus_yvalues is not None:
             values = x_minus_yvalues - values
-        s1_lo, s1_hi, s2_lo, s2_hi = values
-        pairs = [s1_lo, s1_hi], [s2_lo, s2_hi]
-        zorders = [150, 149]
+
+        if strike_zone_data_file == './outputs/House_predictions.csv':
+            na1, s1_lo, s1_hi, s2_lo, s2_hi, na2, na3 = values
+            pairs = [s1_lo, s1_hi], [s2_lo, s2_hi]
+            zorders = [150, 149]
+        else:
+            s1_lo, s1_hi, s2_lo, s2_hi = values
+            pairs = [s1_lo, s1_hi], [s2_lo, s2_hi]
+            zorders = [150, 149]
 
         for (lo, hi), col, zo in zip(pairs, strike_colors, zorders):
             ax.plot([election_day] * 2,
@@ -429,32 +435,36 @@ def generate_line_plot(
         ax.yaxis.tick_right()
         ax2.yaxis.tick_left()
         
-        spec_ypos = 6
-        spec_span = 3
-        spec_col = '#f58025'
-        ax.axhline(spec_ypos,
-                   color=spec_col,
-                   lw=0.5 * size_scale)
-        ax.axhspan(spec_ypos - spec_span,
-                   spec_ypos + spec_span,
-                   color=spec_col,
-                   alpha=0.15,
-                   zorder=0,
-                   lw=0,
-                   )
+        if not plot_customization_2:
+            spec_ypos = 6
+            spec_span = 3
+            spec_col = '#f58025'
+            ax.axhline(spec_ypos,
+                    color=spec_col,
+                    lw=0.5 * size_scale)
+            ax.axhspan(spec_ypos - spec_span,
+                    spec_ypos + spec_span,
+                    color=spec_col,
+                    alpha=0.15,
+                    zorder=0,
+                    lw=0,
+                    )
 
         pad_data_units = 0.05 * np.diff(ax.get_ylim())
         if thumbnail:
             pad_data_units *= 1.3
-        ax.text(se_xpos,
-                spec_ypos - pad_data_units,
-                'Special elections',
-                color=spec_col,
-                fontsize=font_size-4,
-                alpha=0.8,
-                ha='center',
-                va='center',
-                transform=blend(ax.transAxes, ax.transData))
+            font_size = font_size * 0.84
+
+        if not plot_customization_2:
+            ax.text(se_xpos,
+                    spec_ypos - pad_data_units,
+                    'Special elections',
+                    color=spec_col,
+                    fontsize=font_size-4,
+                    alpha=0.8,
+                    ha='center',
+                    va='center',
+                    transform=blend(ax.transAxes, ax.transData))
 
         ax2.set_ylim(ax.get_ylim())
         ax2.set_yticks(ax.get_yticks())
@@ -531,7 +541,7 @@ def generate_line_plot(
         ax.get_yaxis().set_visible(False)
 
     ### debugging 
-    print(data_file + " " + str(title_fillers['last_value']) + " " + str(vals[-1]))
+    print(title_txt + " " + str(font_size))
 
     # save out figure
     dpi = width_pixels_save / width

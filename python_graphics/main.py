@@ -265,6 +265,39 @@ generate_line_plot(
         plot_customization = True,
         out_path=path)
 
+## new strike zone and standard formatting version
+path = os.path.join(out_dir, 'house_meta_margin_new')
+generate_line_plot(
+        data_dir='../matlab',
+        data_file='2020.generic.polls.median.txt',
+        strike_zone_data_file = './outputs/House_predictions.csv',
+        strike_colors = ['#c62535', (.97, .965, .494)],
+        read_csv_kw = dict(delimiter=r"\s+"),
+        height_to_width=0.55,
+        width=9,
+        axes_box = [0.19, 0.1, 0.60, 0.75],
+        x_column='date',
+        y_column='median_margin',
+        yerr_columns=['esd'],
+        xtick_pad=0.018,
+        ylim=(-1, 15),
+        yticks_interval=4,
+        ylab_txt='House control meta-margin',
+        ylab_pad=0.068,
+        ylab_rotation=90,
+        title_txt='House control meta-margin: {party}{last_value:.01f}%',
+        title_pad=5,
+        shading = True,
+        hline_ypos = 3,
+        hline_lw = 0.5,
+        hline_color = 'black',
+        hline_labels = None,
+        circle_size = 0,
+        watermark_pos=[0.77, 0.95],
+        plot_customization = True,
+        plot_customization_2 = True,
+        out_path=path)
+
 ## generate thumbnail version
 path = os.path.join(out_dir, 'thumb_house_meta_margin')
 generate_line_plot(
@@ -282,7 +315,7 @@ generate_line_plot(
         yticks_interval=4,
         ylab_pad=0.00,
         ylab_rotation=90,
-        title_txt='U.S. House: Meta-margin',
+        title_txt='Meta-margin for House Control',
         title_pad=0,
         shading = False,
         hline_ypos = 3,

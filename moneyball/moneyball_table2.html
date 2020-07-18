@@ -167,7 +167,7 @@
 				var table = d3.select('#money-table').append('table');
 				// var titles = ['state', 'district', 'lean', 'MARGIN', 'VOTER_POWER','NORMALIZED']
 				var titles = ['district', 'lean', 'NORMALIZED']
-				var display_titles = ['District', 'Rating', 'Normalized Voter Power']
+				var display_titles = titles
 				var headers = table.append('thead').append('tr')
 								.selectAll('th')
 								.data(display_titles).enter()
