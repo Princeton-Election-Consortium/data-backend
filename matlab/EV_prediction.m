@@ -19,7 +19,7 @@ nowdensity=tpdf((Mrange-MM)/MMdrift,3); % long-tailed distribution. you never kn
 nowdensity=nowdensity/sum(nowdensity);
 
 % What was long-term prediction? (the prior)
-M2016=mean_MM('EV_estimate_history.csv',3.5); % starting 8/19, calculate this from time series for 2016
+M2016=mean_MM('EV_estimate_history.csv',3.5); % starting 8/19, calculate this from time series for 2016. LAST UPDATE: July 18 2020
 M2016SD=6; % parameters of long-term prediction; would September be a good time to start to use actual SD of MM?
 prior=tpdf((Mrange-M2016)/M2016SD,1); %make it really long-tailed, df=1
 prior=prior/sum(prior);
