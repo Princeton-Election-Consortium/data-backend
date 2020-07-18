@@ -23,5 +23,6 @@ forhistory=1; Senate_estimator
 % plot_Senate_seats_mm_history % Again, calls jbfill and won't run in a nongraphical environment
 Senate_jerseyvotes
 Senate_November_prediction
+House_prediction
 
 quit                    % closes MATLAB when done
