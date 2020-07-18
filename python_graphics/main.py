@@ -117,20 +117,20 @@ generate_line_plot(
         strike_zone_data_file = 'EV_prediction.csv',
         x_column='date',
         y_column='median_EV0', # 0=biden, 1=trump
-        x_minus_yvalues=538, # to make in terms of trump
+        x_minus_yvalues= None, # to make in terms of trump
         yerr_columns=['95ci_lower', '95ci_upper'],
         ylim=None,
         yticks_interval=40,
-        ylab_txt='Trump electoral votes',
+        ylab_txt='Biden electoral votes',
         ylab_rotation=90,
         ylab_pad=0.048,
-        title_txt='{last_value:.0f} Trump electoral votes expected',
+        title_txt='{last_value:.0f} Biden electoral votes expected',
         strike_colors = ['#c62535', (.97, .965, .494)],
         hline_ypos = 270,
-        hline_labels = ['Biden leads', 'Trump leads'],
+        hline_labels = ['Trump leads', 'Biden leads'],
         hline_lab_xpos = 0.35,
         hline_lab_pad = 0.05,
-        color_reverse = True,
+        color_reverse = False,
         out_path=path)
 
 ## generate thumbnail version
@@ -140,20 +140,20 @@ generate_line_plot(
         strike_zone_data_file = 'EV_prediction.csv',
         x_column='date',
         y_column='median_EV0', # 0=biden, 1=trump
-        x_minus_yvalues=538, # to make in terms of trump
+        x_minus_yvalues= None, # to make in terms of trump
         yerr_columns=['95ci_lower', '95ci_upper'],
         ylim=None,
         yticks_interval=40,
         ylab_rotation=90,
         ylab_pad=0.00,
-        title_txt='Today: Trump {last_value:.0f} Biden {inv_pres_last_value:.0f} EV',
+        title_txt='Today: Biden {last_value:.0f} Trump {inv_pres_last_value:.0f} EV',
         strike_colors = ['#c62535', (.97, .965, .494)],
         hline_ypos = 270,
-        hline_labels = ['Biden leads', 'Trump leads'],
+        hline_labels = ['Trump leads', 'Biden leads'],
         hline_label_units = "given",
         hline_lab_xpos = 0.35,
         hline_lab_pad = 0.08,
-        color_reverse = True,
+        color_reverse = False,
         title_pad = 0,
         thumbnail = True,
         out_path=path)
