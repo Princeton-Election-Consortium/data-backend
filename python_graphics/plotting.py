@@ -374,6 +374,8 @@ def generate_line_plot(
             na1, s1_lo, s1_hi, s2_lo, s2_hi, na2, na3 = values
             pairs = [s1_lo, s1_hi], [s2_lo, s2_hi]
             zorders = [150, 149]
+            if thumbnail:
+                zorders = [1, 0]
         else:
             s1_lo, s1_hi, s2_lo, s2_hi = values
             pairs = [s1_lo, s1_hi], [s2_lo, s2_hi]
