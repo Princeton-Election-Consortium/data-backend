@@ -15,7 +15,7 @@ current_msd=House_msd(max(find(d==max(d)))); % Find the most recent median margi
 
 maxdrift=4.5; % assumes modern levels of entrenchment
 Mdrift=min(0.4*sqrt(N),maxdrift); % following Presidential patterns; should fill this in with House data when available
-Mdrift=real(max(Mdrift,1.5)); % just in case something is screwy like N<0. 
+Mdrift=real(max(Mdrift,2)); % just in case something is screwy like N<0. 
 
 % cover range of +/-4 sigma
 Mrange=[current_mm-4*Mdrift:0.02:current_mm+4*Mdrift];
@@ -25,9 +25,9 @@ nowdensity=tpdf((Mrange-current_mm)/Mdrift,3); % t-distribution is long-tailed. 
 nowdensity=nowdensity/sum(nowdensity);
 
 % What was long-term prediction? (the prior)
-M2020=6; % LAST UPDATE: July 18 2020
-M2020SD=max(current_msd,2); % 2 is a guess based on past House-generic trajectories
-prior=tpdf((Mrange-M2020)/M2020SD,1); %make it really long-tailed, df=1
+specials_2020=6; % LAST UPDATE: July 19 2020
+specials_2020SD=3; % not that many previous examples
+prior=tpdf((Mrange-specials_2020)/specials_2020SD,1); %make it really long-tailed, df=1
 prior=prior/sum(prior);
 
 % Combine to make prediction
