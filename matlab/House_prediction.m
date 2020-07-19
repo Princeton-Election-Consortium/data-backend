@@ -27,7 +27,7 @@ nowdensity=nowdensity/sum(nowdensity);
 % What was long-term prediction? (the prior)
 specials_2020=6; % LAST UPDATE: July 19 2020
 specials_2020SD=3; % not that many previous examples
-prior=tpdf((Mrange-specials_2020)/specials_2020SD,1); %make it really long-tailed, df=1
+prior=tpdf((Mrange-specials_2020)/specials_2020SD,1); % make it really long-tailed, df=1
 prior=prior/sum(prior);
 
 % Combine to make prediction
