@@ -93,7 +93,7 @@ def get_jerseyvotes(path):
             #print(row[1] + " " + str(round(float(row[2]), 1)))
             if row[1] == "NJ":
                 votes[row[1]] = {
-                    'jersey_votes' : round(float(row[2]), 3)
+                    'jersey_votes' : float(row[2])
                 }
             else :
                 votes[row[1]] = {
@@ -162,6 +162,9 @@ def main():
 
             margin = " +" + str(margins[key]['margin']).replace('-','')
             jersey_votes = votes[key]['jersey_votes']
+            ## force NJ to display 2 significant digits (value often quite small)
+            if key == "NJ":
+                jersey_votes = format(votes[key]['jersey_votes'], '.2g')
 
             html += "\n\t" + "<tr>"
             html += "\n\t\t" + f"<td>{state_full}</td>"
