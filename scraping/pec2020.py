@@ -268,10 +268,10 @@ def main():
         for row in reader:
             states.append(row)
 
-    # print('Generating presidential medians...')
-    # presidential(all_2020_polls)
-    # print('Generating House medians...')
-    # generic(all_2020_polls)
+    print('Generating presidential medians...')
+    presidential(all_2020_polls)
+    print('Generating House medians...')
+    generic(all_2020_polls)
     print('Generating Senate medians...')
     senate(all_2020_polls)
 
