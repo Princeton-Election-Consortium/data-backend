@@ -4,6 +4,7 @@ import os
 from decimal import *
 from state_code_util import *
 from collections import OrderedDict
+from datetime import datetime
 
 fivethirtyeight = "https://projects.fivethirtyeight.com/polls/senate/"
 
@@ -92,12 +93,60 @@ def get_jerseyvotes(path):
             }
     return votes
 
+# **** made in response to apparent matlab issue processing poll margins 7/22/20
+# *** can be deleted in future
+def get_margins(path):
+
+    hash = {
+        1: 'AL',
+        2: 'AK',
+        3: 'AZ',
+        4: 'CO',
+        5: 'GA',
+        6: 'GS',
+        7: 'IA',
+        8: 'KS',
+        9: 'KY',
+        10: 'ME',
+        11: 'MI',
+        12: 'MN',
+        13: 'MT',
+        14: 'NH',
+        15: 'NM',
+        16: 'NC',
+        17: 'SC',
+        18: 'TX'}
+
+    today = datetime.now()
+    julian_date = today.strftime("%j")
+
+    margins = OrderedDict({})
+
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+
+        i = 0
+        for row in reader:
+            if row[1] < julian_date: break
+
+            if i >0:
+                margins[hash[int(row[5])]] = {
+                    'margin': round(float(row[3]), 1)
+                }
+            i+=1
+
+    return margins
+
+
 
 def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     
     path = os.path.join(dir_path, '../scraping/outputs/2020.Senate.priors.csv')
     names = get_candidates(path)
+
+    path = os.path.join(dir_path, '../scraping/outputs/2020.Senate.polls.median.csv')
+    margins = get_margins(path)
 
     path = os.path.join(dir_path, '../matlab/outputs/Senate_jerseyvotes.csv')
     votes = get_jerseyvotes(path)
@@ -116,15 +165,15 @@ def main():
             candiate_str = ""
             link_color = "#000000"
             # set leading candidate str based of margin as well as link color
-            if votes[key]['margin'] > 0:
+            if margins[key]['margin'] > 0:
                 candiate_str = names[key]['dem']
                 link_color = "#1660CE"
-            elif votes[key]['margin'] < 0:
+            elif margins[key]['margin'] < 0:
                 candiate_str = names[key]['rep']
                 link_color = "#C62535"
             else: candiate_str = "Tie"
 
-            margin = " +" + str(votes[key]['margin']).replace('-','')
+            margin = " +" + str(margins[key]['margin']).replace('-','')
             jersey_votes = votes[key]['jersey_votes']
 
             html += "\n\t" + "<tr>"
