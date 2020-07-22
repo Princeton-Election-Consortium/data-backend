@@ -18,8 +18,12 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 def parse_candidate(row, party='Dem'):
     answer_group = row['answers']
-    choice = next(answer for answer in answer_group if answer['party'] == party)
-    return choice['choice']
+    choice = next((answer for answer in answer_group if answer['party'] == party), None)
+    if choice is None:
+        print("parse candiate error: " + str(answer_group))
+        return "parse_candiate_error"
+
+    return choice['choice'] 
 
 def parse_dminusr(row, generic=False):
     answer_group = row['answers']
@@ -150,10 +154,13 @@ def senate(polls):
     for idx in range((datetime.today() - start_date).days):
         for state in sen_states:
             sen_polls_state = None 
+
             if state['name'] == 'Georgia-Special':
                 sen_polls_state = sen_polls[(sen_polls['state'] == 'Georgia') & (sen_polls['seat_name'] == 'Class III')]
             elif state['name'] == 'Georgia':
                 sen_polls_state = sen_polls[(sen_polls['state'] == 'Georgia') & (sen_polls['seat_name'] == 'Class II')]
+            elif state['name'] == 'Kentucky':
+                sen_polls_state = sen_polls[(sen_polls['state'] == 'Kentucky') & (sen_polls['dem_cand'] == 'McGrath')]
             else:
                 sen_polls_state = sen_polls[sen_polls['state'] == state['name']] 
 
@@ -261,10 +268,10 @@ def main():
         for row in reader:
             states.append(row)
 
-    print('Generating presidential medians...')
-    presidential(all_2020_polls)
-    print('Generating House medians...')
-    generic(all_2020_polls)
+    # print('Generating presidential medians...')
+    # presidential(all_2020_polls)
+    # print('Generating House medians...')
+    # generic(all_2020_polls)
     print('Generating Senate medians...')
     senate(all_2020_polls)
 
