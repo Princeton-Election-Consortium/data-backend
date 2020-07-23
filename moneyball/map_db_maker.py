@@ -1,5 +1,6 @@
 import shapefile
 from collections import OrderedDict
+import pandas as pd 
 import csv
 
 def get_state_code(input, FIPS=True, TwoDigit=False, Full=False):
@@ -63,8 +64,6 @@ def get_state_code(input, FIPS=True, TwoDigit=False, Full=False):
 
     return None
 
-
-
 def make_dict():
     terms = OrderedDict({})
 
@@ -81,6 +80,10 @@ def make_dict():
             i+=1
 
     return terms 
+
+def process_moneyball_data(inPath, outPath)
+    cong = pd.read_csv(data_dir / "PEC Map Data 2020  - House.csv")
+
 
 
 
