@@ -2,7 +2,10 @@ import shapefile
 from collections import OrderedDict
 import pandas as pd 
 import csv
+import geopandas as gpd
 
+# Util method to come between state formats 
+# ******* update to include every input and output case *********
 def get_state_code(input, FIPS=True, TwoDigit=False, Full=False):
     if (FIPS + TwoDigit + Full != 1):
         raise ValueError("Exactly one format argument must be True. Default = FIPS")
@@ -62,41 +65,117 @@ def get_state_code(input, FIPS=True, TwoDigit=False, Full=False):
         'PR': {'full': 'Puerto Rico', 'two_digit': 'PR', 'FIPS': 72}
     }
 
+    if FIPS:
+        return code_hash[input]['FIPS']
+    
     return None
 
+
+# Util method to quickly make changes to the hash dict in get_state_code
 def make_dict():
     terms = OrderedDict({})
-
     with open("./FIPS.csv", 'r') as f:
         reader = csv.reader(f)
         i = 0
         for row in reader:
             if i >0:
-                print( 
-                f"\'{row[3]}\': " + 
-                "{" + 
-                f"\'full\': \'{row[1]}\', 'two_digit': '{row[3]}\', 'FIPS': {row[0]}" +
-                "},")
+                print( f"\'{row[3]}\': " +  "{" + f"\'full\': \'{row[1]}\', 'two_digit': '{row[3]}\', 'FIPS': {row[0]}" + "},")
             i+=1
-
     return terms 
 
-def process_moneyball_data(inPath, outPath)
-    cong = pd.read_csv(data_dir / "PEC Map Data 2020  - House.csv")
+
+# converts district code from the money ball csv to a GEOID
+# ex. "CT-HD-59" --> '9059'
+# ex. "MN-HD-13A" --> '2713A'
+def getGEOID(district_str, leading_zero = False):
+    state, chamber, dist_num = district_str.split('-')
+    GEOID = str(get_state_code(state)) 
+    if leading_zero and len(GEOID) < 2: 
+        GEOID= '0' + GEOID
+    while len(dist_num) <3: 
+        dist_num = '0' + dist_num
+    GEOID =  GEOID + dist_num
+    return GEOID
 
 
+# extracts the chamber type from the district code in the money ball csv
+# ex. "CT-HD-59" --> 'HD'
+def getChamber(district_str):
+    state, chamber, dist_num = district_str.split('-')
+    return chamber
 
 
-def test_result():
-    r = shapefile.Reader('./graph/processed_data.shp')
+# processes the raw moneyball data to a pandas readable csv with added fields
+# for now: GEOID and chamber type (Upper vs Lower)
+def process_moneyball_data(inPath, outPath):
+    df = pd.read_csv(inPath)
+
+    lambdafunc = lambda x: pd.Series(
+        [getGEOID(x['district']),
+        getChamber(x['district'])]
+    )
+    df [['GEOID', 'chamber']] = df.apply(lambdafunc, axis = 1)
+
+    df.to_csv(outPath, index=False, float_format='%.16f')
+
+def shapefile_union(in_shapefile_path, in_df, out_path):
+    r = shapefile.Reader(in_shapefile_path)
+
+    w = shapefile.Writer(out_path)
+    w.fields = r.fields[1:] # skip first deletion field
+
+    w.field('VOTER_POWER', 'N', decimal=30)
+
+    print(r.fields)
+    print(w.fields)
+
+    # adding existing Shape objects
+    for shaperec in r.iterShapeRecords():
+        # print(shaperec )
+        # print(type(shaperec) )
+        voterpower = 0
+        dct = shaperec.record.as_dict()
+        GEOID = dct['GEOID']
+        geomatchs = in_df[in_df['GEOID'] == GEOID]
+        if len(geomatchs.index) > 0:
+            voterpower = geomatchs.iloc[0]['VOTER_POWER']
+
+        w.record(*shaperec.record + [voterpower])
+        w.shape(shaperec.shape)
+
+    w.close()    
+
+### UPPER = senate  LOWER = house
+def join_data():
+    # read in moneyball data
+    df = pd.read_csv('./processed_data.csv')
+
+    # segment to upper and lower chamber
+    upper_df = df[df['chamber'] == 'SD']
+    lower_df = df[df['chamber'] == 'HD']
+
+    # build UPPER shapefile 
+    shapefile_union('./raw/UPPER_cb_2019_us_sldu_500k/cb_2019_us_sldu_500k.shp', upper_df, './output/state_moneyball_upper')
+    # build LOWER shapefile 
+    shapefile_union('./raw/LOWER_cb_2019_us_sldl_500k/cb_2019_us_sldl_500k.shp', lower_df, './output/state_moneyball_lower')
+
+
+# debugging method to read the output shape file before zipping and mapboxing
+def test_result(path):
+    r = shapefile.Reader(path)
     print(r.fields)
 
     for shaperec in r.iterShapeRecords():
         print(*shaperec.record)
 
-def main():
 
-    r = shapefile.Reader('./raw/cb_2019_us_sldl_500k.shp')
+def to_geoJSON(inPath, outPath):
+    shp = gpd.read_file(inPath)
+    shp.to_file(outPath, driver="GeoJSON")
+
+def oldmain():
+
+    r = shapefile.Reader('./raw/UPPER_cb_2019_us_sldu_500k/cb_2019_us_sldu_500k.shp')
 
     w = shapefile.Writer('graph/processed_data')
     w.fields = r.fields[1:] # skip first deletion field
@@ -118,8 +197,10 @@ def main():
     w.close()
 
 
-make_dict()
-#test_result()
+#join_data()
+#test_result('./output/state_moneyball_upper.shp')
+to_geoJSON('./output/state_moneyball_upper.shp', './output/state_moneyball_upper.geojson')
+to_geoJSON('./output/state_moneyball_lower.shp', './output/state_moneyball_lower.geojson')
 
 
 
