@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <title>PEC Map</title>
+        <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">        
+        <link href='./styles.css' rel='stylesheet' />
+    </head>
+    <body>
+        <div class='sidebar'>
+            <div class='heading'>
+              <h1>Election Information</h1>
+            </div>
+            <iframe src="https://election.princeton.edu/data/moneyball/moneyball_table2.html" 
+                style="border:0px #ffffff none;" 
+                name="myiFrame" scrolling="yes" 
+                frameborder="10" marginheight="0px" 
+                marginwidth="10px" 
+                height="100%" width="100%" allowfullscreen>
+            </iframe>
+          </div>
+        <div id='map-container' class='map pad2'></div>
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+        <button id="zoom">Reset map</button>
+
+        <select id="dropdown" name="dropdown">
+            <option value="state-house">State House Redistricting</option>
+            <option value="state-senate">State Senate Redistricting</option>
+        </select>
+        <select id="dropdown-2" name="dropdown-2">
+            <option value="all">Display All</option>
+            <option value="top-n">Top 10 per State</option>
+        </select>
+
+        <div id="congressional-legend" class="legend" style="display: none;">
+            <div><span style="background-color: hsla(312, 99%, 55%, 0.88)"></span>Highest Voter Power</div>
+            <div><span style="background-color: hsla(288, 82%, 56%, 0.85)"></span>Medium-High</div>
+            <div><span style="background-color: hsla(232, 56%, 75%, 0.68)"></span>Medium</div>      
+            <div><span style="background-color: hsla(193, 32%, 80%, 0.75)"></span>Low</div>             
+        </div>
+
+
+        <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet' />
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="./main.js"></script>
+
+    </body>
+
+</html>

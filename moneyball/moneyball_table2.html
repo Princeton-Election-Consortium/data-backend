@@ -29,7 +29,7 @@
 	*/
 	table { 
 		width: 100%; 
-		max-width: 400px;
+		max-width: 1800px;
 		border-collapse: collapse; 
 	}
 	/* Zebra striping */
@@ -78,11 +78,22 @@
 	<!-- Build your select: -->
 	<div>
 		<span>Select States</span>
-		<select id="example-getting-started" multiple="multiple">
+		<select id="states-dropdown" multiple="multiple">
 			<option value="TX">Texas</option>
+			<option value="MN">Minnesota</option>
 			<option value="KS">Kansas</option>
-			<option value="MI">Michigan</option>
+			<option value="FL">Florida</option>
+			<option value="WI">Wisconsin</option>
+			<option value="PA">Pennsylvania</option>
+			<option value="NC">North Carolina</option>
 			<option value="GA">Georgia</option>
+			<option value="OR">Oregon</option>
+			<option value="KY">Kentucky</option>
+			<option value="NV">Nevada</option>
+			<option value="NM">New Mexico</option>
+			<option value="MA">Massachusetts</option>
+			<option value="SC">South Carolina</option>
+			<option value="AR">Arkansas</option>
 		</select>
 		<label>
 			<input id = "normcheckbx" type="checkbox" checked/>
@@ -99,18 +110,18 @@
 	<!-- Initialize the plugin: -->
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$('#example-getting-started').multiselect(
+			$('#states-dropdown').multiselect(
 				{
 				allSelectedText: 'All',
 				maxHeight: 300,
 				includeSelectAllOption: true,
 				selectAll: true
 			})
-			$('#example-getting-started').multiselect('selectAll', false);
-			$('#example-getting-started').multiselect('updateButtonText');
+			$('#states-dropdown').multiselect('selectAll', false);
+			$('#states-dropdown').multiselect('updateButtonText');
 
 			
-			$('#example-getting-started').change(function() {
+			$('#states-dropdown').change(function() {
 				console.log($(this).val());
 				d3.selectAll('tr').remove();
 				buildTable(20,3);
@@ -133,18 +144,14 @@
 	<script type="text/javascript">
 
 		function buildTable(Total, Per){
-			d3.csv("TX_voter_power_estimates_3.csv", function(error, data) {
+			d3.csv("processed_data.csv", function(error, data) {
 				if (error) throw error;
 
 
-
-				console.log($('#example-getting-started').val());
+				console.log($('#states-dropdown').val());
 
 				data.forEach(function(d) {
-					d['NORMALIZED'] = +d['NORMALIZED'];
-					d['MARGIN'] = +d['MARGIN'];
-					d['VOTER_POWER'] = +d['VOTER_POWER'];
-					
+					d['redistricting_voter_power'] = +d['redistricting_voter_power'];
 					});
 
 				console.log(data);
@@ -160,13 +167,15 @@
 					}
 				}
 					
-				data.sort(function(a, b) { return b['NORMALIZED'] > a['NORMALIZED']; });
-				filtered_data = data.filter(filterData).slice(0,Total)
+				data.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
+                filtered_data = data.filter(filterData).slice(0,Total)
+                
+                
 				
 				var sortAscending = true;
 				var table = d3.select('#money-table').append('table');
-				// var titles = ['state', 'district', 'lean', 'MARGIN', 'VOTER_POWER','NORMALIZED']
-				var titles = ['district', 'lean', 'NORMALIZED']
+                var titles = ['district','redistricting_voter_power', 'anti_gerrymandering_party']
+                // ***** needs to be changed for production version
 				var display_titles = titles
 				var headers = table.append('thead').append('tr')
 								.selectAll('th')
@@ -207,30 +216,31 @@
 						return d.value;
 					});
 
-				rows.sort(function(a, b) { return b['NORMALIZED'] > a['NORMALIZED']; });
+				rows.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
 
-				console.log(d3.selectAll("[data-th=NORMALIZED]"))
+				console.log(d3.selectAll("[data-th=redistricting_voter_power]"))
 
-				d3.selectAll("[data-th=NORMALIZED]").
+				d3.selectAll("[data-th=redistricting_voter_power]").
 					text(function (d) {
 						return (d.value / Math.max.apply(Math, extractColumn(
 							$('#normcheckbx').is(':checked')  ? filtered_data : data, 
-							"NORMALIZED")) * 100).toFixed(1);
+							"redistricting_voter_power")) * 100).toFixed(1);
 					});
-				var local_max = Math.max.apply(Math, extractColumn(filtered_data, "NORMALIZED"))
-				var global_max = Math.max.apply(Math, extractColumn(data, "NORMALIZED"))
+				var local_max = Math.max.apply(Math, extractColumn(filtered_data, "redistricting_voter_power"))
+				var global_max = Math.max.apply(Math, extractColumn(data, "redistricting_voter_power"))
 				if (local_max < global_max) {
-						d3.select("#normperc").text("*Normalized to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
+						d3.select("#normperc").text("*redistricting_voter_power to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
 						console.log("****updated")
 					}
 
-				//normalizeColumn(rows, null)
 			});
 		}
 
 		function filterData(entry) {
+
+			//console.log($('#states-dropdown').val())
 		
-			states = $('#example-getting-started').val()
+			let states = $('#states-dropdown').val()
 
 			if (states.indexOf(entry.state) !== -1) {
 				return true
@@ -249,12 +259,12 @@
 			}
 
 		}
-		
-
-		buildTable(20,3);
+		buildTable(1000,300);
 	
 	</script>
 
 </body>
 
 </html>
+
+
