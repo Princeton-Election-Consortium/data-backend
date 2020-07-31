@@ -88,13 +88,13 @@ map.on('load', function() {
                       ["get", "VOTER_POWER"],
                       30
                     ],
-                    "hsla(232, 82%, 75%, 0.75)",
+                    "hsla(232, 82%, 69%, 0.75)",
                     [
                       ">=",
                       ["get", "VOTER_POWER"],
                       20
                     ],
-                    "hsla(193, 82%, 80%, 0.75)",
+                    "hsla(193, 82%, 74%, 0.75)",
                     "hsla(0, 0%, 100%, 0)"
                   ]
                 },
@@ -118,35 +118,35 @@ map.on('load', function() {
                     0, 0.5, 
                     0.8
                     ],
-                'fill-color': [
-                    "case",
-                    [
-                      ">=",
-                      ["get", "VOTER_POWER"],
-                      75
-                    ],
-                    "hsla(312, 99%, 55%, 0.88)",
-                    [
-                      ">=",
-                      ["get", "VOTER_POWER"],
-                      45
-                    ],
-                    "hsla(288, 82%, 56%, 0.85)",
-                    [
-                      ">=",
-                      ["get", "VOTER_POWER"],
-                      30
-                    ],
-                    "hsla(232, 56%, 75%, 0.68)",
-                    [
-                      ">=",
-                      ["get", "VOTER_POWER"],
-                      20
-                    ],
-                    "hsla(193, 32%, 80%, 0.75)",
-                    "hsla(0, 0%, 100%, 0)"
-                  ]
-                },
+                    'fill-color': [
+                        "case",
+                        [
+                          ">=",
+                          ["get", "VOTER_POWER"],
+                          75
+                        ],
+                        "hsla(312, 99%, 55%, 0.88)",
+                        [
+                          ">=",
+                          ["get", "VOTER_POWER"],
+                          45
+                        ],
+                        "hsla(288, 88%, 56%, 0.85)",
+                        [
+                          ">=",
+                          ["get", "VOTER_POWER"],
+                          30
+                        ],
+                        "hsla(232, 82%, 69%, 0.75)",
+                        [
+                          ">=",
+                          ["get", "VOTER_POWER"],
+                          20
+                        ],
+                        "hsla(193, 82%, 74%, 0.75)",
+                        "hsla(0, 0%, 100%, 0)"
+                      ]
+                    },
             'type': 'fill',
             'layout': {
                 'visibility': 'none'
@@ -259,17 +259,12 @@ map.on('load', function() {
         el.className = 'marker'
         console.log("clicked prop", prop);
 
-
-
         var state = prop.DISTRICT
         state = state.substring(0,2)
 
         $('#sstates').val(state)
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
-
-        // dropdown.val = [state];
-        // //dropdown.trigger('change');
 
         console.log("state", state);
 
@@ -290,7 +285,24 @@ map.on('load', function() {
         /* Add state name. */
         let title = clickedStateInfo.appendChild(document.createElement('div'));
         title.className = 'title';
-        title.innerHTML = prop.DISTRICT;
+        title.innerHTML = redist_data_row['state'];
+        
+        /* Add details to the individual state info. */
+        let details = clickedStateInfo.appendChild(document.createElement('div'));
+        if (redist_data_row['Voter Impact on 2021 Congressional Redisticting:'] != 'null') {
+            details.innerHTML += 'Voter Impact on 2021 Congressional Redisticting: '.bold() + redist_data_row['Voter Impact on 2021 Congressional Redisticting:']+ "<br />";
+        }
+        if (redist_data_row['Bipartisan Control Probability'] != 'null') {
+            details.innerHTML += 'Bipartisan Control Probability: '.bold() + redist_data_row['Bipartisan Control Probability']+ "<br />";
+        }
+
+        if (redist_data_row['Redistricting process'] != 'null') {
+            details.innerHTML += 'Redistricting process: '.bold() + redist_data_row['Redistricting process']+ "<br />";
+        }
+
+        if (redist_data_row['2020 election playing field'] != 'null') {
+            details.innerHTML += '2020 election playing field: '.bold() + redist_data_row['2020 election playing field']+ "<br />";
+        }
 
         let myCongressionalTable = ''
 
@@ -329,22 +341,11 @@ map.on('load', function() {
         }
 
 
-
         new mapboxgl.Popup(el)
             .setLngLat(e.lngLat)
             .setHTML(myCongressionalTable)
             .addTo(map);
         });
-
-    // add legend on zoom
-    var congressionalLegendEl = document.getElementById('congressional-legend');
-    map.on('zoom', function() {
-        if (map.getZoom() >= zoomThreshold) {
-            congressionalLegendEl.style.display = 'block';
-        } else {
-        congressionalLegendEl.style.display = 'none';
-        }
-    });
 
     // add "Reset Map" 
     document.getElementById('zoom').addEventListener('click', function() {
@@ -368,6 +369,7 @@ map.on('load', function() {
         mapboxgl: mapboxgl
         })
     );
+    map.addControl(new mapboxgl.NavigationControl());
 
     // add plus/minus zoom button
     // map.addControl(new mapboxgl.NavigationControl());

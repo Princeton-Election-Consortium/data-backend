@@ -1,7 +1,7 @@
 <!DOCTYPE html>
     <head>
         <meta charset="utf-8">
-        <title>PEC Map</title>
+        <title>Moneyball Redisctricting Data</title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">        
@@ -19,9 +19,10 @@
                         partisan gerrymandering in 2021. <b>A few hundred voters</b>  mobilized in the <b>right districts</b>
                             could bring 
                         a state bipartisan control of redistricting, leading to <b>fairer districts for a decade. </b>
-                        Our findings are in the map below. Our basic methodology is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a>
+                        Our findings are in the map below. <br /><br />
+                        Our basic methodology is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a>
                         , and our detailed methodology 
-                        for election-prediction nerds is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a><br /><br />
+                        for election-prediction nerds is <a href="https://docs.google.com/document/d/13D-UR5Tm-HU_INcMWDC9lskRDkhOXAhMGFhULHzrdg0/edit?ts=5f233017">HERE</a><br /><br />
                 <div id='state-info' class='state-info'>
                     <body>
                         <b>Click on a state</b> to view information about redistricting.<br /><br />
@@ -42,12 +43,14 @@
                 </label>
 
                 <label>
-                    <input id = "normcheckbx" type="checkbox" checked/>
+                    <input id = "normcheckbx" type="checkbox"/>
                     <span id = "normcheck">Normalize to Selected Region</span>
                 </label>
             </div>
             <div>
+                <span id = "displayingALL"></span>
                 <span id = "normperc"></span>
+
             </div>
             
             <div class="scrollit">
@@ -107,16 +110,24 @@
                 d3.csv("processed_data.csv", function(error, data) {
                     if (error) throw error;
 
-
-                    console.log($('#states-dropdown').val());
-
                     data.forEach(function(d) {
                         d['redistricting_voter_power'] = +d['redistricting_voter_power'];
                         });
 
-                    console.log(data);
-
-                    console.log(data.filter(filterData))
+                    let states = $('#sstates').val().replace(/ /g, '').split(',')
+                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'MA', 'SC', 'AR']
+                    let isFound = moneys.some( ai => states.includes(ai) );
+                    let all = false
+                    d3.select("#displayingALL").text("");
+                    if (!isFound){
+                        $( '#allstcheckbx' ).prop( "checked", true);
+                        all = true
+                        // * send not displaying clicked state in table message if not initial load
+                        if ($('#sstates').val() != ''){
+                            d3.select("#displayingALL").text("*Selected state has no high impact districts. See above state information. Displaying data for all states")
+                        }
+                        let states = $('#sstates').val('')
+                    } 
 
                     for (d in data) {
                         if (data[d]['favored'] == 'FALSE') {
@@ -128,9 +139,7 @@
                     }
                         
                     data.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
-                    filtered_data = data.filter(filterData).slice(0,Total)
-                    
-                    
+                    filtered_data = data.filter(filterData, all).slice(0,Total)
                     
                     var sortAscending = true;
                     var table = d3.select('#money-table').append('table').attr("class", "mbtable");
@@ -188,7 +197,7 @@
                         });
                     var local_max = Math.max.apply(Math, extractColumn(filtered_data, "redistricting_voter_power"))
                     var global_max = Math.max.apply(Math, extractColumn(data, "redistricting_voter_power"))
-                    if (local_max < global_max) {
+                    if (local_max < global_max & $('#normcheckbx').is(':checked')) {
                             d3.select("#normperc").text("*redistricting_voter_power to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
                             console.log("****updated")
                         }
@@ -196,18 +205,15 @@
                 });
             }
 
-            function filterData(entry) {
-                if ($('#allstcheckbx').is(':checked')) {
+            function filterData(entry, all=false) {
+                if ($('#allstcheckbx').is(':checked') || all) {
                     return true
                 }
                 else {
                     let states = $('#sstates').val().replace(/ /g, '').split(',')
                     let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'MA', 'SC', 'AR']
-
                     let isFound = moneys.some( ai => states.includes(ai) );
-
-                    if (!isFound){ return true} 
-
+                    if (!isFound){return true}
 
                     if (states.indexOf(entry.state) !== -1) {
                         return true }

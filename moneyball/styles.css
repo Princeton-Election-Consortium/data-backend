@@ -45,7 +45,8 @@ body {
   }
 
 .clicked-info {
-  height: 25%;
+  height: 33%;
+  max-height: 275px;
   overflow: auto;
   padding: 10px;
   padding-bottom: 60px;
