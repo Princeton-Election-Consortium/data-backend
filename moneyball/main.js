@@ -209,7 +209,26 @@ map.on('load', function() {
 
         let myCongressionalTable = ''
 
-        if (prop.VOTER_POWER >= 1){
+        if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'R'){
+            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+            '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
+            '<tr> <th>' + "R Candidate" + '</th> <th>' + prop.NOM_R + ' *' + '</th>' + 
+            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
+            '</table>'
+
+        }
+        else if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'D'){
+            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+            '<tr> <th>' + "D Candidate" + '</th> <th>' + prop.NOM_D + ' *' +'</th>' + 
+            '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R +  '</td>' + 
+            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
+            '</table>'
+        }
+        else if (prop.VOTER_POWER >= 1){
             myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
                                         '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
                                     '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
@@ -275,7 +294,26 @@ map.on('load', function() {
 
         let myCongressionalTable = ''
 
-        if (prop.VOTER_POWER >= 1){
+        if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'R'){
+            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+            '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
+            '<tr> <th>' + "R Candidate" + '</th> <th>' + prop.NOM_R + ' *' + '</th>' + 
+            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
+            '</table>'
+
+        }
+        else if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'D'){
+            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+            '<tr> <th>' + "D Candidate" + '</th> <th>' + prop.NOM_D + ' *' +'</th>' + 
+            '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R +  '</td>' + 
+            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
+            '</table>'
+        }
+        else if (prop.VOTER_POWER >= 1){
             myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
                                         '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
                                     '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
