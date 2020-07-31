@@ -359,7 +359,6 @@ map.on('load', function() {
         // map.setLayoutProperty('congressional-layer', 'visibility', 'visible');
         // map.setLayoutProperty('state-house', 'visibility', 'none');
         // map.setLayoutProperty('state-senate', 'visibility', 'none');
-        viewDropdown2('none');
         });
 
     // add address search thing
@@ -374,15 +373,6 @@ map.on('load', function() {
     // add plus/minus zoom button
     // map.addControl(new mapboxgl.NavigationControl());
 
-    function viewDropdown2(displayStyle) {
-        /* "inline-block" or "none" */
-      var x = document.getElementById("dropdown-2");
-      x.style.display = displayStyle
-
-      var y = document.getElementById("zoom");
-      y.style.top= (displayStyle === 'none' ? '40px' : '64px')
-    }
-    
     const selectElement = d3.select("#dropdown").on("change", function(e) {
         console.log("new selected layer is", this.value);
         clickedLayer = this.value;
@@ -391,11 +381,9 @@ map.on('load', function() {
         if (clickedLayer === 'state-house'){
             map.setLayoutProperty('state-house', 'visibility', 'visible');
             map.setLayoutProperty('state-senate', 'visibility', 'none');
-            viewDropdown2('inline-block');
         } else if (clickedLayer === 'state-senate'){
             map.setLayoutProperty('state-house', 'visibility', 'none');
             map.setLayoutProperty('state-senate', 'visibility', 'visible');
-            viewDropdown2('inline-block');
         }
       });
 
