@@ -161,11 +161,11 @@
                                         headers.attr('class', 'header');
                                         
                                         if (sortAscending) {
-                                            rows.sort(function(a, b) { return b[d] < a[d]; });
+                                            rows.sort(function(a, b) { return b[d] < a[d] ? 1 : -1; });
                                             sortAscending = false;
                                             this.className = 'aes';
                                         } else {
-                                            rows.sort(function(a, b) { return b[d] > a[d]; });
+                                            rows.sort(function(a, b) { return b[d] > a[d] ? 1 : -1; });
                                             sortAscending = true;
                                             this.className = 'des';
                                         }
@@ -189,7 +189,7 @@
                             return d.value;
                         });
 
-                    rows.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
+                    rows.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power'] ? 1 : -1; });
 
                     console.log(d3.selectAll("[data-th=redistricting_voter_power]"))
 
