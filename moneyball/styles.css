@@ -1,6 +1,20 @@
+.scrollit {
+  overflow:scroll;
+  height:100%;
+}
+
+table.mbtable th.des:after {
+	content: " \21D3";
+	}
+	
+	table.mbtable th.aes:after {
+	content: " \21D1";
+	}
+
+
 .sidebar {
   position: absolute;
-  width: 33.3333%;
+  width: 40%;
   height: 100%;
   top: 0;
   left: 0;
@@ -26,21 +40,22 @@ body {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 33.3333%;
-    width: 66.6666%;
+    left: 40%;
+    width: 60%;
   }
 
 .clicked-info {
-  height: 100%;
+  height: 25%;
   overflow: auto;
+  padding: 10px;
   padding-bottom: 60px;
 }
 
 .state-info {
-  font-size: .75em;
+  font-size: 1em;
   display: block;
   border-bottom: 1px solid #eee;
-  padding: 10px;
+  padding-bottom: 10px;
   text-decoration: none;
   border-bottom: none;
 }
@@ -133,6 +148,10 @@ body {
     text-align: left;
     padding: 8px;
   }
+
+  th{
+    text-align: center;
+  }
   
   tr:nth-child(even) {
     background-color: #dddddd;
@@ -175,7 +194,7 @@ body {
   top: 40px;
   left: 12px;
   position: absolute;
-  left: 35%;
+  left: 42%;
   border: none;
   border-radius: 3px;
   font-size: 1em;
@@ -442,7 +461,7 @@ body {
     top: 13px;
     left: 12px;
     position: absolute;
-    left: 35%;
+    left: 42%;
     border: none;
     border-radius: 3px;
     font-size: 1em;

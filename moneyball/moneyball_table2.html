@@ -15,10 +15,11 @@
 	padding: 0; 
 	}
 	body { 
-	font: 14px/1.4 Georgia, Serif; 
+	font: 11px/1.4 'IBM Plex Sans', sans-serif !important;
 	}
 	#page-wrap {
-	margin: 50px;
+	margin: 0px;
+	width: 100%;
 	}
 	p {
 	margin: 20px 0; 
@@ -27,35 +28,39 @@
 	/* 
 	Generic Styling, for Desktops/Laptops 
 	*/
-	table { 
+	table.mbtable { 
 		width: 100%; 
-		max-width: 1800px;
 		border-collapse: collapse; 
+
 	}
 	/* Zebra striping */
 
-	tr:nth-of-type(odd) { 
+	table.mbtable tr:nth-of-type(odd) { 
 		background: #eee; 
 	}
-	th { 
+	table.mbtable th { 
 		background: #333; 
 		color: white; 
-		font-weight: bold; 
 		cursor: s-resize;
 		background-repeat: no-repeat;
 		background-position: 3% center;
 	}
-	td, th { 
-		padding: 6px; 
+	table.mbtable td, th { 
+		padding: 5px; 
 		border: 1px solid #ccc; 
 		text-align: left; 
 	}
+
+	table.mbtable th{
+	text-align: center;
+	word-wrap: break-word;
+  	}
 	
-	th.des:after {
+	table.mbtable th.des:after {
 	content: " \21D3";
 	}
 	
-	th.aes:after {
+	table.mbtable th.aes:after {
 	content: " \21D1";
 	}
 
@@ -107,6 +112,12 @@
 
 	<table id="money-table"></table>
 
+</body>
+
+</html>
+
+	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+
 	<!-- Initialize the plugin: -->
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -133,15 +144,6 @@
 				buildTable(20,3);
 			}); 
 		});
-	</script>
-
-	<!-- TODOS ******************* -->
-	<!-- 1. table length regulate (i.e. top N and n per state)-->
-	<!-- 2. Normalize voter power each build (also show % relative to national)-->
-
-
-	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
-	<script type="text/javascript">
 
 		function buildTable(Total, Per){
 			d3.csv("processed_data.csv", function(error, data) {
@@ -173,8 +175,8 @@
                 
 				
 				var sortAscending = true;
-				var table = d3.select('#money-table').append('table');
-                var titles = ['district','redistricting_voter_power', 'anti_gerrymandering_party']
+				var table = d3.select('#money-table').append('table').attr("class", "mbtable");
+                var titles = ['district','rep_nominee','dem_nominee','incumbent','redistricting_voter_power', 'anti_gerrymandering_party']
                 // ***** needs to be changed for production version
 				var display_titles = titles
 				var headers = table.append('thead').append('tr')
@@ -182,7 +184,7 @@
 								.data(display_titles).enter()
 								.append('th')
 								.text(function (d) {
-										return d;
+										return d.replace(/_/g, ' ');
 									})
 								.on('click', function (d) {
 									headers.attr('class', 'header');
@@ -255,16 +257,14 @@
 		function normalizeColumn(rows, column) {
 			for (row in rows) {
 				console.log(row)
-
 			}
-
 		}
 		buildTable(1000,300);
-	
 	</script>
 
-</body>
+	<!-- TODOS ******************* -->
+	<!-- 1. table length regulate (i.e. top N and n per state)-->
+	<!-- 2. Normalize voter power each build (also show % relative to national)-->
 
-</html>
 
 

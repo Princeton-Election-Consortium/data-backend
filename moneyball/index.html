@@ -2,23 +2,57 @@
     <head>
         <meta charset="utf-8">
         <title>PEC Map</title>
-        <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">        
         <link href='./styles.css' rel='stylesheet' />
+
+
     </head>
     <body>
         <div class='sidebar'>
             <div class='heading'>
-              <h1>Election Information</h1>
+              <h1>Redistricting Information: "Moneyball"</h1>
             </div>
-            <iframe src="https://election.princeton.edu/data/moneyball/moneyball_table2.html" 
-                style="border:0px #ffffff none;" 
-                name="myiFrame" scrolling="yes" 
-                frameborder="10" marginheight="0px" 
-                marginwidth="10px" 
-                height="100%" width="100%" allowfullscreen>
-            </iframe>
+            <div id='clicked-info' class='clicked-info'>
+                    We have designed a model that identifies the races where voters have the most leverage to prevent 
+                        partisan gerrymandering in 2021. <b>A few hundred voters</b>  mobilized in the <b>right districts</b>
+                            could bring 
+                        a state bipartisan control of redistricting, leading to <b>fairer districts for a decade. </b>
+                        Our findings are in the map below. Our basic methodology is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a>
+                        , and our detailed methodology 
+                        for election-prediction nerds is here <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a><br /><br />
+                <div id='state-info' class='state-info'>
+                    <body>
+                        <b>Click on a state</b> to view information about redistricting.<br /><br />
+                        <b>Zoom in and click on a district</b> for more information about competitiveness.<br /><br />
+                        <b>Select a layer</b> from the drop-down menu to toggle between house and senate races.
+                    </body>
+                </div>
+            </div>
+            <div>
+                <hr>
+                <label style="margin-left:1.5em" for="fname">Selected States: </label>
+                <input type="submit" id = "submit" value="Update" style ="float: right; overflow: hidden;">
+                <input type="text" id="sstates" name="sstates" placeholder="e.x. TX, KS, MN"><br><br>
+
+                <label>
+                    <input id = "allstcheckbx" type="checkbox" checked/>
+                    <span id = "allstcheck">View All states</span>
+                </label>
+
+                <label>
+                    <input id = "normcheckbx" type="checkbox" checked/>
+                    <span id = "normcheck">Normalize to Selected Region</span>
+                </label>
+            </div>
+            <div>
+                <span id = "normperc"></span>
+            </div>
+            
+            <div class="scrollit">
+                <table id="money-table" style= "overflow:scroll"></table>
+            </div>
           </div>
         <div id='map-container' class='map pad2'></div>
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
@@ -44,7 +78,154 @@
         <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js'></script>
         <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet' />
         <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
         <script src="./main.js"></script>
+
+    	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+
+        <!-- Initialize the plugin: -->
+        <script type="text/javascript">
+            $(document).ready(function() {      
+                $( "#submit").click(function() {
+                    d3.selectAll('tr').remove();
+                    buildTable(200,3);
+                });
+                $('#allstcheckbx').change(function() {
+                    console.log($(this).val());
+                    d3.selectAll('tr').remove();
+                    buildTable(200,3);
+                }); 
+
+                $('#normcheckbx').change(function() {
+                    console.log($(this).is(':checked'));
+                    d3.selectAll('tr').remove();
+                    buildTable(200,3);
+                }); 
+            });
+
+            function buildTable(Total, Per){
+                d3.csv("processed_data.csv", function(error, data) {
+                    if (error) throw error;
+
+
+                    console.log($('#states-dropdown').val());
+
+                    data.forEach(function(d) {
+                        d['redistricting_voter_power'] = +d['redistricting_voter_power'];
+                        });
+
+                    console.log(data);
+
+                    console.log(data.filter(filterData))
+
+                    for (d in data) {
+                        if (data[d]['favored'] == 'FALSE') {
+                            data[d]['lean'] = data[d]['confidence']
+                        }
+                        else {
+                            data[d]['lean'] = data[d]['confidence'] + " " + data[d]['favored']
+                        }
+                    }
+                        
+                    data.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
+                    filtered_data = data.filter(filterData).slice(0,Total)
+                    
+                    
+                    
+                    var sortAscending = true;
+                    var table = d3.select('#money-table').append('table').attr("class", "mbtable");
+                    var titles = ['district','rep_nominee','dem_nominee','incumbent','redistricting_voter_power', 'anti_gerrymandering_party']
+                    // ***** needs to be changed for production version
+                    var display_titles = titles
+                    var headers = table.append('thead').append('tr')
+                                    .selectAll('th')
+                                    .data(display_titles).enter()
+                                    .append('th')
+                                    .text(function (d) {
+                                            return d.replace(/_/g, ' ');
+                                        })
+                                    .on('click', function (d) {
+                                        headers.attr('class', 'header');
+                                        
+                                        if (sortAscending) {
+                                            rows.sort(function(a, b) { return b[d] < a[d]; });
+                                            sortAscending = false;
+                                            this.className = 'aes';
+                                        } else {
+                                            rows.sort(function(a, b) { return b[d] > a[d]; });
+                                            sortAscending = true;
+                                            this.className = 'des';
+                                        }
+                                        
+                                    });
+                    
+                    var rows = table.append('tbody').selectAll('tr')
+                                .data(filtered_data ).enter()
+                                .append('tr');
+                    rows.selectAll('td')
+                        .data(function (d) {
+                            return titles.map(function (k) {
+                                return { 'value': d[k], 'name': k};
+                            });
+                        }).enter()
+                        .append('td')
+                        .attr('data-th', function (d) {
+                            return d.name;
+                        })
+                        .text(function (d) {
+                            return d.value;
+                        });
+
+                    rows.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
+
+                    console.log(d3.selectAll("[data-th=redistricting_voter_power]"))
+
+                    d3.selectAll("[data-th=redistricting_voter_power]").
+                        text(function (d) {
+                            return (d.value / Math.max.apply(Math, extractColumn(
+                                $('#normcheckbx').is(':checked')  ? filtered_data : data, 
+                                "redistricting_voter_power")) * 100).toFixed(1);
+                        });
+                    var local_max = Math.max.apply(Math, extractColumn(filtered_data, "redistricting_voter_power"))
+                    var global_max = Math.max.apply(Math, extractColumn(data, "redistricting_voter_power"))
+                    if (local_max < global_max) {
+                            d3.select("#normperc").text("*redistricting_voter_power to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
+                            console.log("****updated")
+                        }
+
+                });
+            }
+
+            function filterData(entry) {
+                if ($('#allstcheckbx').is(':checked')) {
+                    return true
+                }
+                else {
+                    let states = $('#sstates').val().replace(/ /g, '').split(',')
+                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'MA', 'SC', 'AR']
+
+                    let isFound = moneys.some( ai => states.includes(ai) );
+
+                    if (!isFound){ return true} 
+
+
+                    if (states.indexOf(entry.state) !== -1) {
+                        return true }
+                    return false
+                }
+            }
+
+            function extractColumn(arr, column) {
+                return arr.map(x => x[column])
+            }
+
+            function normalizeColumn(rows, column) {
+                for (row in rows) {
+                    console.log(row)
+                }
+            }
+            buildTable(1000,300);
+        </script>
 
     </body>
 
