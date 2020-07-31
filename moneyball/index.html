@@ -142,6 +142,7 @@
                     filtered_data = data.filter(filterData, all).slice(0,Total)
                     
                     var sortAscending = true;
+                    document.getElementById('money-table').innerHTML = "";
                     var table = d3.select('#money-table').append('table').attr("class", "mbtable");
                     var titles = ['district','rep_nominee','dem_nominee','incumbent','redistricting_voter_power', 'anti_gerrymandering_party']
                     // ***** needs to be changed for production version
@@ -205,8 +206,8 @@
                 });
             }
 
-            function filterData(entry, all=false) {
-                if ($('#allstcheckbx').is(':checked') || all) {
+            function filterData(entry) {
+                if ($('#allstcheckbx').is(':checked')) {
                     return true
                 }
                 else {
