@@ -18,6 +18,7 @@ python main.py
 
 cd /web/data-backend
 python banner/banner.py
+python banner/banner_orig.py
 python sidebar/Presidential_Race_Table.py
 python sidebar/Senate_JV_Widget.py
 
@@ -28,8 +29,10 @@ cp /web/data-backend/matlab/outputs/*.csv /web/www/election2020/data
 cp /web/data-backend/matlab/outputs/270towin_URL.txt /web/www/election2020/data
 
 cp /web/data-backend/python_graphics/outputs/*.png /web/www/election2020/outputs
-cp /web/data-backend/banner/banner.html /web/www/election2020/outputs
+cp /web/data-backend/banner/*.html /web/www/election2020/outputs
 cp /web/data-backend/sidebar/*.html /web/www/election2020/outputs
+
+cp /web/data-backend/moneyball/* /web/www/data/moneyball/
 
 # backups
 archive_dir=$(date +%Y-%m-%d_%H-%M-%S)
