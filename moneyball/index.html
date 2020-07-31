@@ -119,6 +119,9 @@
                     let isFound = moneys.some( ai => states.includes(ai) );
                     let all = false
                     d3.select("#displayingALL").text("");
+                    if (!$('#allstcheckbx').is(':checked')) {
+                        d3.select("#normperc").text("")
+                    }
                     if (!isFound){
                         $( '#allstcheckbx' ).prop( "checked", true);
                         all = true
