@@ -397,6 +397,9 @@ map.on('load', function() {
             speed: 0.4,
             curve: 1
         })
+        $('#sstates').val('TX')
+        $( '#allstcheckbx' ).prop( "checked", false );
+        $( "#submit").click();
     });
     $("#mn-link").click(function() {
         $('#dropdown').val("state-senate")
@@ -407,6 +410,9 @@ map.on('load', function() {
             speed: 0.4,
             curve: 1
         })
+        $('#sstates').val('MN')
+        $( '#allstcheckbx' ).prop( "checked", false );
+        $( "#submit").click();
     });
     $("#ks-link").click(function() {
         $('#dropdown').val("state-house")
@@ -417,6 +423,9 @@ map.on('load', function() {
             speed: 0.4,
             curve: 1
         })
+        $('#sstates').val('KS')
+        $( '#allstcheckbx' ).prop( "checked", false );
+        $( "#submit").click();
     });
     $("#fl-link").click(function() {
         $('#dropdown').val("state-house")
@@ -427,6 +436,9 @@ map.on('load', function() {
             speed: 0.4,
             curve: 1
         })
+        $('#sstates').val('FL')
+        $( '#allstcheckbx' ).prop( "checked", false );
+        $( "#submit").click();
     });
     $("#ct-link").click(function() {
         $('#dropdown').val("state-house")
@@ -437,6 +449,9 @@ map.on('load', function() {
             speed: 0.4,
             curve: 1
         })
+        $('#sstates').val('CT')
+        $( '#allstcheckbx' ).prop( "checked", false );
+        $( "#submit").click();
     });
     $("#nc-link").click(function() {
         $('#dropdown').val("state-house")
@@ -447,6 +462,9 @@ map.on('load', function() {
             speed: 0.4,
             curve: 1
         })
+        $('#sstates').val('NC')
+        $( '#allstcheckbx' ).prop( "checked", false );
+        $( "#submit").click();
     });
 
     // map.on('mousemove', function(e) {
