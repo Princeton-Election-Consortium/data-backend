@@ -16,12 +16,12 @@
             </div>
             <div class="btn-group" style="width:100%">
                 <h3>Key Districts: Click to Navigate</h3>
-                <button id='tx-link' style="width:40px">TX</button>
-                <button id='mn-link' style="width:40px">MN</button>
-                <button id='ks-link' style="width:40px">KS</button>
-                <button id='fl-link' style="width:40px">FL</button>
-                <button id='ct-link' style="width:40px">CT</button>
-                <button id='nc-link' style="width:40px">NC</button>
+                <a class='state-button' id='tx-link'>TX</a>
+                <a class='state-button' id='mn-link'>MN</a>
+                <a class='state-button' id='ks-link'>KS</a>
+                <a class='state-button' id='fl-link'>FL</a>
+                <a class='state-button' id='ct-link'>CT</a>
+                <a class='state-button' id='nc-link'>NC</a>
               </div>
             <div id='clicked-info' class='clicked-info'>
                     We have designed a model that identifies the races where voters have the most leverage to prevent 
@@ -57,8 +57,8 @@
                 </label>
             </div>
             <div>
-                <span id = "displayingALL"></span>
-                <span id = "normperc"></span>
+                <b id = "displayingALL"></b>
+                <b id = "normperc"></b>
 
             </div>
             
@@ -209,7 +209,7 @@
                     var local_max = Math.max.apply(Math, extractColumn(filtered_data, "redistricting_voter_power"))
                     var global_max = Math.max.apply(Math, extractColumn(data, "redistricting_voter_power"))
                     if (local_max < global_max & $('#normcheckbx').is(':checked')) {
-                            d3.select("#normperc").text("*redistricting_voter_power to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
+                            d3.select("#normperc").text("*redistricting voter power normalized to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
                             console.log("****updated")
                         }
 

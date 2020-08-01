@@ -3,6 +3,25 @@
   text-align: center;
 }
 
+a.state-button {
+  font: 800 1em 'IBM Plex Sans', sans-serif;
+  display:inline-block;
+  padding:0.35em 1.2em;
+  border:0.2em solid #F58025;
+  margin:0 0.3em 0.3em 0;
+  border-radius:0.4em;
+  box-sizing: border-box;
+  text-decoration:none;
+  color:#F58025;
+  box-shadow: 0 0 5px rgb(241, 146, 3);
+  text-align:center;
+  transition: all 0.2s;
+  }
+  a.state-button:hover {
+  color:#FFFFFF;
+  background-color:#F58025;
+}
+
 div.btn-group {
   margin: 0 auto; 
   text-align: center;
@@ -521,7 +540,7 @@ body {
     #dropdown a.active:hover {
     background: #3074a4;
     }
-    
+
 /* #info {
   display: block;
   position: relative;
