@@ -20,6 +20,7 @@ const width = window.innerWidth * 0.9,
 mapboxgl.accessToken = 'pk.eyJ1IjoibWRoYWxsZWUiLCJhIjoiY2tjcWVscWkyMTN6czM0bGJ4eXB1dDNzMSJ9.ZqDUoCfQVWMN_ASDB9Mhdg';
 
 const zoomThreshold = 2;
+const zoomState = 5.2;
 
 const map = new mapboxgl.Map({
     container: 'map-container',
@@ -386,5 +387,16 @@ map.on('load', function() {
             map.setLayoutProperty('state-senate', 'visibility', 'visible');
         }
       });
+
+      $("#tx-link").click(function() {
+        map.flyTo({
+            center: [-99, 30.5], 
+            zoom: 6,
+            speed: 0.4,
+            curve: 1
+        })
+    });
+
+    
 
 });
