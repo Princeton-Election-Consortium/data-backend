@@ -1,3 +1,4 @@
+
 .btn-group-wrap {
   text-align: center;
 }
@@ -520,3 +521,21 @@ body {
     #dropdown a.active:hover {
     background: #3074a4;
     }
+    
+/* #info {
+  display: block;
+  position: relative;
+  top: 40px
+  margin: 0px auto;
+  width: 50%;
+  padding: 10px;
+  border: none;
+  border-radius: 3px;
+  font-size: 12px;
+  text-align: center;
+  color: #222;
+  background: #fff;
+  } */
+
+
+

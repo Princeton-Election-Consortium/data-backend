@@ -388,15 +388,74 @@ map.on('load', function() {
         }
       });
 
-      $("#tx-link").click(function() {
+    $("#tx-link").click(function() {
+        $('#dropdown').val("state-house")
+        document.querySelector("#dropdown").dispatchEvent(new Event("change"));
         map.flyTo({
-            center: [-99, 30.5], 
+            center: [-97.5, 31.5], 
             zoom: 6,
             speed: 0.4,
             curve: 1
         })
     });
+    $("#mn-link").click(function() {
+        $('#dropdown').val("state-senate")
+        document.querySelector("#dropdown").dispatchEvent(new Event("change"));
+        map.flyTo({
+            center: [-93.7, 45.5], 
+            zoom: 6,
+            speed: 0.4,
+            curve: 1
+        })
+    });
+    $("#ks-link").click(function() {
+        $('#dropdown').val("state-house")
+        document.querySelector("#dropdown").dispatchEvent(new Event("change"));
+        map.flyTo({
+            center: [-96.31, 38.6], 
+            zoom: 6.4,
+            speed: 0.4,
+            curve: 1
+        })
+    });
+    $("#fl-link").click(function() {
+        $('#dropdown').val("state-house")
+        document.querySelector("#dropdown").dispatchEvent(new Event("change"));
+        map.flyTo({
+            center: [-81.5, 27.6], 
+            zoom: 6.1,
+            speed: 0.4,
+            curve: 1
+        })
+    });
+    $("#ct-link").click(function() {
+        $('#dropdown').val("state-house")
+        document.querySelector("#dropdown").dispatchEvent(new Event("change"));
+        map.flyTo({
+            center: [-72.7, 41.6], 
+            zoom: 7.8,
+            speed: 0.4,
+            curve: 1
+        })
+    });
+    $("#nc-link").click(function() {
+        $('#dropdown').val("state-house")
+        document.querySelector("#dropdown").dispatchEvent(new Event("change"));
+        map.flyTo({
+            center: [-79.5, 35.7], 
+            zoom: 6.2,
+            speed: 0.4,
+            curve: 1
+        })
+    });
 
-    
-
+    // map.on('mousemove', function(e) {
+    //     document.getElementById('info').innerHTML =
+    //     // e.point is the x, y coordinates of the mousemove event relative
+    //     // to the top-left corner of the map
+    //     JSON.stringify(e.point) +
+    //     '<br />' +
+    //     // e.lngLat is the longitude, latitude geographical position of the event
+    //     JSON.stringify(e.lngLat.wrap());
+    //     });
 });
