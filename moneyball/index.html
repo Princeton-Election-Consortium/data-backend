@@ -154,7 +154,7 @@
                     var sortAscending = true;
                     document.getElementById('money-table').innerHTML = "";
                     var table = d3.select('#money-table').append('table').attr("class", "mbtable");
-                    var titles = ['District','R Candidate','D Candidate','Incumbent','Redistricting Voter Power', 'Anti Gerrymandering Party']
+                    var titles = ['district','rep_nominee','dem_nominee','incumbent','redistricting_voter_power', 'anti_gerrymandering_party']
                     // ***** needs to be changed for production version
                     var display_titles = titles
                     var headers = table.append('thead').append('tr')
@@ -162,8 +162,14 @@
                                     .data(display_titles).enter()
                                     .append('th')
                                     .text(function (d) {
-                                            return d.replace(/_/g, ' ');
-                                        })
+                                        if (d === 'district'){return 'District'}
+                                        else if (d=== 'rep_nominee'){return 'R Candidate'}
+                                        else if (d=== 'dem_nominee'){return 'D Candidate'}
+                                        else if (d=== 'incumbent'){return 'Incumbent'}
+                                        else if (d=== 'redistricting_voter_power'){return 'Redistricting Voter Power'}
+                                        else if (d=== 'anti_gerrymandering_party'){return 'Anti Gerrymandering Party'}
+                                        else return 'column parse error'
+                                    })
                                     .on('click', function (d) {
                                         headers.attr('class', 'header');
                                         
