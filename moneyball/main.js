@@ -42,7 +42,6 @@ const svg = d3
       .attr("height", height);
 
 map.on('load', function() {
-
     map.addSource('state-house', {
         type: 'geojson',
         data: 'https://princetonuniversity.github.io/PEC-map/out-files/lower_state_moneyball.geojson'
@@ -52,11 +51,6 @@ map.on('load', function() {
         type: 'geojson',
         data: 'https://princetonuniversity.github.io/PEC-map/out-files/upper_state_moneyball.geojson'
     });
-    
-
-    //'#e6ebf5'
-
-
     map.addLayer(
         {
             'id': 'state-house',
@@ -105,7 +99,6 @@ map.on('load', function() {
                 },  
         }
     );
-
     map.addLayer(
         {
             'id': 'state-senate',
@@ -154,7 +147,6 @@ map.on('load', function() {
                 },  
         }
     );
-
     // State-House-layer click and pop-up stuff
     map.on('click', 'state-house', function(e) {
         e.originalEvent.cancelBubble = true; 
@@ -163,87 +155,16 @@ map.on('load', function() {
         el.className = 'marker'
         console.log("clicked prop", prop);
 
-        var state = prop.DISTRICT
-        state = state.substring(0,2)
+        // can change to .POSTAL now ***********************
+        var state = prop.DISTRICT.substring(0,2)
 
         $('#sstates').val(state)
-        $( '#allstcheckbx' ).prop( "checked", false );
-        $( "#submit").click();
+        $('#allstcheckbx').prop( "checked", false );
+        $("#submit").click();
 
-        console.log("state", state);
+        updateStateInfoSidebar(state)
 
-        var redist_data_row 
-        for (const item of redist_data) {
-            if (item.state_po === state) {
-              redist_data_row = item
-            }
-        }
-
-        let clickedStateBox = document.getElementById('clicked-info') 
-
-        let clickedStateInfo = document.getElementById('state-info')
-        clickedStateInfo.innerHTML = ""
-
-        clickedStateBox.appendChild(clickedStateInfo)
-
-        /* Add state name. */
-        let title = clickedStateInfo.appendChild(document.createElement('div'));
-        title.className = 'title';
-        title.innerHTML = redist_data_row['state'];
-        
-        /* Add details to the individual state info. */
-        let details = clickedStateInfo.appendChild(document.createElement('div'));
-        if (redist_data_row['Voter Impact on 2021 Congressional Redisticting:'] != 'null') {
-            details.innerHTML += 'Voter Impact on 2021 Congressional Redisticting: '.bold() + redist_data_row['Voter Impact on 2021 Congressional Redisticting:']+ "<br />";
-        }
-        if (redist_data_row['Bipartisan Control Probability'] != 'null') {
-            details.innerHTML += 'Bipartisan Control Probability: '.bold() + redist_data_row['Bipartisan Control Probability']+ "<br />";
-        }
-
-        if (redist_data_row['Redistricting process'] != 'null') {
-            details.innerHTML += 'Redistricting process: '.bold() + redist_data_row['Redistricting process']+ "<br />";
-        }
-
-        if (redist_data_row['2020 election playing field'] != 'null') {
-            details.innerHTML += '2020 election playing field: '.bold() + redist_data_row['2020 election playing field']+ "<br />";
-        }
-
-        let myCongressionalTable = ''
-
-        if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'R'){
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
-            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
-            '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
-            '<tr> <th>' + "R Candidate" + '</th> <th>' + prop.NOM_R + ' *' + '</th>' + 
-            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
-            '</table>'
-
-        }
-        else if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'D'){
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
-            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
-            '<tr> <th>' + "D Candidate" + '</th> <th>' + prop.NOM_D + ' *' +'</th>' + 
-            '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R +  '</td>' + 
-            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
-            '</table>'
-        }
-        else if (prop.VOTER_POWER >= 1){
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-                                        '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
-                                    '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
-                                    '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
-                                    '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R + '</td>' + 
-                                        '</table>'
-        }
-        else {
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-                                    '<tr> <th colspan="2"> Not an important district for redistricting</th> </tr>' +
-                                    '<tr> <th colspan="2"> *See state redistricing information in sidebar*</th> </tr>' +
-                                        '</table>'
-        }
-
+        let myCongressionalTable = buildDistrictHoverTable(prop)
 
         new mapboxgl.Popup(el)
             .setLngLat(e.lngLat)
@@ -251,8 +172,7 @@ map.on('load', function() {
             .addTo(map);
         });
 
-
-    // State-House-layer click and pop-up stuff
+    // State-Senate-layer click and pop-up stuff
     map.on('click', 'state-senate', function(e) {
         e.originalEvent.cancelBubble = true; 
         let prop = e.features[0].properties
@@ -260,87 +180,16 @@ map.on('load', function() {
         el.className = 'marker'
         console.log("clicked prop", prop);
 
-        var state = prop.DISTRICT
-        state = state.substring(0,2)
+        // can change to .POSTAL now ***********************
+        var state = prop.DISTRICT.substring(0,2)
 
         $('#sstates').val(state)
-        $( '#allstcheckbx' ).prop( "checked", false );
-        $( "#submit").click();
+        $('#allstcheckbx').prop( "checked", false );
+        $("#submit").click();
 
-        console.log("state", state);
+        updateStateInfoSidebar(state)
 
-        var redist_data_row 
-        for (const item of redist_data) {
-            if (item.state_po === state) {
-              redist_data_row = item
-            }
-        }
-
-        let clickedStateBox = document.getElementById('clicked-info') 
-
-        let clickedStateInfo = document.getElementById('state-info')
-        clickedStateInfo.innerHTML = ""
-
-        clickedStateBox.appendChild(clickedStateInfo)
-
-        /* Add state name. */
-        let title = clickedStateInfo.appendChild(document.createElement('div'));
-        title.className = 'title';
-        title.innerHTML = redist_data_row['state'];
-        
-        /* Add details to the individual state info. */
-        let details = clickedStateInfo.appendChild(document.createElement('div'));
-        if (redist_data_row['Voter Impact on 2021 Congressional Redisticting:'] != 'null') {
-            details.innerHTML += 'Voter Impact on 2021 Congressional Redisticting: '.bold() + redist_data_row['Voter Impact on 2021 Congressional Redisticting:']+ "<br />";
-        }
-        if (redist_data_row['Bipartisan Control Probability'] != 'null') {
-            details.innerHTML += 'Bipartisan Control Probability: '.bold() + redist_data_row['Bipartisan Control Probability']+ "<br />";
-        }
-
-        if (redist_data_row['Redistricting process'] != 'null') {
-            details.innerHTML += 'Redistricting process: '.bold() + redist_data_row['Redistricting process']+ "<br />";
-        }
-
-        if (redist_data_row['2020 election playing field'] != 'null') {
-            details.innerHTML += '2020 election playing field: '.bold() + redist_data_row['2020 election playing field']+ "<br />";
-        }
-
-        let myCongressionalTable = ''
-
-        if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'R'){
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
-            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
-            '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
-            '<tr> <th>' + "R Candidate" + '</th> <th>' + prop.NOM_R + ' *' + '</th>' + 
-            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
-            '</table>'
-
-        }
-        else if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'D'){
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
-            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
-            '<tr> <th>' + "D Candidate" + '</th> <th>' + prop.NOM_D + ' *' +'</th>' + 
-            '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R +  '</td>' + 
-            '<tr> <th colspan="2"> * denotes incumbent </th> </tr>' +
-            '</table>'
-        }
-        else if (prop.VOTER_POWER >= 1){
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-                                        '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
-                                    '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
-                                    '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
-                                    '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R + '</td>' + 
-                                        '</table>'
-        }
-        else {
-            myCongressionalTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-                                    '<tr> <th colspan="2"> Not an important district for redistricting</th> </tr>' +
-                                    '<tr> <th colspan="2"> *See state redistricing information in sidebar*</th> </tr>' +
-                                        '</table>'
-        }
-
+        let myCongressionalTable = buildDistrictHoverTable(prop)
 
         new mapboxgl.Popup(el)
             .setLngLat(e.lngLat)
@@ -355,11 +204,8 @@ map.on('load', function() {
             // padding: {top: 10, bottom:25, left: 15, right: 5},
             linear: true,
             });
-        map.setLayoutProperty('states-layer', 'visibility', 'visible');
-        // map.setLayoutProperty('congressional-border', 'visibility', 'visible');
-        // map.setLayoutProperty('congressional-layer', 'visibility', 'visible');
-        // map.setLayoutProperty('state-house', 'visibility', 'none');
-        // map.setLayoutProperty('state-senate', 'visibility', 'none');
+        map.setLayoutProperty('state-house', 'visibility', 'visible');
+        map.setLayoutProperty('state-senate', 'visibility', 'none');
         });
 
     // add address search thing
@@ -387,6 +233,81 @@ map.on('load', function() {
             map.setLayoutProperty('state-senate', 'visibility', 'visible');
         }
       });
+
+    function updateStateInfoSidebar(state) {
+        /* find state data in csv data */
+        var redist_data_row 
+        for (const item of redist_data) {
+            if (item.state_po === state) {
+            redist_data_row = item
+            }
+        }
+
+        let clickedStateBox = document.getElementById('clicked-info') 
+        let clickedStateInfo = document.getElementById('state-info')
+        clickedStateInfo.innerHTML = ""
+
+        clickedStateBox.appendChild(clickedStateInfo)
+
+        /* Add state name title */
+        let title = clickedStateInfo.appendChild(document.createElement('div'));
+        title.className = 'title';
+        title.innerHTML = redist_data_row['state'];
+
+        let impactLevel = redist_data_row['Voter Impact on 2021 Congressional Redisticting:']
+        let bipartisonProb = redist_data_row['Bipartisan Control Probability']
+        let redistProcess = redist_data_row['Redistricting process']
+        let playingField = redist_data_row['2020 election playing field']
+
+        /* Add details to the individual state info -- if they exist */
+        let details = clickedStateInfo.appendChild(document.createElement('div'));
+        if (impactLevel != 'null') {
+            details.innerHTML += 'Voter Impact on 2021 Congressional Redisticting: '.bold() + impactLevel + "<br />";}
+        if (bipartisonProb != 'null' && bipartisonProb != '') {
+            details.innerHTML += 'Bipartisan Control Probability: '.bold() + bipartisonProb + "<br />";}
+        if (redistProcess != 'null') {
+            details.innerHTML += 'Redistricting process: '.bold() + redistProcess + "<br />";}
+        if (playingField != 'null' && playingField != '') {
+            details.innerHTML += '2020 election playing field: '.bold() + playingField + "<br />";}
+    }
+
+    function buildDistrictHoverTable(prop) {
+        let districtTable = ''
+    
+        if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'R'){
+            districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+            '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
+            '<tr> <th>' + "R Candidate (Incumbent)" + '</th> <th style="text-decoration: underline">' + prop.NOM_R + '</th>' + 
+            '</table>'
+    
+        }
+        else if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'D'){
+            districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+            '<tr> <th>' + "D Candidate (Incumbent)" + '</th> <th style="text-decoration: underline">' + prop.NOM_D +'</th>' + 
+            '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R +  '</td>' + 
+            '</table>'
+        }
+        else if (prop.VOTER_POWER >= 1){
+            districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+                                        '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+                                    '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
+                                    '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
+                                    '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R + '</td>' + 
+                                        '</table>'
+        }
+        else {
+            districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
+                                    '<tr> <th colspan="2"> Not an important district for redistricting</th> </tr>' +
+                                    '<tr> <th colspan="2"> *See state redistricing information in sidebar*</th> </tr>' +
+                                        '</table>'
+        }
+    
+        return districtTable
+    }
 
     $("#tx-link").click(function() {
         $('#dropdown').val("state-house")
