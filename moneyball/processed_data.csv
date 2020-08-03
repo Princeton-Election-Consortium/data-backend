@@ -1,4 +1,4 @@
-state,district,favored,confidence,rep_nominee,dem_nominee,incumbent,redistricting_voter_power,anti_gerrymandering_party,GEOID,chamber,dist_name
+State,District,favored,confidence,R Candidate,D Candidate,Incumbent,Redistricting Voter Power,Anti Gerrymandering Party,GEOID,chamber,dist_name
 TX,TX-HD-112,False,Toss-Up,Angie Chen Button,Brandy Chambers,R,100.0000000000000000,D,48112,HD,
 TX,TX-HD-26,R,Tilt,Jacey Jetton,L. Sarah DeMerchant,Open,93.3096245325946398,D,48026,HD,
 TX,TX-HD-66,False,Toss-Up,Matt Shaheen,Sharon Hirsch,R,90.4092859394232704,D,48066,HD,

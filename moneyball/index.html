@@ -154,7 +154,7 @@
                     var sortAscending = true;
                     document.getElementById('money-table').innerHTML = "";
                     var table = d3.select('#money-table').append('table').attr("class", "mbtable");
-                    var titles = ['district','rep_nominee','dem_nominee','incumbent','redistricting_voter_power', 'anti_gerrymandering_party']
+                    var titles = ['District','R Candidate','D Candidate','Incumbent','Redistricting Voter Power', 'Anti Gerrymandering Party']
                     // ***** needs to be changed for production version
                     var display_titles = titles
                     var headers = table.append('thead').append('tr')
