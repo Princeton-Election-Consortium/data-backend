@@ -120,6 +120,10 @@
                     data.forEach(function(d) {
                         d['redistricting_voter_power'] = +d['redistricting_voter_power'];
                         });
+                    data.forEach(function(d) {
+                        d['redistricting_voter_power'] = d['redistricting_voter_power'] > 0 ? 
+                            +d['redistricting_voter_power'].toPrecision(2) : +d['redistricting_voter_power'].toPrecision(1);
+                        });
 
                     let states = $('#sstates').val().replace(/ /g, '').split(',')
                     let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'MA', 'SC', 'AR']
