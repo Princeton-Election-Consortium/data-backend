@@ -32,8 +32,13 @@ div.btn-group {
 
 
 .scrollit {
-  overflow:scroll;
+  overflow-y:auto;
   height:100%;
+}
+
+table.mbtable th{
+  background: radial-gradient(#4d4d4d, #6a6b72);
+  color: white;
 }
 
 table.mbtable th.des:after {

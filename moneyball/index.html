@@ -252,6 +252,18 @@
                 }
             }
             buildTable(1000,300);
+
+            // Fix table head
+            function tableFixHead (e) {
+                const el = e.target,
+                    sT = el.scrollTop -4;
+                el.querySelectorAll("thead th").forEach(th => 
+                th.style.transform = `translateY(${sT}px)`
+                );
+            }
+            document.querySelectorAll(".scrollit").forEach(el => 
+                el.addEventListener("scroll", tableFixHead)
+            );
         </script>
 
     </body>
