@@ -87,7 +87,7 @@ map.on('load', function() {
                     [
                       ">=",
                       ["get", "VOTER_POWER"],
-                      20
+                      10
                     ],
                     "hsla(193, 82%, 74%, 0.75)",
                     "hsla(0, 0%, 100%, 0)"
@@ -135,7 +135,7 @@ map.on('load', function() {
                         [
                           ">=",
                           ["get", "VOTER_POWER"],
-                          20
+                          9
                         ],
                         "hsla(193, 82%, 74%, 0.75)",
                         "hsla(0, 0%, 100%, 0)"
@@ -276,7 +276,7 @@ map.on('load', function() {
     
         if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'R'){
             districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(0) + '</td>' + 
             '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
             '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
             '<tr> <th>' + "R Candidate (Incumbent)" + '</th> <th style="text-decoration: underline">' + prop.NOM_R + '</th>' + 
@@ -285,7 +285,7 @@ map.on('load', function() {
         }
         else if (prop.VOTER_POWER >= 1 & prop.INCUMBENT == 'D'){
             districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+            '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(0) + '</td>' + 
             '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
             '<tr> <th>' + "D Candidate (Incumbent)" + '</th> <th style="text-decoration: underline">' + prop.NOM_D +'</th>' + 
             '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R +  '</td>' + 
@@ -293,7 +293,7 @@ map.on('load', function() {
         }
         else if (prop.VOTER_POWER >= 1){
             districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.DISTRICT + '</td>' + 
-                                        '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(2) + '</td>' + 
+                                        '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.VOTER_POWER.toFixed(0) + '</td>' + 
                                     '<tr> <th>' + "Rating" + '</th> <td>' + prop.LEAN + '</td>' + 
                                     '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.NOM_D + '</td>' + 
                                     '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.NOM_R + '</td>' + 
