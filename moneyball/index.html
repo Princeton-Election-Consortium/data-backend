@@ -11,10 +11,10 @@
     </head>
     <body>
         <div class='sidebar' id='sidebar'>
-            <div id='sidebar-divider'>
-                <button onclick="sidebarOpen()">close</button>
+            <div id='sidebar-divider' class='sidebar-divider'>
+                <button onclick="sidebar()">close</button>
             </div>
-            <div id='sidebar-content'>
+            <div id='sidebar-content' class='sidebar-content'>
                 <div class='heading'>
                 <h1>Redistricting Information: "Moneyball"</h1>
                 </div>
@@ -260,7 +260,7 @@
             }
             buildTable(1000,300);
 
-            // Fix table head
+            // Fix table head to top of table with scrolling
             function tableFixHead (e) {
                 const el = e.target,
                     sT = el.scrollTop -4;
@@ -271,12 +271,29 @@
             document.querySelectorAll(".scrollit").forEach(el => 
                 el.addEventListener("scroll", tableFixHead)
             );
-            function sidebarOpen(){
-                document.getElementById('sidebar').style.width = '0'
-                document.getElementById('map-container').style.width ='100%'
-                document.getElementById('map-container').style.left='0%'
-                //document.getElementsByClassName('mapboxgl-canvas')[0].style.width='100%'
-                map.resize()
+
+
+            // collapsing sidebar 
+            var collapsed = false
+
+            function sidebar(){
+                if (collapsed == false) {
+                    document.getElementById('sidebar-content').style.width = '0'
+                    document.getElementById('sidebar-divider').style.float = 'left'
+                    document.getElementById('map-container').style.width ='100%'
+                    document.getElementById('map-container').style.left='120px'
+                    //document.getElementsByClassName('mapboxgl-canvas')[0].style.width='100%'
+                    map.resize()
+                    collapsed = true
+                }
+                else {
+                    document.getElementById('sidebar-content').style.width = 'auto'
+                    document.getElementById('sidebar-divider').style.float = 'right'
+                    document.getElementById('map-container').style.width ='60%'
+                    document.getElementById('map-container').style.left='40%'
+                    map.resize()
+                    collapsed = false
+                }
 
             }
         </script>
