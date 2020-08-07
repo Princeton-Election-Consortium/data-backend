@@ -87,7 +87,7 @@ map.on('load', function() {
                     [
                       ">=",
                       ["get", "VOTER_POWER"],
-                      10
+                      20
                     ],
                     "hsla(193, 82%, 74%, 0.75)",
                     "hsla(0, 0%, 100%, 0)"
@@ -135,8 +135,10 @@ map.on('load', function() {
                         [
                           ">=",
                           ["get", "VOTER_POWER"],
-                          9
+                          20
                         ],
+                        "hsla(193, 82%, 74%, 0.75)",
+                        ['all', [">=", ["get", "VOTER_POWER"], 7], ["==", ["get", "POSTAL"], "NC"]],
                         "hsla(193, 82%, 74%, 0.75)",
                         "hsla(0, 0%, 100%, 0)"
                       ]
