@@ -28,6 +28,7 @@ const map = new mapboxgl.Map({
     style: 'mapbox://styles/mdhallee/ckd9fgs5405tt1iphjqsl6zwk',
 
 });
+map.getCanvas().style.cursor = 'pointer';
 
 const bbox = [[-63.588704947691994, 50.715649574086314], [-127.55862265048071, 22.645896726596078]];
 map.fitBounds(bbox, {
