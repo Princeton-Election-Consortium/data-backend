@@ -42,9 +42,9 @@ for ii=length(Mrange)
     polls.margin=polls.margin+Mrange(ii);
     
     % biaspct=0;
-    if metamargin>-999
+%    if metamargin>-999
         biaspct=-metamargin; % shift data to a perfect toss-up
-    end
+%    end
 
     EV_median
     midpoint=cumulative_prob(min(find(electoralvotes>=269)));
