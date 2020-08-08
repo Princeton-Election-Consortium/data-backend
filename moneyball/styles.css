@@ -1,4 +1,13 @@
 /**********     sidebar     **********/
+.sidebar {
+  position: absolute;
+  width: 40%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  border-right: 1px solid rgba(0, 0, 0, 0.25);
+}
 .clicked-info {
   height: 33%;
   max-height: 275px;
@@ -12,10 +21,27 @@
   overflow: hidden;
 }
 .sidebar-divider {
-  width: 180px;
+  width: 10px;
   height: 100%;
   float: right;
-  background: #aafed6;
+  background: #000000;
+  display: block;
+  overflow: visible;
+}
+.sidebar-btn {
+  position: absolute;
+  top: 50%;
+  height: 30px;
+  line-height: 30px;  
+  width: 30px;  
+  font-size: 2.2em;
+  font-weight: bold;
+  border-radius: 50%;
+  background-color: #F58025;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  display: block;
 }
 
 
@@ -84,15 +110,6 @@ table.mbtable th.aes:after {
   content: " \21D1";
 }
 
-.sidebar {
-  position: absolute;
-  width: 40%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  border-right: 1px solid rgba(0, 0, 0, 0.25);
-}
 
 body {
   color: #404040;
@@ -137,9 +154,9 @@ a:hover {
   color: #101010;
 }
 
-.pad2 {
+/* .pad2 {
   padding: 20px;
-}
+} */
 
 h1 {
   text-align: center;

@@ -1,7 +1,3 @@
-var siteWidth = 1280;
-var scale = screen.width /siteWidth
-
-//document.querySelector('meta[name="viewport"]').setAttribute('content', 'width='+siteWidth+', initial-scale='+scale+'');
 
 var redist_data 
 
@@ -22,24 +18,18 @@ mapboxgl.accessToken = 'pk.eyJ1IjoibWRoYWxsZWUiLCJhIjoiY2tjcWVscWkyMTN6czM0bGJ4e
 const zoomThreshold = 2;
 const zoomState = 5.2;
 
-const map = new mapboxgl.Map({
+var map = new mapboxgl.Map({
     container: 'map-container',
-    // style: 'mapbox://styles/openprecincts/ckb82ge1d1xx81ip9v5i0xony'
     style: 'mapbox://styles/mdhallee/ckd9fgs5405tt1iphjqsl6zwk',
-
+    center: [-88, 40],
+    zoom: 4.1
 });
 
-const bbox = [[-63.588704947691994, 50.715649574086314], [-127.55862265048071, 22.645896726596078]];
-map.fitBounds(bbox, {
-    padding: {top: 10, bottom:25, left: 15, right: 5},
-    linear: true,
-});
-
-const svg = d3
-      .select("#map-container")
-      .append("svg")    
-      .attr("width", width)
-      .attr("height", height);
+// const bbox = [[-63.588704947691994, 50.715649574086314], [-127.55862265048071, 22.645896726596078]];
+// map.fitBounds(bbox, {
+//     padding: {top: 10, bottom:25, left: 15, right: 5},
+//     linear: true,
+// });
 
 map.on('load', function() {
     map.addSource('state-house', {
@@ -176,7 +166,7 @@ map.on('load', function() {
 
     // State-Senate-layer click and pop-up stuff
     map.on('click', 'state-senate', function(e) {
-        e.originalEvent.cancelBubble = true; 
+        //e.originalEvent.cancelBubble = true; 
         let prop = e.features[0].properties
         let el = document.createElement('div');
         el.className = 'marker'
@@ -198,6 +188,8 @@ map.on('load', function() {
             .setHTML(myCongressionalTable)
             .addTo(map);
         });
+
+    map.getCanvas().style.cursor = 'pointer';
 
     // add "Reset Map" 
     document.getElementById('zoom').addEventListener('click', function() {
