@@ -89,12 +89,15 @@ end
 display_num=max(size(uncertain,2), 10);
 display_num=num_states;
 
-if exist('outputs\Senate_jerseyvotes.csv','file')
-        delete('outputs\Senate_jerseyvotes.csv')
-end
+% if exist('outputs\Senate_jerseyvotes.csv','file')
+%        delete('outputs\Senate_jerseyvotes.csv')
+% end
 for i=num_states:-1:(num_states-display_num+1)
     foo=[num2str(ijersey(i)) ',' statename2(ijersey(i),polls.state) ',' num2str(polldata(ijersey(i),3)) ',' num2str(jerseyvotes(ijersey(i))) ];
-    dlmwrite('outputs\Senate_jerseyvotes.csv',foo,'-append','delimiter','')
+    if i==1
+        dlmwrite('data\Senate_jerseyvotes.csv',foo,'delimiter','')
+     else
+        dlmwrite('data\Senate_jerseyvotes.csv',foo,'-append','delimiter','')
 end
 %foo=[num2str(31) ',' statename(31) ',' num2str(jerseyvotes(31)) ];
 %dlmwrite('jerseyvotes.csv',foo,'-append','delimiter','')
