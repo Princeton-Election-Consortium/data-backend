@@ -89,6 +89,7 @@ end
 display_num=max(size(uncertain,2), 10);
 display_num=51
 
+whereoutput='data\';
 if ~exist(whereoutput)
     whereoutput='';
 end
