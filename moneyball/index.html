@@ -4,7 +4,8 @@
         <title>Moneyball Redistricting Data</title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">        
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">  
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" rel="stylesheet">      
         <link href='./styles.css' rel='stylesheet' />
 
 
@@ -12,7 +13,6 @@
     <body>
         <div class='sidebar' id='sidebar'>
             <div id='sidebar-divider' class='sidebar-divider'>
-                <button class='sidebar-btn' onclick="sidebar()"> < </button>
             </div>
             <div id='sidebar-content' class='sidebar-content'>
                 <div class='heading'>
@@ -44,7 +44,7 @@
                         </body>
                     </div>
                 </div>
-                <div>
+                <div style='padding-right: 8px;'>
                     <hr>
                     <label style="margin-left:1.5em" for="fname">Selected States: </label>
                     <input type="submit" id = "submit" value="Update" style ="float: right; overflow: hidden;">
@@ -66,7 +66,7 @@
 
                 </div>
                 
-                <div class="scrollit">
+                <div class="scrollit" style='height: 100%;'>
                     <table id="money-table" style= "overflow:scroll"></table>
                 </div>
             </div>
@@ -78,6 +78,7 @@
         <!-- <pre id="info"></pre> -->
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
         <button id="zoom">Reset map</button>
+        <button class='sidebar-btn' id='sidebar-btn'  onclick="sidebar()"><</button>
 
         <select id="dropdown" name="dropdown">
             <option value="state-house">State House Redistricting</option>
@@ -280,8 +281,12 @@
                 if (collapsed == false) {
                     document.getElementById('sidebar-content').style.width = '0'
                     document.getElementById('sidebar-divider').style.float = 'left'
-                    document.getElementById('map-container').style.width ='100%'
-                    document.getElementById('map-container').style.left='120px'
+                    document.getElementById('sidebar-divider').style.width = '40px'
+                    document.getElementById('map-container').style.width ='98%'
+                    document.getElementById('map-container').style.left='40px'
+                    document.getElementById('sidebar-btn').style.left='10px'
+                    document.getElementById('sidebar-btn').innerHTML = '>'
+
                     //document.getElementsByClassName('mapboxgl-canvas')[0].style.width='100%'
                     map.resize()
                     collapsed = true
@@ -289,8 +294,11 @@
                 else {
                     document.getElementById('sidebar-content').style.width = 'auto'
                     document.getElementById('sidebar-divider').style.float = 'right'
+                    document.getElementById('sidebar-divider').style.width = '6px'
                     document.getElementById('map-container').style.width ='60%'
                     document.getElementById('map-container').style.left='40%'
+                    document.getElementById('sidebar-btn').style.left='39%'
+                    document.getElementById('sidebar-btn').innerHTML = '<'
                     map.resize()
                     collapsed = false
                 }

@@ -19,29 +19,35 @@
   float: none; 
   width: auto;
   overflow: hidden;
+  height: 100%;
 }
 .sidebar-divider {
-  width: 10px;
+  width: 6px;
   height: 100%;
   float: right;
-  background: #000000;
+  background: rgb(230,230,230);
+  background: linear-gradient(90deg, rgba(230,230,230,1) 6%, rgba(82,82,82,1) 83%);
   display: block;
   overflow: visible;
 }
 .sidebar-btn {
+  font-family: 'Fira Code', monospace;
+  font-size: 20px;
   position: absolute;
   top: 50%;
-  height: 30px;
+  left: 39%;
+  height: 120px;
   line-height: 30px;  
   width: 30px;  
-  font-size: 2.2em;
-  font-weight: bold;
-  border-radius: 50%;
   background-color: #F58025;
   color: white;
   text-align: center;
   cursor: pointer;
   display: block;
+}
+.sidebar-btn:hover{
+  background-color: #f8964c;
+  color: white;
 }
 
 
@@ -109,7 +115,6 @@ table.mbtable th.des:after {
 table.mbtable th.aes:after {
   content: " \21D1";
 }
-
 
 body {
   color: #404040;
