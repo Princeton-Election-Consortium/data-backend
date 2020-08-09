@@ -79,9 +79,9 @@ jerseyvotes=100*jerseyv_accumulator/max(jerseyv_accumulator);
 % discussion 8/8/08 with James
 
 for i=1:num_states
-%    if i~=31
+    if i~=31
         jerseyvotes(i)=roundn(jerseyvotes(i),-1);
-%    end
+    end
 end
 % round everything but NJ itself to the nearest tenth
 
@@ -89,12 +89,19 @@ end
 display_num=max(size(uncertain,2), 10);
 display_num=num_states;
 
-if exist('outputs\Senate_jerseyvotes.csv','file')
-        delete('outputs\Senate_jerseyvotes.csv')
+if ~exist(whereoutput)
+        whereoutput='';
 end
+%if exist(strcat(whereoutput,'Senate_jerseyvotes.csv'),'file')
+%        delete(strcat(whereoutput,'Senate_jerseyvotes.csv'))
+%end
 for i=num_states:-1:(num_states-display_num+1)
     foo=[num2str(ijersey(i)) ',' statename2(ijersey(i),polls.state) ',' num2str(polldata(ijersey(i),3)) ',' num2str(jerseyvotes(ijersey(i))) ];
-    dlmwrite('outputs\Senate_jerseyvotes.csv',foo,'-append','delimiter','')
+    if i==num_states
+         dlmwrite(strcat(whereoutput,'Senate_jerseyvotes.csv'),foo,'delimiter','')
+    else
+         dlmwrite(strcat(whereoutput,'Senate_jerseyvotes.csv'),foo,'-append','delimiter','')
+    end
 end
 %foo=[num2str(31) ',' statename(31) ',' num2str(jerseyvotes(31)) ];
 %dlmwrite('jerseyvotes.csv',foo,'-append','delimiter','')
