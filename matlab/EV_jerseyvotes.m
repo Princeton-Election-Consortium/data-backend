@@ -30,7 +30,8 @@
 clear now
 today=floor(now);
 daystoelection=datenum(2020,11,3)-today; % assuming date is set correctly in machine
-MMsigma=max(0.4*sqrt(daystoelection),1.5);
+MMsigma=min(0.4*sqrt(daystoelection),3); % historical levels of Presidential drift post-2012 and consistent with 2020 so far
+MMsigma=max(MMsigma,2); % final systematic uncertainty
 
 Mrange=[-2*MMsigma:0.1:2*MMsigma];% cover range of +/-2*MMsigma
 nowdensity=tpdf(Mrange/MMsigma,3); % long-tailed distribution. you never know.
