@@ -4,73 +4,81 @@
         <title>Moneyball Redistricting Data</title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
         <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">        
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">  
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" rel="stylesheet">      
         <link href='./styles.css' rel='stylesheet' />
 
 
     </head>
     <body>
-        <div class='sidebar'>
-            <div class='heading'>
-              <h1>Redistricting Information: "Moneyball"</h1>
+        <div class='sidebar' id='sidebar'>
+            <div id='sidebar-divider' class='sidebar-divider'>
             </div>
-            <div class="btn-group" style="width:100%">
-                <h3>Key Districts: Click to Navigate</h3>
-                <a class='state-button' id='tx-link'>TX</a>
-                <a class='state-button' id='mn-link'>MN</a>
-                <a class='state-button' id='ks-link'>KS</a>
-                <a class='state-button' id='fl-link'>FL</a>
-                <a class='state-button' id='ct-link'>CT</a>
-                <a class='state-button' id='nc-link'>NC</a>
-              </div>
-            <div id='clicked-info' class='clicked-info'>
-                    We have designed a model that identifies the races where voters have the most leverage to prevent 
-                        partisan gerrymandering in 2021. <b>A few hundred voters</b>  mobilized in the <b>right districts</b>
-                            could bring 
-                        a state bipartisan control of redistricting, leading to <b>fairer districts for a decade. </b>
-                        Our findings are in the map below. <br /><br />
-                        Our basic methodology is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a>
-                        , and our detailed methodology 
-                        for election-prediction nerds is <a href="https://docs.google.com/document/d/13D-UR5Tm-HU_INcMWDC9lskRDkhOXAhMGFhULHzrdg0/edit?ts=5f233017">HERE</a><br /><br />
-                <div id='state-info' class='state-info'>
-                    <body>
-                        <b>Click on a state</b> to view information about redistricting.<br /><br />
-                        <b>Zoom in and click on a district</b> for more information about competitiveness.<br /><br />
-                        <b>Select a layer</b> from the drop-down menu to toggle between house and senate races.
-                    </body>
+            <div id='sidebar-content' class='sidebar-content'>
+                <div class='heading'>
+                <h1>Redistricting Information: "Moneyball"</h1>
+                </div>
+                <div class="btn-group" style="width:100%">
+                    <h3>Key Districts: Click to Navigate</h3>
+                    <a class='state-button' id='tx-link'>TX</a>
+                    <a class='state-button' id='mn-link'>MN</a>
+                    <a class='state-button' id='ks-link'>KS</a>
+                    <a class='state-button' id='fl-link'>FL</a>
+                    <a class='state-button' id='ct-link'>CT</a>
+                    <a class='state-button' id='nc-link'>NC</a>
+                </div>
+                <div id='clicked-info' class='clicked-info'>
+                        We have designed a model that identifies the races where voters have the most leverage to prevent 
+                            partisan gerrymandering in 2021. <b>A few hundred voters</b>  mobilized in the <b>right districts</b>
+                                could bring 
+                            a state bipartisan control of redistricting, leading to <b>fairer districts for a decade. </b>
+                            Our findings are in the map below. <br /><br />
+                            Our basic methodology is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a>
+                            , and our detailed methodology 
+                            for election-prediction nerds is <a href="https://docs.google.com/document/d/13D-UR5Tm-HU_INcMWDC9lskRDkhOXAhMGFhULHzrdg0/edit?ts=5f233017">HERE</a><br /><br />
+                    <div id='state-info' class='state-info'>
+                        <body>
+                            <b>Click on a state</b> to view information about redistricting.<br /><br />
+                            <b>Zoom in and click on a district</b> for more information about competitiveness.<br /><br />
+                            <b>Select a layer</b> from the drop-down menu to toggle between house and senate races.
+                        </body>
+                    </div>
+                </div>
+                <div style='padding-right: 8px;'>
+                    <hr>
+                    <label style="margin-left:1.5em" for="fname">Selected States: </label>
+                    <input type="submit" id = "submit" value="Update" style ="float: right; overflow: hidden;">
+                    <input type="text" id="sstates" name="sstates" placeholder="e.x. TX, KS, MN"><br><br>
+
+                    <label>
+                        <input id = "allstcheckbx" type="checkbox" checked/>
+                        <span id = "allstcheck">View All states</span>
+                    </label>
+
+                    <label>
+                        <input id = "normcheckbx" type="checkbox"/>
+                        <span id = "normcheck">Normalize to Selected Region</span>
+                    </label>
+                </div>
+                <div>
+                    <b id = "displayingALL"></b>
+                    <b id = "normperc"></b>
+
+                </div>
+                
+                <div class="scrollit" style='height: 100%;'>
+                    <table id="money-table" style= "overflow:scroll"></table>
                 </div>
             </div>
-            <div>
-                <hr>
-                <label style="margin-left:1.5em" for="fname">Selected States: </label>
-                <input type="submit" id = "submit" value="Update" style ="float: right; overflow: hidden;">
-                <input type="text" id="sstates" name="sstates" placeholder="e.x. TX, KS, MN"><br><br>
 
-                <label>
-                    <input id = "allstcheckbx" type="checkbox" checked/>
-                    <span id = "allstcheck">View All states</span>
-                </label>
 
-                <label>
-                    <input id = "normcheckbx" type="checkbox"/>
-                    <span id = "normcheck">Normalize to Selected Region</span>
-                </label>
-            </div>
-            <div>
-                <b id = "displayingALL"></b>
-                <b id = "normperc"></b>
-
-            </div>
-            
-            <div class="scrollit">
-                <table id="money-table" style= "overflow:scroll"></table>
-            </div>
           </div>
 
         <div id='map-container' class='map pad2'></div>
         <!-- <pre id="info"></pre> -->
         <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
         <button id="zoom">Reset map</button>
+        <button class='sidebar-btn' id='sidebar-btn'  onclick="sidebar()"><</button>
 
         <select id="dropdown" name="dropdown">
             <option value="state-house">State House Redistricting</option>
@@ -101,13 +109,12 @@
                     buildTable(200,3);
                 });
                 $('#allstcheckbx').change(function() {
-                    console.log($(this).val());
                     d3.selectAll('tr').remove();
                     buildTable(200,3);
                 }); 
 
                 $('#normcheckbx').change(function() {
-                    console.log($(this).is(':checked'));
+                    d3.select("#normperc").text("")
                     d3.selectAll('tr').remove();
                     buildTable(200,3);
                 }); 
@@ -143,14 +150,15 @@
                         let states = $('#sstates').val('')
                     } 
 
-                    for (d in data) {
-                        if (data[d]['favored'] == 'FALSE') {
-                            data[d]['lean'] = data[d]['confidence']
-                        }
-                        else {
-                            data[d]['lean'] = data[d]['confidence'] + " " + data[d]['favored']
-                        }
-                    }
+                    /* construct rating column if wanted */
+                    // for (d in data) {
+                    //     if (data[d]['favored'] == 'FALSE') {
+                    //         data[d]['lean'] = data[d]['confidence']
+                    //     }
+                    //     else {
+                    //         data[d]['lean'] = data[d]['confidence'] + " " + data[d]['favored']
+                    //     }
+                    // }
                         
                     data.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
                     filtered_data = data.filter(filterData, all).slice(0,Total)
@@ -253,7 +261,7 @@
             }
             buildTable(1000,300);
 
-            // Fix table head
+            // Fix table head to top of table with scrolling
             function tableFixHead (e) {
                 const el = e.target,
                     sT = el.scrollTop -4;
@@ -264,6 +272,38 @@
             document.querySelectorAll(".scrollit").forEach(el => 
                 el.addEventListener("scroll", tableFixHead)
             );
+
+
+            // collapsing sidebar 
+            var collapsed = false
+
+            function sidebar(){
+                if (collapsed == false) {
+                    document.getElementById('sidebar-content').style.width = '0'
+                    document.getElementById('sidebar-divider').style.float = 'left'
+                    document.getElementById('sidebar-divider').style.width = '40px'
+                    document.getElementById('map-container').style.width ='98%'
+                    document.getElementById('map-container').style.left='40px'
+                    document.getElementById('sidebar-btn').style.left='10px'
+                    document.getElementById('sidebar-btn').innerHTML = '>'
+
+                    //document.getElementsByClassName('mapboxgl-canvas')[0].style.width='100%'
+                    map.resize()
+                    collapsed = true
+                }
+                else {
+                    document.getElementById('sidebar-content').style.width = 'auto'
+                    document.getElementById('sidebar-divider').style.float = 'right'
+                    document.getElementById('sidebar-divider').style.width = '6px'
+                    document.getElementById('map-container').style.width ='60%'
+                    document.getElementById('map-container').style.left='40%'
+                    document.getElementById('sidebar-btn').style.left='39%'
+                    document.getElementById('sidebar-btn').innerHTML = '<'
+                    map.resize()
+                    collapsed = false
+                }
+
+            }
         </script>
 
     </body>
