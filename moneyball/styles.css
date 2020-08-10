@@ -42,6 +42,7 @@
   width: 30px;  
   background-color: #F58025;
   color: white;
+  border-radius: 10px;
   text-align: center;
   cursor: pointer;
   display: block;
@@ -63,9 +64,10 @@
     height: 40px;
     line-height: 10px;  
     width: 10px;
-    text-align: center;
-    cursor: pointer;
-    display: block;  
+    border-radius: 5px;
+    padding-left: 4px;
+    padding-right: 9px;
+
   }
 
 }
@@ -293,7 +295,6 @@ tr:nth-child(odd) {
   /* top: 13px; */
   /* when second dropdown: 64px; */
   top: 40px;
-  left: 12px;
   position: absolute;
   left: 42%;
   border: none;
@@ -643,10 +644,18 @@ tr:nth-child(odd) {
     label ,input {
       font-size: 0.7em !important;
     }
+
+    #zoom {
+      left: auto;
+      right: 10px;
+    }
+    #dropdown {
+      left: auto;
+      right: 10px;
+    }
+
+    #congressional-legend{
+      font-size: 0.7em !important;
+    }
     
   }
-
-  
-  /* label
-  input
-  .money-table */ 
