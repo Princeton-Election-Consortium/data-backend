@@ -278,27 +278,51 @@
             var collapsed = false
 
             function sidebar(){
+                small_screen = (screen.width < 800)
+                console.log(small_screen)
+
+                map_width_full = small_screen ? '20%' : '60%'
+                map_left_full = small_screen ? '80%' : '40%'
+                sidebar_width_full = small_screen ? '80%' : '40%'
+                sidebar_width_collapsed = small_screen ? '10px' : '40px'
+                sidebar_button_height = ''
+                sidebar_button_width = ''
+                sidebar_button_left = small_screen ? '79%' : '39%'
+
                 if (collapsed == false) {
                     document.getElementById('sidebar-content').style.width = '0'
                     document.getElementById('sidebar-divider').style.float = 'left'
-                    document.getElementById('sidebar-divider').style.width = '40px'
-                    document.getElementById('map-container').style.width ='98%'
-                    document.getElementById('map-container').style.left='40px'
+                    document.getElementById('sidebar-divider').style.width = sidebar_width_collapsed
+                    document.getElementById('map-container').style.width ='99%'
+                    document.getElementById('map-container').style.left='10px'
                     document.getElementById('sidebar-btn').style.left='10px'
                     document.getElementById('sidebar-btn').innerHTML = '>'
 
-                    //document.getElementsByClassName('mapboxgl-canvas')[0].style.width='100%'
+                    if(small_screen) {
+                        $("#congressional-legend").show()
+                        $("#dropdown").show()
+                        $("#zoom").show()
+                    }
+
                     map.resize()
                     collapsed = true
                 }
                 else {
+                    document.getElementById('sidebar').style.with = sidebar_width_full
                     document.getElementById('sidebar-content').style.width = 'auto'
                     document.getElementById('sidebar-divider').style.float = 'right'
                     document.getElementById('sidebar-divider').style.width = '6px'
-                    document.getElementById('map-container').style.width ='60%'
-                    document.getElementById('map-container').style.left='40%'
-                    document.getElementById('sidebar-btn').style.left='39%'
+                    document.getElementById('map-container').style.width = map_width_full
+                    document.getElementById('map-container').style.left= map_left_full
+                    document.getElementById('sidebar-btn').style.left= sidebar_button_left
                     document.getElementById('sidebar-btn').innerHTML = '<'
+
+                    if(small_screen) {
+                        $("#congressional-legend").hide()
+                        $("#dropdown").hide()
+                        $("#zoom").hide()
+                    }
+
                     map.resize()
                     collapsed = false
                 }

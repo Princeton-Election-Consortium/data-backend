@@ -8,6 +8,7 @@
   overflow: hidden;
   border-right: 1px solid rgba(0, 0, 0, 0.25);
 }
+
 .clicked-info {
   height: 33%;
   max-height: 275px;
@@ -48,6 +49,25 @@
 .sidebar-btn:hover{
   background-color: #f8964c;
   color: white;
+}
+@media screen and (max-width: 800px) {
+  .sidebar {
+    width: 80%;
+  }
+  .sidebar-btn {
+    font-family: 'Fira Code', monospace;
+    font-size: 10px;
+    position: absolute;
+    top: 50%;
+    left: 79%;
+    height: 40px;
+    line-height: 10px;  
+    width: 10px;
+    text-align: center;
+    cursor: pointer;
+    display: block;  
+  }
+
 }
 
 
@@ -136,6 +156,12 @@ body {
   bottom: 0;
   left: 40%;
   width: 60%;
+}
+@media screen and (max-width: 800px) {
+  #map-container {
+    left: 80%;
+    width: 20%;
+  }
 }
 
 
