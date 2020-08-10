@@ -24,6 +24,7 @@ var map = new mapboxgl.Map({
     center: [-88, 40],
     zoom: 4.1
 });
+map.getCanvas().style.cursor = 'pointer';
 
 // const bbox = [[-63.588704947691994, 50.715649574086314], [-127.55862265048071, 22.645896726596078]];
 // map.fitBounds(bbox, {
