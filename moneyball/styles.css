@@ -171,7 +171,7 @@ body {
   font-size: 1.3em;
   background: #fff;
   border-bottom: 1px solid #eee;
-  height: 45px;
+  height: 50px;
   line-height: 60px;
   padding: 0 5px;
 }
@@ -613,3 +613,40 @@ tr:nth-child(odd) {
   color: #222;
   background: #fff;
   } */
+
+  @media screen and (max-width: 900px) and (min-width: 801px) {
+    .heading {
+      font-size: 1.3em;
+      height: 70px;
+    }
+  }
+
+  @media screen and (max-width: 800px) {
+    .sidebar-content {
+      font-size: 0.7em !important;
+    }
+    h1 {
+      font-size: 1.1em;
+    } 
+    th{
+      padding: 2px;
+    }
+    td {
+      padding: 2px;
+    }
+    table{
+      font-size: 0.6em !important;
+    }
+    .mbtable td,th{
+      font-size: 7px !important;
+    }
+    label ,input {
+      font-size: 0.7em !important;
+    }
+    
+  }
+
+  
+  /* label
+  input
+  .money-table */ 
