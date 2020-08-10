@@ -295,6 +295,7 @@
                 sidebar_button_height = ''
                 sidebar_button_width = ''
                 sidebar_button_left = small_screen ? '79%' : '39%'
+                sidebar_button_left_collapsed = small_screen ? '5px' : '4px'
 
                 if (collapsed == false) {
                     document.getElementById('sidebar-content').style.width = '0'
@@ -302,7 +303,7 @@
                     document.getElementById('sidebar-divider').style.width = sidebar_width_collapsed
                     document.getElementById('map-container').style.width ='99%'
                     document.getElementById('map-container').style.left='10px'
-                    document.getElementById('sidebar-btn').style.left='10px'
+                    document.getElementById('sidebar-btn').style.left= sidebar_button_left_collapsed
                     document.getElementById('sidebar-btn').innerHTML = '>'
 
                     if(small_screen) {
