@@ -635,11 +635,11 @@ tr:nth-child(odd) {
     td {
       padding: 2px;
     }
-    table{
-      font-size: 0.6em !important;
-    }
-    .mbtable td,th{
+    .mbtable td, .mbtable th{
       font-size: 7px !important;
+    }
+    .mapboxgl-popup-content td, .mapboxgl-popup-content th{
+      font-size: 0.8em !important;
     }
     label ,input {
       font-size: 0.7em !important;
