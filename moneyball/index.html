@@ -273,12 +273,19 @@
                 el.addEventListener("scroll", tableFixHead)
             );
 
-
             // collapsing sidebar 
+            var mobile_width = 800
             var collapsed = false
 
+            if(screen.width < mobile_width) {
+                        $("#congressional-legend").hide()
+                        $("#dropdown").hide()
+                        $("#zoom").hide()
+                    }
+
+
             function sidebar(){
-                small_screen = (screen.width < 800)
+                small_screen = (screen.width < mobile_width)
                 console.log(small_screen)
 
                 map_width_full = small_screen ? '20%' : '60%'
