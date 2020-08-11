@@ -184,11 +184,11 @@ def main():
             html += "\n\t" + "</tr>"
 
         # add all districts to full table    
-        html += "\n\t" + "<tr>"
-        html += "\n\t\t" + f"<td>{postal_code}</td>"
-        html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
-        html += "\n\t\t" + f"<td>{jersey_votes}</td>"
-        html += "\n\t" + "</tr>"
+        html_full += "\n\t" + "<tr>"
+        html_full += "\n\t\t" + f"<td>{postal_code}</td>"
+        html_full += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
+        html_full += "\n\t\t" + f"<td>{jersey_votes}</td>"
+        html_full += "\n\t" + "</tr>"
 
         n += 1
     
