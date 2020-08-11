@@ -129,57 +129,63 @@ def main():
     path = os.path.join(dir_path, '../matlab/outputs/EV_stateprobs.csv')
     margins = get_margins(path)
 
-    # for key in votes:
-    #     ## set jerseyvote threshold here: defaulting to 20 jersey votes
-    #     if votes[key]['jersey_votes'] >= 10:
-    #         print(key + str(margins[key]['margin']))
-
     ## append style + table start, iteratively add rows, append close
     html = style_and_start
+    html_full = style_and_start
 
     n = 0
 
-    for key in votes:
-        
-        ## set jerseyvote threshold here: defaulting to 10 jersey votes
+    for key in votes: 
+        postal_code = key
+        # state_full = get_formatted_state(key, inverse=True)
+        state_full = key 
+        if "1" in key or "2" in key or "3" in key:
+            state_full = get_formatted_state(key, electoral_district=True)
+        hyperlink = get_538_link(postal_code)
+        candiate_str = ""
+        link_color = "#000000"
+        # set leading candidate str based of margin as well as link color
+        if margins[key]['margin'] > 0:
+            candiate_str = candidates["dem"]
+            link_color = "#1660CE"
+        elif margins[key]['margin'] < 0:
+            candiate_str = candidates["rep"]
+            link_color = "#C62535"
+        else: candiate_str = "Tie"
+
+        margin = " +" + str(margins[key]['margin']).replace('-','')
+        jersey_votes = votes[key]['jersey_votes']
+        ## force NJ to display 2 significant digits (value often quite small)
+        if key == "NJ":
+            jersey_votes = format(votes[key]['jersey_votes'], '.2g')
+
+        # only add districts above thresholds to widget table
         if votes[key]['jersey_votes'] >= 50 or n<6 or key=="NJ":
-            postal_code = key
-            # state_full = get_formatted_state(key, inverse=True)
-            state_full = key 
-            if "1" in key or "2" in key or "3" in key:
-                state_full = get_formatted_state(key, electoral_district=True)
-            hyperlink = get_538_link(postal_code)
-            candiate_str = ""
-            link_color = "#000000"
-            # set leading candidate str based of margin as well as link color
-            if margins[key]['margin'] > 0:
-                candiate_str = candidates["dem"]
-                link_color = "#1660CE"
-            elif margins[key]['margin'] < 0:
-                candiate_str = candidates["rep"]
-                link_color = "#C62535"
-            else: candiate_str = "Tie"
-
-            margin = " +" + str(margins[key]['margin']).replace('-','')
-            jersey_votes = votes[key]['jersey_votes']
-            ## force NJ to display 2 significant digits (value often quite small)
-            if key == "NJ":
-                jersey_votes = format(votes[key]['jersey_votes'], '.2g')
-
             html += "\n\t" + "<tr>"
             html += "\n\t\t" + f"<td>{state_full}</td>"
             html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
             html += "\n\t\t" + f"<td>{jersey_votes}</td>"
             html += "\n\t" + "</tr>"
+        
+        # add all districts to full table
+        html_full += "\n\t" + "<tr>"
+        html_full += "\n\t\t" + f"<td>{state_full}</td>"
+        html_full += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
+        html_full += "\n\t\t" + f"<td>{jersey_votes}</td>"
+        html_full += "\n\t" + "</tr>"
 
-            n += 1
+        n += 1
     
     html += close
+    html_full += close
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'Presidential_Race_Table.html')
     with open(path, 'w') as widget:
         widget.write(html)
+    path = os.path.join(dir_path, 'Presidential_Race_Table_Full.html')
+    with open(path, 'w') as full:
+        full.write(html_full)
     
 
 if __name__ == "__main__":

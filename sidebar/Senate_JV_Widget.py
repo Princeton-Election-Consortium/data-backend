@@ -153,43 +153,55 @@ def main():
 
     ## append style + table start, iteratively add rows, append close
     html = style_and_start
+    html_full = style_and_start
 
     n = 0
 
     for key in votes:
-        ## set jerseyvote threshold here: defaulting to 20 jersey votes
+        postal_code = key
+        state_full = get_formatted_state(key, inverse=True)
+        hyperlink = fivethirtyeight +  get_formatted_state(key, url_format=True)
+        candiate_str = ""
+        link_color = "#000000"
+        # set leading candidate str based of margin as well as link color
+        if margins[key]['margin'] > 0:
+            candiate_str = names[key]['dem']
+            link_color = "#1660CE"
+        elif margins[key]['margin'] < 0:
+            candiate_str = names[key]['rep']
+            link_color = "#C62535"
+        else: candiate_str = "Tie"
+
+        margin = " +" + str(margins[key]['margin']).replace('-','')
+        jersey_votes = votes[key]['jersey_votes']
+
+        # only add districts above thresholds to widget table
         if votes[key]['jersey_votes'] >= 30 or n<6:
-            postal_code = key
-            state_full = get_formatted_state(key, inverse=True)
-            hyperlink = fivethirtyeight +  get_formatted_state(key, url_format=True)
-            candiate_str = ""
-            link_color = "#000000"
-            # set leading candidate str based of margin as well as link color
-            if margins[key]['margin'] > 0:
-                candiate_str = names[key]['dem']
-                link_color = "#1660CE"
-            elif margins[key]['margin'] < 0:
-                candiate_str = names[key]['rep']
-                link_color = "#C62535"
-            else: candiate_str = "Tie"
-
-            margin = " +" + str(margins[key]['margin']).replace('-','')
-            jersey_votes = votes[key]['jersey_votes']
-
             html += "\n\t" + "<tr>"
             html += "\n\t\t" + f"<td>{postal_code}</td>"
             html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
             html += "\n\t\t" + f"<td>{jersey_votes}</td>"
             html += "\n\t" + "</tr>"
 
-            n += 1
+        # add all districts to full table    
+        html += "\n\t" + "<tr>"
+        html += "\n\t\t" + f"<td>{postal_code}</td>"
+        html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
+        html += "\n\t\t" + f"<td>{jersey_votes}</td>"
+        html += "\n\t" + "</tr>"
+
+        n += 1
     
     html += close
+    html_full += close
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'Senate_JV_Widget.html')
     with open(path, 'w') as widget:
         widget.write(html)
+    path = os.path.join(dir_path, 'Senate_Table_Full.html')
+    with open(path, 'w') as full:
+        full.write(html_full)
 
 
 
