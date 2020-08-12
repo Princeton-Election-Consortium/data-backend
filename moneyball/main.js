@@ -126,7 +126,7 @@ map.on('load', function() {
                         [
                           ">=",
                           ["get", "VOTER_POWER"],
-                          20
+                          10
                         ],
                         "hsla(193, 82%, 74%, 0.75)",
                         ['all', [">=", ["get", "VOTER_POWER"], 7], ["==", ["get", "POSTAL"], "NC"]],
