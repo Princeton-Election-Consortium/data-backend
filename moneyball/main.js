@@ -35,12 +35,12 @@ map.getCanvas().style.cursor = 'pointer';
 map.on('load', function() {
     map.addSource('state-house', {
         type: 'geojson',
-        data: 'https://princetonuniversity.github.io/PEC-map/out-files/lower_state_moneyball.geojson'
+        data: 'https://princetonuniversity.github.io/PEC-map/out-files/lower_state_moneyball_simple.geojson'
     });
 
     map.addSource('state-senate', {
         type: 'geojson',
-        data: 'https://princetonuniversity.github.io/PEC-map/out-files/upper_state_moneyball.geojson'
+        data: 'https://princetonuniversity.github.io/PEC-map/out-files/upper_state_moneyball_simple.geojson'
     });
     map.addLayer(
         {
