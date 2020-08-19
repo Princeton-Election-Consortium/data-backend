@@ -1,14 +1,16 @@
 # imports
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as pl
-from matplotlib.transforms import blended_transform_factory as blend
-import datetime as dt
 import calendar
-import os
 import csv
-from skimage.transform import rescale
+import datetime as dt
+import os
+
+import matplotlib.pyplot as pl
+import numpy as np
+import pandas as pd
+from matplotlib.transforms import blended_transform_factory as blend
 from pandas.plotting import register_matplotlib_converters
+from skimage.transform import rescale
+
 register_matplotlib_converters()
 
 # constants
@@ -81,6 +83,7 @@ def generate_line_plot(
                   presidential_2020 = False,
 
                   hline_lab_xpos = 0.85,
+                  hline_lab_ypos = None,
                   watermark = watermark,
                   watermark_pos = watermark_pos,
 
@@ -533,7 +536,7 @@ def generate_line_plot(
             if hline_lab_colors is None:
                 hline_lab_colors = [col0, col1]
             ax.text(hline_lab_xpos,
-                    hline_ypos + pad_data_units,
+                    (hline_ypos + hline_lab_ypos if hline_lab_ypos is not None else hline_ypos + pad_data_units),
                     hline_labels[1].format(**title_fillers),
                     color=hline_lab_colors[1],
                     **txt_kw,)
