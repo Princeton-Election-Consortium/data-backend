@@ -429,7 +429,12 @@ def generate_line_plot(
 
     # CUSTOM type special plot
     if plot_customization:
+
+        if plot_customization_2:
+            print(ax.get_ylim())
+
         new_ax_offset = 3
+
 
         ax2 = ax.twinx()
 
@@ -532,6 +537,10 @@ def generate_line_plot(
                     hline_labels[1].format(**title_fillers),
                     color=hline_lab_colors[1],
                     **txt_kw,)
+                    
+        if plot_customization_2:
+            print(ax2.get_ylim())
+            print(ax.get_ylim())
             
         
         if thumbnail:
@@ -543,7 +552,7 @@ def generate_line_plot(
         ax.get_yaxis().set_visible(False)
 
     ### debugging 
-    print(title_txt + " " + str(font_size))
+    # print(title_txt + " " + str(font_size))
 
     # save out figure
     dpi = width_pixels_save / width
