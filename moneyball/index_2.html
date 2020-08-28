@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <title>Moneyball Redistricting Data</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500&display=swap" rel="stylesheet">  
+        <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300&display=swap" rel="stylesheet">      
+        <link href='./styles.css' rel='stylesheet' />
+    </head>
+    <body>
+        <!-- this is not the production graph  -->
+        <div class='sidebar' id='sidebar'>
+            <div id='sidebar-divider' class='sidebar-divider'>
+            </div>
+            <div id='sidebar-content' class='sidebar-content'>
+                <div class='heading'>
+                <h1>Redistricting Information: "Moneyball"</h1>
+                </div>
+                <div class="btn-group" style="width:100%">
+                    <h3>Key Districts: Click to Navigate</h3>
+                    <a class='state-button' id='tx-link'>TX</a>
+                    <a class='state-button' id='mn-link'>MN</a>
+                    <a class='state-button' id='ks-link'>KS</a>
+                    <a class='state-button' id='fl-link'>FL</a>
+                    <a class='state-button' id='ct-link'>CT</a>
+                    <a class='state-button' id='nc-link'>NC</a>
+                </div>
+                <div id='clicked-info' class='clicked-info'>
+                        We have designed a model that identifies the races where voters have the most leverage to prevent 
+                            partisan gerrymandering in 2021. <b>A few hundred voters</b>  mobilized in the <b>right districts</b>
+                                could bring 
+                            a state bipartisan control of redistricting, leading to <b>fairer districts for a decade. </b>
+                            Our findings are in the map below. <br /><br />
+                            Our basic methodology is <a href="https://election.princeton.edu/2020/07/30/new-pec-feature-redistricting-moneyball-2020-edition/">HERE</a>
+                            , a more detailed methodology is <a href="https://docs.google.com/document/d/13D-UR5Tm-HU_INcMWDC9lskRDkhOXAhMGFhULHzrdg0/edit?ts=5f233017">HERE</a>
+                            , and our data is <a href="https://election.princeton.edu/data/moneyball/data/">HERE</a>  <br /><br />
+                    <div id='state-info' class='state-info'>
+                        <body>
+                            <b>Click on a state</b> to view information about redistricting.<br /><br />
+                            <b>Zoom in and click on a district</b> for more information about competitiveness.<br /><br />
+                            <b>Select a layer</b> from the drop-down menu to toggle between house and senate races.
+                        </body>
+                    </div>
+                </div>
+                <div style='padding-right: 8px;'>
+                    <hr>
+                    <label style="margin-left:1.5em" for="fname">Selected States: </label>
+                    <input type="submit" id = "submit" value="Update" style ="float: right; overflow: hidden;">
+                    <input type="text" id="sstates" name="sstates" placeholder="e.x. TX, KS, MN"><br><br>
+
+                    <label>
+                        <input id = "allstcheckbx" type="checkbox" checked/>
+                        <span id = "allstcheck">View All states</span>
+                    </label>
+
+                    <label>
+                        <input id = "normcheckbx" type="checkbox"/>
+                        <span id = "normcheck">Normalize to Selected Region</span>
+                    </label>
+                </div>
+                <div>
+                    <b id = "displayingALL"></b>
+                    <b id = "normperc"></b>
+
+                </div>
+                
+                <div class="scrollit" style='height: 100%;'>
+                    <table id="money-table" style= "overflow:scroll"></table>
+                </div>
+            </div>
+
+
+          </div>
+
+        <div id='map-container' class='map pad2'></div>
+        <!-- <pre id="info"></pre> -->
+        <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.5.1/mapbox-gl-geocoder.min.js"></script>
+        <button id="zoom">Reset map</button>
+        <button class='sidebar-btn' id='sidebar-btn'  onclick="sidebar()"><</button>
+
+        <select id="dropdown" name="dropdown">
+            <option value="state-house">State House Redistricting</option>
+            <option value="state-senate">State Senate Redistricting</option>
+        </select>
+
+        <div id="congressional-legend" class="legend">
+            <div><span style="background-color: hsla(312, 99%, 55%, 0.88)"></span>Highest Voter Power</div>
+            <div><span style="background-color: hsla(288, 88%, 56%, 0.85)"></span>Medium-High</div>
+            <div><span style="background-color: hsla(232, 82%, 69%, 0.75)"></span>Medium</div>      
+            <div><span style="background-color: hsla(193, 82%, 74%, 0.75)"></span>Low</div>             
+        </div>
+
+
+        <script src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js'></script>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet' />
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+        <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+        <script src="./main.js"></script>
+
+    	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+
+        <!-- Initialize the plugin: -->
+        <script type="text/javascript">
+            $(document).ready(function() {      
+                $( "#submit").click(function() {
+                    d3.selectAll('tr').remove();
+                    buildTable(200,3);
+                });
+                $('#allstcheckbx').change(function() {
+                    d3.selectAll('tr').remove();
+                    buildTable(200,3);
+                }); 
+
+                $('#normcheckbx').change(function() {
+                    d3.select("#normperc").text("")
+                    d3.selectAll('tr').remove();
+                    buildTable(200,3);
+                }); 
+            });
+
+            var url_hash;
+
+            // load in the url hash json before any table generations
+            d3.json("https://election.princeton.edu/data/moneyball/url_hash.json", function(data) {
+                url_hash = data;
+                console.log(data);
+            });
+            console.log(url_hash)
+
+            function buildTable(Total, Per){
+                d3.csv("processed_data_8_26.csv", function(error, data) {
+                    if (error) throw error;
+
+                    data.forEach(function(d) {
+                        d['redistricting_voter_power'] = +d['redistricting_voter_power'];
+                        });
+                    data.forEach(function(d) {
+                        d['redistricting_voter_power'] = d['redistricting_voter_power'] > 0 ? 
+                            +d['redistricting_voter_power'].toPrecision(2) : +d['redistricting_voter_power'].toPrecision(1);
+                        });
+
+                    let states = $('#sstates').val().replace(/ /g, '').split(',')
+                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'MA', 'SC', 'AR']
+                    let isFound = moneys.some( ai => states.includes(ai) );
+                    let all = false
+                    d3.select("#displayingALL").text("");
+                    if (!$('#allstcheckbx').is(':checked')) {
+                        d3.select("#normperc").text("")
+                    }
+                    if (!isFound){
+                        $( '#allstcheckbx' ).prop( "checked", true);
+                        all = true
+                        // * send not displaying clicked state in table message if not initial load
+                        if ($('#sstates').val() != ''){
+                            d3.select("#displayingALL").text("*Selected state has no high impact districts. See above state information. Displaying data for all states")
+                        }
+                        let states = $('#sstates').val('')
+                    } 
+
+                    /* construct rating column if wanted */
+                    // for (d in data) {
+                    //     if (data[d]['favored'] == 'FALSE') {
+                    //         data[d]['lean'] = data[d]['confidence']
+                    //     }
+                    //     else {
+                    //         data[d]['lean'] = data[d]['confidence'] + " " + data[d]['favored']
+                    //     }
+                    // }
+                        
+                    data.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
+                    filtered_data = data.filter(filterData, all).slice(0,Total)
+                    console.log(filtered_data)
+                    var sortAscending = true;
+                    document.getElementById('money-table').innerHTML = "";
+                    var table = d3.select('#money-table').append('table').attr("class", "mbtable");
+                    var titles = ['district','rep_nominee','dem_nominee','incumbent','redistricting_voter_power', 'anti_gerrymandering_party']
+                    // ***** needs to be changed for production version
+                    var display_titles = titles
+                    var headers = table.append('thead').append('tr')
+                                    .selectAll('th')
+                                    .data(display_titles).enter()
+                                    .append('th')
+                                    .text(function (d) {
+                                        if (d === 'district'){return 'District'}
+                                        else if (d=== 'rep_nominee'){return 'R Candidate'}
+                                        else if (d=== 'dem_nominee'){return 'D Candidate'}
+                                        else if (d=== 'incumbent'){return 'Incumbent'}
+                                        else if (d=== 'redistricting_voter_power'){return 'Redistricting Voter Power'}
+                                        else if (d=== 'anti_gerrymandering_party'){return 'Anti Gerrymandering Party'}
+                                        else return 'column parse error'
+                                    })
+                                    .on('click', function (d) {
+                                        headers.attr('class', 'header');
+                                        
+                                        if (sortAscending) {
+                                            rows.sort(function(a, b) { return b[d] < a[d] ? 1 : -1; });
+                                            sortAscending = false;
+                                            this.className = 'aes';
+                                        } else {
+                                            rows.sort(function(a, b) { return b[d] > a[d] ? 1 : -1; });
+                                            sortAscending = true;
+                                            this.className = 'des';
+                                        }
+                                        
+                                    });
+                    
+                    var rows = table.append('tbody').selectAll('tr')
+                                .data(filtered_data ).enter()
+                                .append('tr');
+                    rows.selectAll('td')
+                        .data(function (d) {
+                            return titles.map(function (k) {
+                                return { 'value': d[k], 'name': k};
+                            });
+                        }).enter()
+                        .append('td')
+                        .attr('data-th', function (d) {
+                            return d.name;
+                        })
+                        .html(function (d) {
+                            if (d.name === 'district'){
+                                return "<a href= https://projects.fivethirtyeight.com/ style=\"color:#F58025; text-decoration: underline\" >" + d.value + "</a>"
+                            }
+                            return d.value;
+                        });
+
+                    rows.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power'] ? 1 : -1; });
+
+                    console.log(d3.selectAll("[data-th=redistricting_voter_power]"))
+
+                    d3.selectAll("[data-th=redistricting_voter_power]").
+                        text(function (d) {
+                            return (d.value / Math.max.apply(Math, extractColumn(
+                                $('#normcheckbx').is(':checked')  ? filtered_data : data, 
+                                "redistricting_voter_power")) * 100).toFixed(1);
+                        });
+                    var local_max = Math.max.apply(Math, extractColumn(filtered_data, "redistricting_voter_power"))
+                    var global_max = Math.max.apply(Math, extractColumn(data, "redistricting_voter_power"))
+                    if (local_max < global_max & $('#normcheckbx').is(':checked')) {
+                            d3.select("#normperc").text("*redistricting voter power normalized to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
+                            console.log("****updated")
+                        }
+
+                });
+            }
+
+            function filterData(entry) {
+                if ($('#allstcheckbx').is(':checked')) {
+                    return true
+                }
+                else {
+                    let states = $('#sstates').val().replace(/ /g, '').split(',')
+                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'MA', 'SC', 'AR']
+                    let isFound = moneys.some( ai => states.includes(ai) );
+                    if (!isFound){return true}
+
+                    if (states.indexOf(entry.state) !== -1) {
+                        return true }
+                    return false
+                }
+            }
+
+            function extractColumn(arr, column) {
+                return arr.map(x => x[column])
+            }
+
+            function normalizeColumn(rows, column) {
+                for (row in rows) {
+                    console.log(row)
+                }
+            }
+            buildTable(1000,300);
+
+            // Fix table head to top of table with scrolling
+            function tableFixHead (e) {
+                const el = e.target,
+                    sT = el.scrollTop -4;
+                el.querySelectorAll("thead th").forEach(th => 
+                th.style.transform = `translateY(${sT}px)`
+                );
+            }
+            document.querySelectorAll(".scrollit").forEach(el => 
+                el.addEventListener("scroll", tableFixHead)
+            );
+
+            // collapsing sidebar 
+            var mobile_width = 800
+            var collapsed = false
+
+            if(screen.width < mobile_width) {
+                        $("#congressional-legend").hide()
+                        $("#dropdown").hide()
+                        $("#zoom").hide()
+                    }
+
+
+            function sidebar(){
+                small_screen = (screen.width < mobile_width)
+                console.log(small_screen)
+
+                map_width_full = small_screen ? '20%' : '60%'
+                map_left_full = small_screen ? '80%' : '40%'
+                sidebar_width_full = small_screen ? '80%' : '40%'
+                sidebar_width_collapsed = small_screen ? '10px' : '40px'
+                sidebar_button_height = ''
+                sidebar_button_width = ''
+                sidebar_button_left = small_screen ? '79%' : '39%'
+                sidebar_button_left_collapsed = small_screen ? '5px' : '4px'
+
+                if (collapsed == false) {
+                    document.getElementById('sidebar-content').style.width = '0'
+                    document.getElementById('sidebar-divider').style.float = 'left'
+                    document.getElementById('sidebar-divider').style.width = sidebar_width_collapsed
+                    document.getElementById('map-container').style.width ='99%'
+                    document.getElementById('map-container').style.left='10px'
+                    document.getElementById('sidebar-btn').style.left= sidebar_button_left_collapsed
+                    document.getElementById('sidebar-btn').innerHTML = '>'
+
+                    if(small_screen) {
+                        $("#congressional-legend").show()
+                        $("#dropdown").show()
+                        $("#zoom").show()
+                    }
+
+                    map.resize()
+                    collapsed = true
+                }
+                else {
+                    document.getElementById('sidebar').style.with = sidebar_width_full
+                    document.getElementById('sidebar-content').style.width = 'auto'
+                    document.getElementById('sidebar-divider').style.float = 'right'
+                    document.getElementById('sidebar-divider').style.width = '6px'
+                    document.getElementById('map-container').style.width = map_width_full
+                    document.getElementById('map-container').style.left= map_left_full
+                    document.getElementById('sidebar-btn').style.left= sidebar_button_left
+                    document.getElementById('sidebar-btn').innerHTML = '<'
+
+                    if(small_screen) {
+                        $("#congressional-legend").hide()
+                        $("#dropdown").hide()
+                        $("#zoom").hide()
+                    }
+
+                    map.resize()
+                    collapsed = false
+                }
+
+            }
+
+            // hide annoying mapbox tags in footer
+            $('.mapboxgl-ctrl-logo').hide();
+            $('.mapboxgl-ctrl-bottom-right').hide();
+        </script>
+
+    </body>
+
+</html>
