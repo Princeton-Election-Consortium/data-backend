@@ -151,12 +151,15 @@ map.on('load', function() {
         // can change to .POSTAL now ***********************
         var state = prop.DISTRICT.substring(0,2)
 
-        $('#sstates').val(state)
-        $('#allstcheckbx').prop( "checked", false );
-        $("#submit").click();
-
-        updateStateInfoSidebar(state)
-
+        if (state !== $('#sstates').val()) {
+            $('#sstates').val(state)
+            $('#allstcheckbx').prop( "checked", false );
+            $("#submit").click();
+    
+            updateStateInfoSidebar(state)
+            console.log('updated sidebar')
+        }
+        
         let myCongressionalTable = buildDistrictHoverTable(prop)
 
         new mapboxgl.Popup(el)

@@ -131,8 +131,6 @@
             });
 
             function buildTable(Total, Per){
-                console.log(url_hash)
-
                 d3.csv("processed_data_8_26.csv", function(error, data) {
                     if (error) throw error;
 
@@ -174,7 +172,6 @@
                         
                     data.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power']; });
                     filtered_data = data.filter(filterData, all).slice(0,Total)
-                    console.log(filtered_data)
                     var sortAscending = true;
                     document.getElementById('money-table').innerHTML = "";
                     var table = d3.select('#money-table').append('table').attr("class", "mbtable");
@@ -236,8 +233,6 @@
 
                     rows.sort(function(a, b) { return b['redistricting_voter_power'] > a['redistricting_voter_power'] ? 1 : -1; });
 
-                    console.log(d3.selectAll("[data-th=redistricting_voter_power]"))
-
                     d3.selectAll("[data-th=redistricting_voter_power]").
                         text(function (d) {
                             return (d.value / Math.max.apply(Math, extractColumn(
@@ -248,7 +243,6 @@
                     var global_max = Math.max.apply(Math, extractColumn(data, "redistricting_voter_power"))
                     if (local_max < global_max & $('#normcheckbx').is(':checked')) {
                             d3.select("#normperc").text("*redistricting voter power normalized to " + (local_max/global_max * 100).toFixed(1) + "% of highest nationwide voter power")
-                            console.log("****updated")
                         }
 
                 });
@@ -272,12 +266,6 @@
 
             function extractColumn(arr, column) {
                 return arr.map(x => x[column])
-            }
-
-            function normalizeColumn(rows, column) {
-                for (row in rows) {
-                    console.log(row)
-                }
             }
 
             // Fix table head to top of table with scrolling
