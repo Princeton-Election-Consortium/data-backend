@@ -103,10 +103,15 @@
 
         <!-- Initialize the plugin: -->
         <script type="text/javascript">
+        var i = 0 
             $(document).ready(function() {      
                 $( "#submit").click(function() {
                     d3.selectAll('tr').remove();
                     buildTable(200,3);
+
+                    //window.history.replaceState(null, null, "?key_state=" + $('#sstates').val());
+                    window.history.replaceState(null, null, window.location.href.split("?")[0]);
+
                 });
                 $('#allstcheckbx').change(function() {
                     d3.selectAll('tr').remove();

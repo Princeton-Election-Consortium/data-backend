@@ -159,7 +159,7 @@ map.on('load', function() {
             updateStateInfoSidebar(state)
             console.log('updated sidebar')
         }
-        
+
         let myCongressionalTable = buildDistrictHoverTable(prop)
 
         new mapboxgl.Popup(el)
@@ -320,6 +320,8 @@ map.on('load', function() {
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
         updateStateInfoSidebar('TX');
+
+        window.history.replaceState(null, null, "?key_state=TX");
     });
     $("#mn-link").click(function() {
         $('#dropdown').val("state-senate")
@@ -334,6 +336,8 @@ map.on('load', function() {
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
         updateStateInfoSidebar('MN');
+
+        window.history.replaceState(null, null, "?key_state=MN");
     });
     $("#ks-link").click(function() {
         $('#dropdown').val("state-house")
@@ -348,6 +352,8 @@ map.on('load', function() {
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
         updateStateInfoSidebar('KS');
+
+        window.history.replaceState(null, null, "?key_state=KS");
     });
     $("#fl-link").click(function() {
         $('#dropdown').val("state-house")
@@ -362,6 +368,8 @@ map.on('load', function() {
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
         updateStateInfoSidebar('FL');
+
+        window.history.replaceState(null, null, "?key_state=FL");
     });
     $("#ct-link").click(function() {
         $('#dropdown').val("state-house")
@@ -376,6 +384,8 @@ map.on('load', function() {
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
         updateStateInfoSidebar('CT');
+
+        window.history.replaceState(null, null, "?key_state=CT");
     });
     $("#nc-link").click(function() {
         $('#dropdown').val("state-house")
@@ -390,6 +400,8 @@ map.on('load', function() {
         $( '#allstcheckbx' ).prop( "checked", false );
         $( "#submit").click();
         updateStateInfoSidebar('NC');
+
+        window.history.replaceState(null, null, "?key_state=NC");
     });
 
     // map.on('mousemove', function(e) {
@@ -401,4 +413,17 @@ map.on('load', function() {
     //     // e.lngLat is the longitude, latitude geographical position of the event
     //     JSON.stringify(e.lngLat.wrap());
     //     });
+
+    // State Url Parameter Handling
+    const parsedUrl = new URL(window.location.href);
+    url_state_param = parsedUrl.searchParams.get("key_state")
+    if (url_state_param !== null){
+        url_state_param = url_state_param.toLowerCase()
+        console.log(url_state_param)
+        key_states = ['tx','mn','ks','fl','ct','nc']
+        if (key_states.includes(url_state_param)){
+            jquery_string = "#"+ url_state_param + "-link"
+            $(jquery_string).click()
+        }
+    }
 });
