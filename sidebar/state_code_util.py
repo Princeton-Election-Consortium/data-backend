@@ -96,6 +96,8 @@ def get_formatted_state(state_name, inverse=False, url_format=False, electoral_d
             if value == state_name:
                 state = key
                 break
+        if state_name == 'GS':
+            state = 'georgia'
         return state.replace(" ", "-").lower()
   
     elif(inverse == True):
