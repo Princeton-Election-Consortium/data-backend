@@ -88,7 +88,7 @@ end
 
 [foo, ijersey]=sort(jerseyvotes);
 display_num=max(size(uncertain,2), 10);
-display_num=51
+display_num=56
 
 if ~exist(whereoutput)
     whereoutput='';
