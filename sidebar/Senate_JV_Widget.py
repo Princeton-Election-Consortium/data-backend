@@ -115,7 +115,9 @@ def get_margins(path):
         15: 'NM',
         16: 'NC',
         17: 'SC',
-        18: 'TX'}
+        18: 'TX',
+        19: 'MS'}
+
 
     today = datetime.now()
     julian_date = today.strftime("%j")
