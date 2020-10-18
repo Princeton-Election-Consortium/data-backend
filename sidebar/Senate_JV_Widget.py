@@ -268,7 +268,7 @@ def main():
     html = style_and_start2
     html_full = style_and_start2
     n = 0
-    magicNum = 44
+    magicNum = 43
     count = 0
     for key in sorted_margins:
         seats = magicNum +count
