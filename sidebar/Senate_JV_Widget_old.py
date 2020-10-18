@@ -198,10 +198,10 @@ def main():
     html_full += close
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    path = os.path.join(dir_path, 'Senate_JV_Widget.html')
+    path = os.path.join(dir_path, 'Senate_JV_Widget_old.html')
     with open(path, 'w') as widget:
         widget.write(html)
-    path = os.path.join(dir_path, 'Senate_Table_Full.html')
+    path = os.path.join(dir_path, 'Senate_Table_Full_old.html')
     with open(path, 'w') as full:
         full.write(html_full)
 
