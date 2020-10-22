@@ -21,6 +21,8 @@ python banner/banner.py
 python banner/banner_orig.py
 python sidebar/Presidential_Race_Table.py
 python sidebar/Senate_JV_Widget.py
+python sidebar/Senate_JV_Widget_old.py
+
 
 
 cp /web/data-backend/matlab/*.txt /web/www/election2020/data

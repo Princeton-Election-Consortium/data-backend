@@ -63,8 +63,8 @@ for ii=length(Mrange)
     % actual number of voters in previous election
     % data from: http://www.electproject.org/2016g
     % be sure that the order of this array matches the order of the state array in Senate_estimator
-    % in 2020: 'AL,AK,AZ,CO,GA,GS,IA,KS,KY,ME,MI,MN,MT,NH,NM,NC,SC,TX ' 18 races. GS=Georgia special
-    kvoters=[2134 321 2661 2859 4165 4165 1581 1226 1955 772 4875 2968 517 756 804 4770 2124 8975]; %2016 numbers
+    % in 2020: 'AL,AK,AZ,CO,GA,GS,IA,KS,KY,ME,MI,MN,MT,NH,NM,NC,SC,TX,MS ' 19 races. GS=Georgia special
+    kvoters=[2134 321 2661 2859 4165 4165 1581 1226 1955 772 4875 2968 517 756 804 4770 2124 8975 1186]; %2016 numbers
     jerseyvotes=difference./kvoters; % convert to per-voter power
 
     jerseyv_accumulator=jerseyv_accumulator+jerseyvotes*nowdensity(ii);

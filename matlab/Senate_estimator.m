@@ -50,13 +50,13 @@ whereoutput='outputs/'; % the output path for CSV and TXT files
 
 % polls.state=[
 % 'AL,AK,AZ,AR,CA,CO,CT,DC,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY '];
-polls.state=['AL,AK,AZ,CO,GA,GS,IA,KS,KY,ME,MI,MN,MT,NH,NM,NC,SC,TX ']; % 18 races. GS=Georgia special
-contested=[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18]; % races in serious question
+polls.state=['AL,AK,AZ,CO,GA,GS,IA,KS,KY,ME,MI,MN,MT,NH,NM,NC,SC,TX,MS ']; % 19 races. GS=Georgia special --added MS as 19th race on 12 October 2020
+contested=[1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19]; % races in serious question
 polls.EV=ones(1, length(polls.state)/3);
 num_states=size(polls.EV,2);
 
 assignedEV(3)=sum(polls.EV);
-assignedEV(1)=42; assignedEV(2)=40; % these are the seats not up for election or safe
+assignedEV(1)=42; assignedEV(2)=39; % these are the seats not up for election or safe
 Demsafe=assignedEV(1);
 % 1=Dem, 2=GOP, 3=up for election
 % checksum to make sure no double assignment or missed assignment

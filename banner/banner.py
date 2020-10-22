@@ -27,9 +27,19 @@ def get_pres_moneyball_states(n):
             if read == n:
                 return pres_string
             if read == n - 1:
-                pres_string += row[1]
+                if row[1] == 'M2':
+                    pres_string += 'ME-2'
+                elif row[1] == 'N2':
+                    pres_string += 'NE-2'
+                else:
+                    pres_string += row[1]
             else:
-                pres_string += row[1] + " "
+                if row[1] == 'M2':
+                    pres_string += 'ME-2' + " "
+                elif row[1] == 'N2':
+                    pres_string += 'NE-2' + " "
+                else:
+                    pres_string += row[1] + " "
             read += 1
     
     return pres_string
