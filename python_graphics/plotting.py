@@ -233,7 +233,7 @@ def generate_line_plot(
         ax.fill_between(days,
                         err[:,0],
                         err[:,1],
-                        **yerr_kw,
+                        **yerr_kw
                         )
 
     # x axis limits
