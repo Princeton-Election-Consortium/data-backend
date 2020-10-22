@@ -20,14 +20,16 @@
                 </div>
                 <div class="btn-group" style="width:100%">
                     <h3>Key Districts: Click to Navigate</h3>
-                    <a class='state-button' id='tx-link'>TX</a>
-                    <a class='state-button' id='mn-link'>MN</a>
-                    <a class='state-button' id='ks-link'>KS</a>
-                    <a class='state-button' id='fl-link'>FL</a>
                     <a class='state-button' id='ct-link'>CT</a>
+                    <a class='state-button' id='ks-link'>KS</a>
+                    <a class='state-button' id='ne-link'>NE</a>
                     <a class='state-button' id='nc-link'>NC</a>
+                    <a class='state-button' id='mn-link'>MN</a>
+                    <a class='state-button' id='tx-link'>TX</a>
+                    <a class='state-button' id='fl-link'>FL</a>
                 </div>
                 <div id='clicked-info' class='clicked-info'>
+                        <div>States listed above from greatest to least likelihood of attaining bipartisan redistricting.</div>
                         We have designed a model that identifies the races where voters have the most leverage to prevent 
                             partisan gerrymandering in 2021. <b>A few hundred voters</b>  mobilized in the <b>right districts</b>
                                 could bring 
@@ -136,7 +138,7 @@
             });
 
             function buildTable(Total, Per){
-                d3.csv("processed_data_8_26.csv", function(error, data) {
+                d3.csv("processed_data_10_10.csv", function(error, data) {
                     if (error) throw error;
 
                     data.forEach(function(d) {
@@ -148,7 +150,7 @@
                         });
 
                     let states = $('#sstates').val().replace(/ /g, '').split(',')
-                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'SC', 'AR']
+                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'SC', 'AR', 'NE']
                     let isFound = moneys.some( ai => states.includes(ai) );
                     let all = false
                     d3.select("#displayingALL").text("");
@@ -259,7 +261,7 @@
                 }
                 else {
                     let states = $('#sstates').val().replace(/ /g, '').split(',')
-                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'SC', 'AR']
+                    let moneys = ['TX', 'MN', 'KS', 'FL', 'CT', 'NC', 'PA', 'WI', 'GA', 'OR', 'KY', 'NV', 'NM', 'SC', 'AR', 'NE']
                     let isFound = moneys.some( ai => states.includes(ai) );
                     if (!isFound){return true}
 

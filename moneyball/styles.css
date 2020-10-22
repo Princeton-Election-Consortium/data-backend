@@ -392,6 +392,10 @@ tr:nth-child(odd) {
   font-size: 15px;
 }
 
+.mapboxgl-ctrl-bottom-right {
+  display: block !important;
+}
+
 .mapboxgl-ctrl-bottom-left .suggestions, .mapboxgl-ctrl-bottom-right .suggestions {
   top: auto;
   bottom: 100%;
