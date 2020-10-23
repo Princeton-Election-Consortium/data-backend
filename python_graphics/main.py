@@ -161,7 +161,7 @@ generate_line_plot(
 path = os.path.join(out_dir, 'senate_histogram')
 generate_histogram(
         data_file = 'Senate_histogram.csv',
-        xvals=np.arange(44, 61),
+        xvals=np.arange(43, 61),
         ylim=(0, 1.15),
         xlim=(47, 58),
         xticks_interval=1,
@@ -179,7 +179,7 @@ generate_histogram(
 path = os.path.join(out_dir, 'thumb_senate_histogram')
 generate_histogram(
         data_file = 'Senate_histogram.csv',
-        xvals=np.arange(44, 61),
+        xvals=np.arange(43, 61),
         ylim=(0, 1.15),
         xlim=(46, 56.5),
         xticks_interval=1,
