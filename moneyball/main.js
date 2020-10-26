@@ -434,16 +434,18 @@ map.on('load', function() {
     }
 
     function buildDistrictHoverTable(prop) {
-        var favored_party = prop.favored;
-        if (favored_party === "FALSE") {
-            favored_party = "Toss-up";
+        var race_rating;
+        if (prop.favored === "FALSE") {
+            race_rating = "Toss-up";
+        } else {
+            race_rating = prop.confidence + " " + prop.favored;
         }
         let districtTable = '';
     
         if (prop.redistricting_voter_power >= 1 & prop.incumbent == 'R'){
             districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.district + '</td>' + 
             '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.redistricting_voter_power.toFixed(0) + '</td>' + 
-            '<tr> <th>' + "Rating" + '</th> <td>' + favored_party + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + race_rating + '</td>' + 
             '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.dem_nominee + '</td>' + 
             '<tr> <th>' + "R Candidate (Incumbent)" + '</th> <th style="text-decoration: underline">' + prop.rep_nominee + '</th>' + 
             '</table>'
@@ -452,7 +454,7 @@ map.on('load', function() {
         else if (prop.redistricting_voter_power >= 1 & prop.incumbent == 'D'){
             districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.district + '</td>' + 
             '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.redistricting_voter_power.toFixed(0) + '</td>' + 
-            '<tr> <th>' + "Rating" + '</th> <td>' + favored_party + '</td>' + 
+            '<tr> <th>' + "Rating" + '</th> <td>' + race_rating + '</td>' + 
             '<tr> <th>' + "D Candidate (Incumbent)" + '</th> <th style="text-decoration: underline">' + prop.dem_nominee +'</th>' + 
             '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.rep_nominee +  '</td>' + 
             '</table>'
@@ -460,7 +462,7 @@ map.on('load', function() {
         else if (prop.redistricting_voter_power >= 1){
             districtTable = '<table> <tr> <th>' + "District" + '</th> <td>' + prop.district + '</td>' + 
                                         '<tr> <th>' + "Voter Power" + '</th> <td>' + prop.redistricting_voter_power.toFixed(0) + '</td>' + 
-                                    '<tr> <th>' + "Rating" + '</th> <td>' + favored_party + '</td>' + 
+                                    '<tr> <th>' + "Rating" + '</th> <td>' + race_rating + '</td>' + 
                                     '<tr> <th>' + "D Candidate" + '</th> <td>' + prop.dem_nominee + '</td>' + 
                                     '<tr> <th>' + "R Candidate" + '</th> <td>' + prop.rep_nominee + '</td>' + 
                                         '</table>'
