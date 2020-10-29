@@ -29,6 +29,8 @@ mo_names = {
             12: 'Dec',
            }
 election_day = dt.datetime(2020, 11, 3)
+election_day_plus6 = dt.datetime(2020, 11, 9)
+
 year = 2020
 doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d)-1)
 
@@ -385,7 +387,7 @@ def generate_line_plot(
             zorders = [150, 149]
 
         for (lo, hi), col, zo in zip(pairs, strike_colors, zorders):
-            ax.plot([election_day] * 2,
+            ax.plot([election_day_plus6] * 2,
                     [lo, hi],
                     lw=2*size_scale,
                     color=col,
