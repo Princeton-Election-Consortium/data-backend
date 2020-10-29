@@ -367,7 +367,7 @@ generate_line_plot(
         hline_labels = ["", '{party}{last_value:.01f}%'],
         hline_label_units = "given",
         hline_lab_xpos = 0.75,
-        hline_lab_ypos = 0.37,
+        hline_lab_ypos = 0.41,
         hline_lab_pad = 0.25,
         se_xpos= 0.732,
         circle_size = 0,
