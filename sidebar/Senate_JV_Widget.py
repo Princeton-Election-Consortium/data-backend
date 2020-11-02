@@ -321,7 +321,7 @@ def get_error(path):
                     }
                 else:
                     num_polls = round(float(row[0]))
-                    esd = float(row[5])
+                    esd = float(row[4])
                     sem = round(float(esd / math.sqrt(num_polls)), 1)
                 
                     errors[hash[int(row[5])]] = {
