@@ -101,16 +101,16 @@ def main():
     weekstartnum = past_sunday.strftime("%d")
     weekendnum = end_of_week.strftime("%d")
 
-    datestring = ''
-    if past_sunday.month != end_of_week.month:
-        start_month = past_sunday.strftime("%b")
-        end_month = end_of_week.strftime("%b")
-        datestring = f'{start_month} {weekstartnum} - {end_month} {weekendnum}, 2020'
-    else:
-        month = past_sunday.strftime("%b")
-        datestring = f'{month} {weekstartnum}-{weekendnum}, 2020'
+#     datestring = ''
+#     if past_sunday.month != end_of_week.month:
+#         start_month = past_sunday.strftime("%b")
+#         end_month = end_of_week.strftime("%b")
+#         datestring = f'{start_month} {weekstartnum} - {end_month} {weekendnum}, 2020'
+#     else:
+#         month = past_sunday.strftime("%b")
+#         datestring = f'{month} {weekstartnum}-{weekendnum}, 2020'
     
-    datestring = datetime.now().strftime("%b %d")
+#     datestring = datetime.now().strftime("%b %d")
 
     ev_mm_str = f'{ev_ahead_str}{abs(ev_metamargin)}% from toss-up'
     sen_mm_str = f'{sen_ahead_str}{abs(sen_metamargin)}%'
@@ -131,7 +131,7 @@ def main():
 
     banner_old = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>{datestring}: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
         <br>
         <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
     </div>
