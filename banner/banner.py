@@ -145,6 +145,9 @@ def main():
     
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'banner_old.html')
+    
+    with open(path, 'w') as bannerfile:
+        bannerfile.write(banner_old)
 
 if __name__ == "__main__":
     main()
