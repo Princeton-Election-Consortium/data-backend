@@ -121,6 +121,16 @@ def main():
 
     banner = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
+        <span>Outcome: Biden 306 EV, Senate 48 D (two seats to January runoff)</span>
+        <br>
+        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+        <br>
+        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
+    </div>
+    """
+
+    banner_old = f"""
+    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span>{datestring}: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
         <br>
         <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
@@ -129,8 +139,12 @@ def main():
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'banner.html')
+
     with open(path, 'w') as bannerfile:
         bannerfile.write(banner)
+    
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'banner_old.html')
 
 if __name__ == "__main__":
     main()
