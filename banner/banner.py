@@ -112,7 +112,7 @@ def main():
     
 #     datestring = datetime.now().strftime("%b %d")
 
-    ev_mm_str = f'{ev_ahead_str}{abs(ev_metamargin)}% from toss-up'
+    ev_mm_str = f'{ev_ahead_str}{abs(ev_metamargin)}%'
     sen_mm_str = f'{sen_ahead_str}{abs(sen_metamargin)}%'
     gen_mm_str = f'{gen_ahead_str}{abs(gen_metamargin)}%'
 
@@ -121,7 +121,7 @@ def main():
 
     banner = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Outcome: Biden 306 EV, Senate 50 D (D+1.0%)</span>
+        <span>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 48 D (D+1.0%)</span>
         <br>
         <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
         <br>
