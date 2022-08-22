@@ -50,7 +50,7 @@ whereoutput='outputs/'; % the output path for CSV and TXT files
 
 % polls.state=[
 % 'AL,AK,AZ,AR,CA,CO,CT,DC,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY '];
-polls.state=['AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WA ']; % 12 races.
+polls.state=['AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WI ']; % 12 races.
 contested=[1 2 3 4 5 6 7 8 9 10 11 12 ]; % races in serious question
 polls.EV=ones(1, length(polls.state)/3);
 num_states=size(polls.EV,2);
@@ -140,12 +140,12 @@ hold on
 % now plot snapshot histogram
 %
 bar(Senateseats(3:49-assignedEV(1)),histogram(3:49-assignedEV(1))*100,'r')
-bar(Senateseats(50-assignedEV(1):assignedEV(3)-3),histogram(50-assignedEV(1):assignedEV(3)-3)*100,'b')
+bar(Senateseats(50-assignedEV(1):assignedEV(3)),histogram(50-assignedEV(1):assignedEV(3))*100,'b')
 bar(Senateseats(50-assignedEV(1)),histogram(50-assignedEV(1))*15,'r') %hard-coded Presidential probability; could read from file but for now this
 
 % obar=find(Senateseats==50); %Orman factor
 % bar(Senateseats(obar),histogram(obar)*stateprobs(6),'g')
-axis([Senateseats(3)-0.8 Senateseats(assignedEV(3))-2.5 0 max(histogram)*105])
+axis([Senateseats(3)-0.8 Senateseats(assignedEV(3))+0.5 0 max(histogram)*105])
 xlabel('Democratic+Independent Senate seats','FontSize',14);
 ylabel('Probability (%)','FontSize',14)
 set(gcf, 'InvertHardCopy', 'off');
