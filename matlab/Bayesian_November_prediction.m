@@ -1,4 +1,4 @@
-function [predictmean,drift_winprob,bayesian_winprob]=Bayesian_November_prediction(daystoelection,MM,driftrate,maxdrift,mindrift,Prior2016,Prior2016SD)
+function [predictmean,drift_winprob,bayesian_winprob]=Bayesian_November_prediction(daystoelection,MM,driftrate,maxdrift,mindrift,PriorMM,PriorMMSD)
 
 MMdrift=min(driftrate*sqrt(daystoelection),maxdrift);
 MMdrift=real(max(MMdrift,mindrift)); % just in case something is screwy like N<0
@@ -11,7 +11,7 @@ nowcond=tpdf((Mrange-MM)/MMdrift,3); % long-tailed distribution. you never know.
 nowcond=nowcond/sum(nowcond);
 
 % What was long-term prediction? (the prior)
-prior=tpdf((Mrange-Prior2016)/Prior2016SD,1); %make it really long-tailed
+prior=tpdf((Mrange-PriorMM)/PriorMMSD,1); %make it really long-tailed
 prior=prior/sum(prior);
 
 % Combine to make prediction
