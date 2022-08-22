@@ -17,11 +17,11 @@ mm=Senate_history(:,12);
    % June-August 2016: 1.7% MM per single-party seat change.
 
 %%%%% Combine diffusion with a prognosticator-based prior (Sabato)
-h=datenum('03-Nov-2020')-today; % days until election (note: November 3, Julian 308)
+h=datenum('08-Nov-2022')-today; % days until election (note: November 8, Julian 313)
 current_mm=mm(max(find(d==max(d)))); % Find the most recent Meta-Margin
 
 [predicted_mm,drift,bayes]=Bayesian_November_prediction(h,current_mm,0.6,4.5,1.5,2,8)
 D_November_control_probability=bayes*100;
 
-dlmwrite(strcat(whereoutputs,'Senate_D_November_control_probability.csv'),[today-datenum('31-Dec-2019') D_November_control_probability predicted_mm])
+dlmwrite(strcat(whereoutputs,'Senate_D_November_control_probability.csv'),[today-datenum('31-Dec-2021') D_November_control_probability predicted_mm])
 %%%%% end November prediction calculation
