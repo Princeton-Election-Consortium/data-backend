@@ -1,5 +1,5 @@
 %LIBGL_DEBUG='verbose'
-Senate_history=load(strcat(whereoutput,'Senate_estimate_history.csv'));
+Senate_history=load(strcat(whereoutput,'Senate_estimate_history_2022.csv'));
 d=Senate_history(:,1);
 medians=Senate_history(:,2);
 means=Senate_history(:,3);
