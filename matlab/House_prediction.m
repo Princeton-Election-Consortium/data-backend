@@ -25,7 +25,7 @@ nowdensity=tpdf((Mrange-current_mm)/Mdrift,3); % t-distribution is long-tailed. 
 nowdensity=nowdensity/sum(nowdensity);
 
 % What was long-term prediction? (the prior)
-specials_2022=-1; % LAST UPDATE: July 19 2020
+specials_2022=-1; % LAST UPDATE: August 22 2022
 specials_2022SD=3; % not that many previous examples
 prior=tpdf((Mrange-specials_2022)/specials_2022SD,1); % make it really long-tailed, df=1
 prior=prior/sum(prior);
