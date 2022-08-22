@@ -1,5 +1,5 @@
 %%%  Senate_jerseyvotes.m - a MATLAB script
-%%%  Copyright 2008, 2014, 2016 by Samuel S.-H. Wang
+%%%  Copyright 2008, 2014, 2016. 2022 by Samuel S.-H. Wang
 %%%  Noncommercial-use-only license: 
 %%%  You may use or modify this software, but only for noncommercial purposes. 
 %%%  To seek a commercial-use license, contact the author at sswang@princeton.edu.
@@ -8,7 +8,7 @@
 %%%  states are displayed.
 %%%
 %%%  Updated from EV to Senate-specific calculation in July 2014 by Sam
-%%%  Wang. Updated to reflect current races in June 2016.
+%%%  Wang. Updated to reflect current races in 2022.
 
 % Likelihood analysis of all possible outcomes of election based 
 % on the meta-analytical methods of Prof. Sam Wang, Princeton University.
@@ -63,7 +63,7 @@ for ii=length(Mrange)
     % actual number of voters in previous election
     % data from: http://www.electproject.org/2016g
     % be sure that the order of this array matches the order of the state array in Senate_estimator
-    % in 2022: 'AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WA ' 12 races.
+    % in 2022: 'AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WI ' 12 races.
     kvoters=[3387 3257 11067 5000 3026 5525 806 1405 5922 6915 1488 4088]; %2020 numbers
     jerseyvotes=difference./kvoters; % convert to per-voter power
 
