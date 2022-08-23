@@ -9,9 +9,9 @@
 % so they can be run in the same MATLAB environment as loaded via the Unix
 % script nightly.sh
 close
-forhistory=1; EV_estimator
-EV_jerseyvotes
-EV_prediction
+% forhistory=1; EV_estimator
+% EV_jerseyvotes
+% EV_prediction
 % EV_history_plot       % This plot is also produced by ev_history_plot.py
 %                       % Comment out if running without a display, or else jbfill
                         % will crash MATLAB.
@@ -19,10 +19,10 @@ EV_prediction
                         % graphical environment.
 
 clear
-forhistory=1; Senate_estimator
+forhistory=1; Senate_estimator_2022
 % plot_Senate_seats_mm_history % Again, calls jbfill and won't run in a nongraphical environment
-Senate_jerseyvotes
-Senate_November_prediction
+Senate_jerseyvotes_2022
+Senate_November_prediction_2022
 House_prediction
 
 quit                    % closes MATLAB when done

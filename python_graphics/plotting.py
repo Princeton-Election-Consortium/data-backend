@@ -28,10 +28,10 @@ mo_names = {
             11: 'Nov',
             12: 'Dec',
            }
-election_day = dt.datetime(2020, 11, 3)
-election_day_plus4 = dt.datetime(2020, 11, 7)
+election_day = dt.datetime(2022, 11, 8)
+election_day_plus4 = dt.datetime(2022, 11, 12)
 
-year = 2020
+year = 2022
 doy2dt = lambda d: dt.datetime(year, 1, 1) + dt.timedelta(int(d)-1)
 
 # matplotlib settings
@@ -647,12 +647,11 @@ def generate_histogram(
 
     # load data
     data_path = os.path.join(data_dir, data_file)
-    data = pd.read_csv(data_path)
+    data = pd.read_csv(data_path, header=None)
     data = data.values.squeeze()
     data = data * data_factor
     if xvals is None:
         xvals = np.arange(len(data))
-    
     if thumbnail:
         font_size = font_size * 1.5
         vline_font_size = font_size
