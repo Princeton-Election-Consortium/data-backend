@@ -138,7 +138,7 @@ def generate_line_plot(
                   plot_customization = False,
                   ## ***** temporary these two should be merged when final design decision is made
                   plot_customization_2 = False,
-                  se_xpos = 0.79,
+                  se_xpos = 0.2,
                   thumbnail = False,
                 ):
 
@@ -438,7 +438,7 @@ def generate_line_plot(
         if plot_customization_2:
             print(ax.get_ylim())
 
-        new_ax_offset = 3
+        new_ax_offset = 2 # offset between right and left axis (positive values indicate Republican advantage)
 
 
         ax2 = ax.twinx()
@@ -448,7 +448,7 @@ def generate_line_plot(
         ax2.yaxis.tick_left()
         
         if not plot_customization_2:
-            spec_ypos = 6
+            spec_ypos = 3
             spec_span = 3
             spec_col = '#f58025'
             ax.axhline(spec_ypos,
@@ -469,7 +469,7 @@ def generate_line_plot(
 
         if not plot_customization_2:
             ax.text(se_xpos,
-                    spec_ypos - pad_data_units,
+                    spec_ypos + pad_data_units,
                     'Special elections',
                     color=spec_col,
                     fontsize=font_size-4,
@@ -502,7 +502,7 @@ def generate_line_plot(
 
             ax.text(1 + ylab_pad * size_scale,
                     0.5,
-                    '2020 generic ballot D-R',
+                    '2022 generic ballot D-R', 
                     fontsize=font_size,
                     rotation=-ylab_rotation,
                     ha='center',
