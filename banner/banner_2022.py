@@ -87,7 +87,7 @@ def main():
     if sen_metamargin < 0:
         sen_ahead_str = 'R+'
 
-    path = os.path.join(dir_path, '../scraping/outputs/2020.generic.polls.median.csv')
+    path = os.path.join(dir_path, '../scraping/outputs/2022.generic.polls.median.csv')
     estimates = get_estimates(path, dict_csv=True)
     gen_metamargin = (Decimal(estimates['median_margin']) - 3).quantize(Decimal('0.1'))
 
@@ -105,10 +105,10 @@ def main():
 #     if past_sunday.month != end_of_week.month:
 #         start_month = past_sunday.strftime("%b")
 #         end_month = end_of_week.strftime("%b")
-#         datestring = f'{start_month} {weekstartnum} - {end_month} {weekendnum}, 2020'
+#         datestring = f'{start_month} {weekstartnum} - {end_month} {weekendnum}, 2022'
 #     else:
 #         month = past_sunday.strftime("%b")
-#         datestring = f'{month} {weekstartnum}-{weekendnum}, 2020'
+#         datestring = f'{month} {weekstartnum}-{weekendnum}, 2022'
     
 #     datestring = datetime.now().strftime("%b %d")
 
@@ -123,17 +123,17 @@ def main():
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 50 D (D+1.0%)</span>
         <br>
-        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
         <br>
-        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
+        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
     </div>
     """
 
     banner_old = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2020-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
         <br>
-        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2020-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
+        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
     </div>
     """
 
