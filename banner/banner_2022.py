@@ -129,6 +129,38 @@ def main():
     </div>
     """
 
+    banner_table = f"""
+    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
+        <table>
+            <tr>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 50 D (D+1.0%)</tr>
+            <br>
+            <tr>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</tr>
+            <br>
+            <tr><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</tr>
+        </table>
+    </div>
+    """
+
+    banner_col1 = f"""
+    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
+        <span>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 50 D (D+1.0%)</span>
+    </div>
+    """
+
+    banner_col2 = f"""
+    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
+        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+    </div>
+    """
+
+    
+    banner_col3 = f"""
+    <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
+        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
+    </div>
+    """
+
+
     banner_old = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_seats_dem} D, {sen_seats_rep} R ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
@@ -142,6 +174,30 @@ def main():
 
     with open(path, 'w') as bannerfile:
         bannerfile.write(banner)
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'banner_table.html')
+
+    with open(path, 'w') as bannerfile:
+        bannerfile.write(banner_table)
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'banner_col1.html')
+
+    with open(path, 'w') as bannerfile:
+        bannerfile.write(banner_col1)
+    
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'banner_col2.html')
+
+    with open(path, 'w') as bannerfile:
+        bannerfile.write(banner_col2)
+
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(dir_path, 'banner_col3.html')
+
+    with open(path, 'w') as bannerfile:
+        bannerfile.write(banner_col3)
     
     dir_path = os.path.dirname(os.path.realpath(__file__))
     path = os.path.join(dir_path, 'banner_old.html')

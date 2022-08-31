@@ -1,5 +1,13 @@
 #!/bin/bash
 
+terminate='date +2022-09-11'
+today='date +%Y-%m-%d'
+if [[ "$today" > "$terminate" ]] ;
+then
+    echo passed day of elections 
+    exit 0
+fi
+
 source /mysql0/python/anaconda3/bin/activate
 
 cd /opt/cron/scripts/data-backend
@@ -38,7 +46,7 @@ cp /opt/cron/data-backend/sidebar/*.html /opt/cron/outputs
 # cp /opt/cron/data-backend/moneyball/* /opt/cron/www/data/moneyball/
 
 # backups
-archive_dir=$(date +%Y-%m-%d_%H-%M-%S)
+# archive_dir=$(date +%Y-%m-%d_%H-%M-%S)
 mkdir /opt/cron/outputs/archive/$archive_dir
 cp /opt/cron/outputs/* /opt/cron/outputs/archive/$archive_dir
 
