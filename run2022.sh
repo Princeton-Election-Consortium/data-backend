@@ -8,6 +8,8 @@ then
     exit 0
 fi
 
+echo $today
+
 source /mysql0/python/anaconda3/bin/activate
 
 cd /opt/cron/scripts/data-backend
