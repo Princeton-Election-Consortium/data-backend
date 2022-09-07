@@ -515,7 +515,7 @@ def generate_line_plot(
             title_fillers['party'] = 'D+'
         elif lv < 0:
             title_fillers['party'] = 'R+'
-        title_fillers['last_value'] = lv
+        title_fillers['last_value'] = abs(lv)
 
         if not thumbnail:
             ax.set_title(title_txt.format(**title_fillers),

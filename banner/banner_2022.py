@@ -77,7 +77,7 @@ def main():
     if ev_metamargin < 0:
         ev_ahead_str = 'R+'
 
-    path = os.path.join(dir_path, '../matlab/outputs/Senate_estimates.csv')
+    path = os.path.join(dir_path, '../matlab/outputs/Senate_estimates_2022.csv')
     estimates = get_estimates(path)
     sen_seats_dem = int(estimates[0])
     sen_seats_rep = 100 - sen_seats_dem
@@ -86,14 +86,26 @@ def main():
     sen_ahead_str = 'D+'
     if sen_metamargin < 0:
         sen_ahead_str = 'R+'
+    elif sen_metamargin == 0:
+        sen_ahead_str  = 'Tie'
 
     path = os.path.join(dir_path, '../scraping/outputs/2022.generic.polls.median.csv')
     estimates = get_estimates(path, dict_csv=True)
     gen_metamargin = (Decimal(estimates['median_margin']) - 3).quantize(Decimal('0.1'))
+    print(estimates['median_margin'])
+    gen_polling = (Decimal(estimates['median_margin'])).quantize(Decimal('0.1'))
 
     gen_ahead_str = 'D+'
     if gen_metamargin < 0:
         gen_ahead_str = 'R+'
+    elif gen_metamargin == 0:
+        gen_ahead_str = 'Tie'
+
+    gen_polling_ahead_str = 'D+'
+    if gen_polling < 0:
+        gen_polling_ahead_str = 'R+'
+    elif gen_polling == 0:
+        gen_polling_ahead_str = 'Tie'
 
     weekday_num = datetime.now().date().weekday()
     past_sunday = datetime.now() + timedelta(days=-weekday_num)
@@ -115,48 +127,49 @@ def main():
     ev_mm_str = f'{ev_ahead_str}{abs(ev_metamargin)}%'
     sen_mm_str = f'{sen_ahead_str}{abs(sen_metamargin)}%'
     gen_mm_str = f'{gen_ahead_str}{abs(gen_metamargin)}%'
+    gen_poll_mm_str = f'{gen_polling_ahead_str}{abs(gen_polling)}%'
 
     pres_moneyball_states = get_pres_moneyball_states(3)
     sen_moneyball_states = get_sen_moneyball_states(3)
 
     banner = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 50 D (D+1.0%)</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: 53 D (range: 49-55) Control: ({sen_mm_str}) from toss-up</span>
         <br>
-        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+        <span>  <a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</span>
         <br>
-        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, Governor/SoS: NV AZ Supreme Courts: OH NC</span>
     </div>
     """
 
     banner_table = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <table>
-            <tr>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 50 D (D+1.0%)</tr>
+            <tr><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: 53 D (range: 49-55) Control: ({sen_mm_str}) from toss-up<</tr>
             <br>
-            <tr>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</tr>
+            <tr><a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</tr>
             <br>
-            <tr><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</tr>
+            <tr><a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, Governor/SoS: NV AZ Supreme Courts: OH NC</tr>
         </table>
     </div>
     """
 
     banner_col1 = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Outcome: Biden 306 EV (D+1.2% from toss-up), Senate 50 D (D+1.0%)</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: 53 D (range: 49-55)Control: ({sen_mm_str}) from toss-up</span>
     </div>
     """
 
     banner_col2 = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Nov 3 polls: Biden {ev_dem} EV ({ev_mm_str}), <a href="/election-tracking-2022-u-s-senate/">Senate</a> 50-55 D ({sen_mm_str}), <a href="/election-tracking-2022-part-1-the-u-s-house/">House control</a> {gen_mm_str}</span>
+        <span><a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</span>
     </div>
     """
 
     
     banner_col3 = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span><a href="/data/moneyball/">Moneyball</a> states: President {pres_moneyball_states}, <a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, <a href="/data/moneyball/">Legislatures</a> KS TX NC</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> {sen_moneyball_states}, Governor/SoS: NV AZ Supreme Courts: OH NC</span>
     </div>
     """
 
