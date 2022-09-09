@@ -2,6 +2,8 @@
 
 terminate='date +2022-09-11'
 today='date +%Y-%m-%d'
+echo $today
+echo $terminate
 if [[ "$today" > "$terminate" ]] ;
 then
     echo passed day of elections 
