@@ -17,6 +17,8 @@ source /opt/anaconda/3.9_4.12.0/bin/activate /opt/anaconda/3.9_4.12.0/
 
 cd /opt/cron/scripts/data-backend
 
+pip install scikit-image
+
 git pull origin master
 
 python scraping/pec2022.py
