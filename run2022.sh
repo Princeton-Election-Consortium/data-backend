@@ -2,15 +2,15 @@
 
 terminate='date +2022-09-11'
 today='date +%Y-%m-%d'
-echo $today
-echo $terminate
-if [[ "$today" > "$terminate" ]] ;
-then
-    echo passed day of elections 
-    exit 0
-fi
+# echo $today
+# echo $terminate
+# if [[ "$today" > "$terminate" ]] ;
+# then
+#     echo passed day of elections 
+#     exit 0
+# fi
 
-echo $today
+# echo $today
 
 # source /mysql0/python/anaconda3/bin/activate
 source /opt/anaconda/3.9_4.12.0/bin/activate /opt/anaconda/3.9_4.12.0/
