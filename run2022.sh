@@ -17,7 +17,6 @@ source /opt/anaconda/3.9_4.12.0/bin/activate /opt/anaconda/3.9_4.12.0/
 
 cd /opt/cron/scripts/data-backend
 
-pip install scikit-image
 
 git pull origin master
 
@@ -54,6 +53,7 @@ cp /opt/cron/scripts/data-backend/sidebar/*.html /opt/cron/output
 
 # backups
 archive_dir=$(date +%Y-%m-%d_%H-%M-%S)
+echo archive_dir
 mkdir /opt/cron/output/archive/$archive_dir
 cp /opt/cron/output/* /opt/cron/output/archive/$archive_dir
 
