@@ -24,7 +24,7 @@ python scraping/pec2022.py
 
 cp /opt/cron/scripts/data-backend/scraping/outputs/*.txt /opt/cron/scripts/data-backend/matlab
 cd matlab
-matlab -r "federal_runner; quit"
+/opt/MATLAB/R2021b/bin/matlab -r "federal_runner; quit"
 cd ..
 
 cd python_graphics
