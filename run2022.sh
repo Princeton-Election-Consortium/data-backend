@@ -10,7 +10,8 @@ fi
 
 echo $today
 
-source /mysql0/python/anaconda3/bin/activate
+# source /mysql0/python/anaconda3/bin/activate
+source /opt/anaconda/3.9_4.12.0/bin/activate /opt/anaconda/3.9_4.12.0/
 
 cd /opt/cron/scripts/data-backend
 

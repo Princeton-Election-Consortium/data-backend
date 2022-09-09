@@ -91,7 +91,7 @@ def main():
 
     path = os.path.join(dir_path, '../scraping/outputs/2022.generic.polls.median.csv')
     estimates = get_estimates(path, dict_csv=True)
-    gen_metamargin = (Decimal(estimates['median_margin']) - 3).quantize(Decimal('0.1'))
+    gen_metamargin = (Decimal(estimates['median_margin']) - 2).quantize(Decimal('0.1'))
     print(estimates['median_margin'])
     gen_polling = (Decimal(estimates['median_margin'])).quantize(Decimal('0.1'))
 
@@ -128,13 +128,15 @@ def main():
     sen_mm_str = f'{sen_ahead_str}{abs(sen_metamargin)}%'
     gen_mm_str = f'{gen_ahead_str}{abs(gen_metamargin)}%'
     gen_poll_mm_str = f'{gen_polling_ahead_str}{abs(gen_polling)}%'
+    dem_seats = f'{sen_seats_dem}{" Dem"}'
+    rep_seats = f'{sen_seats_rep}{" Rep"}'
 
     pres_moneyball_states = get_pres_moneyball_states(3)
     sen_moneyball_states = get_sen_moneyball_states(3)
 
     banner = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: 53 D (range: 49-55) Control: ({sen_mm_str}) from toss-up</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 49-55) Control: ({sen_mm_str}) from toss-up</span>
         <br>
         <span>  <a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</span>
         <br>
@@ -145,7 +147,7 @@ def main():
     banner_table = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <table>
-            <tr><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: 53 D (range: 49-55) Control: ({sen_mm_str}) from toss-up<</tr>
+            <tr><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats}  (range: 49-55) Control: ({sen_mm_str}) from toss-up<</tr>
             <br>
             <tr><a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</tr>
             <br>
@@ -156,7 +158,7 @@ def main():
 
     banner_col1 = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: 53 D (range: 49-55)Control: ({sen_mm_str}) from toss-up</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 49-55)Control: ({sen_mm_str}) from toss-up</span>
     </div>
     """
 

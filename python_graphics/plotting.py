@@ -146,6 +146,7 @@ def generate_line_plot(
     data_path = os.path.join(data_dir, data_file)
     data = pd.read_csv(data_path, header=None, **read_csv_kw)
     #data.drop_duplicates(x_column, inplace=True)
+    print(out_path)
 
     # read in column labels
     fname, ext = os.path.splitext(data_file)
@@ -210,6 +211,40 @@ def generate_line_plot(
             color=data_line_color,
             lw=data_lw * size_scale,
             zorder=1000)
+    # plot event arrow
+    if out_path=="./outputs/meta_lead_senate_2022" or out_path=="./outputs/thumb_meta_lead_senate_2022" or out_path=="./outputs/dem_senate_seats_2022":
+        # event1_date = doy2dt(int(124))
+        # text1_placement = doy2dt(int(95))
+        
+        # ax.annotate("Dobbs Leak", xy=(event1_date, -1.8), xytext=(text1_placement, -3.4),
+        #         arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+        event2_date = doy2dt(int(220))
+        text2_placement = doy2dt(int(193))
+        
+        ax.annotate("FBI Search", xy=(event2_date, 6.2), xytext=(text2_placement, 7.4),
+                arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+    
+    if out_path=="./outputs/dem_senate_seats_2022":
+        # event1_date = doy2dt(int(124))
+        # text1_placement = doy2dt(int(95))
+        
+        # ax.annotate("Dobbs Leak", xy=(event1_date, 48.8), xytext=(text1_placement, 47.4),
+        #         arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+
+        event2_date = doy2dt(int(220))
+        text2_placement = doy2dt(int(193))
+        
+        ax.annotate("FBI Search", xy=(event2_date, 53.2), xytext=(text2_placement, 54.2),
+                arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+    
+    if "house" in out_path:
+        event1_date = doy2dt(int(175))
+        text1_placement = doy2dt(int(132))
+        
+        ax.annotate("Dobbs decision", xy=(event1_date, -3.7), xytext=(text1_placement, -6.5),
+                arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+
+    
 
     # plot circle on most recent data point
     col = zone_colors[1] if vals[-1]>0 else zone_colors[0]
