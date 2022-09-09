@@ -17,14 +17,11 @@ source /opt/anaconda/3.9_4.12.0/bin/activate /opt/anaconda/3.9_4.12.0/
 
 cd /opt/cron/scripts/data-backend
 
-pip install matplotlib
-pip install pandas
-
 git pull origin master
 
 python scraping/pec2022.py
 
-cp /opt/cron/scripts/data-backend/scraping/output/*.txt /opt/cron/scripts/data-backend/matlab
+cp /opt/cron/scripts/data-backend/scraping/outputs/*.txt /opt/cron/scripts/data-backend/matlab
 cd matlab
 matlab -r "federal_runner; quit"
 cd ..
@@ -43,11 +40,11 @@ python Senate_JV_Widget_2022.py
 # python sidebar/Senate_JV_Widget_old.py
 
 cp /opt/cron/scripts/matlab/*.txt /opt/cron/output
-cp /opt/cron/scripts/data-backend/scraping/output/*.csv /opt/cron/output
-cp /opt/cron/scripts/data-backend/matlab/output/*.csv /opt/cron/output
-cp /opt/cron/scripts/data-backend/matlab/output/270towin_URL.txt /opt/cron/output
+cp /opt/cron/scripts/data-backend/scraping/outputs/*.csv /opt/cron/output
+cp /opt/cron/scripts/data-backend/matlab/outputs/*.csv /opt/cron/output
+cp /opt/cron/scripts/data-backend/matlab/outputs/270towin_URL.txt /opt/cron/output
 
-cp /opt/cron/scripts/data-backend/python_graphics/output/*.png /opt/cron/output
+cp /opt/cron/scripts/data-backend/python_graphics/outputs/*.png /opt/cron/output
 cp /opt/cron/scripts/data-backend/banner/*.html /opt/cron/output
 cp /opt/cron/scripts/data-backend/sidebar/*.html /opt/cron/output
 
@@ -58,7 +55,7 @@ cp /opt/cron/scripts/data-backend/sidebar/*.html /opt/cron/output
 mkdir /opt/cron/output/archive/$archive_dir
 cp /opt/cron/output/* /opt/cron/output/archive/$archive_dir
 
-# cd /opt/cron/scripts/data-backend/
+# cd /opt/cron/scripts/data-backend
 # git add .
 # git commit -m "today's output"
 # git push
