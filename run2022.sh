@@ -17,6 +17,7 @@ source /opt/anaconda/3.9_4.12.0/bin/activate /opt/anaconda/3.9_4.12.0/
 
 cd /opt/cron/scripts/data-backend
 
+# export PYTHON_PATH = /opt/cron/scripts/data-backend/python_graphics
 
 git pull origin master
 
@@ -57,9 +58,9 @@ echo $archive_dir
 mkdir /opt/cron/output/archive/$archive_dir
 cp /opt/cron/output/* /opt/cron/output/archive/$archive_dir
 
-# cd /opt/cron/scripts/data-backend
-# git add .
-# git commit -m "today's output"
-# git push
+cd /opt/cron/scripts/data-backend
+git add .
+git commit -m "today's output"
+git push
 
 
