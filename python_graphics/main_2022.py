@@ -143,6 +143,7 @@ generate_line_plot(
         watermark_pos=[0.77, 0.95],
         plot_customization = True,
         plot_customization_2 = True,
+        plot_customization_3 = True,
         out_path=path)
 
 ## new strike zone and standard formatting version
@@ -176,6 +177,7 @@ generate_line_plot(
         watermark_pos=[0.77, 0.95],
         plot_customization = True,
         plot_customization_2 = True,
+        plot_customization_3 = True,
         out_path=path)
 
 ## generate thumbnail version

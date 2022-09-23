@@ -138,6 +138,7 @@ def generate_line_plot(
                   plot_customization = False,
                   ## ***** temporary these two should be merged when final design decision is made
                   plot_customization_2 = False,
+                  plot_customization_3 = False,
                   se_xpos = 0.2,
                   thumbnail = False,
                 ):
@@ -503,6 +504,23 @@ def generate_line_plot(
             font_size = font_size * 0.84
 
         if not plot_customization_2:
+            ax.text(se_xpos,
+                    spec_ypos + pad_data_units,
+                    'Special elections',
+                    color=spec_col,
+                    fontsize=font_size-4,
+                    alpha=0.8,
+                    ha='center',
+                    va='center',
+                    transform=blend(ax.transAxes, ax.transData))
+
+        if plot_customization_3:
+            spec_ypos = 3
+            spec_span = 3
+            spec_col = '#f58025'
+            ax.axhline(spec_ypos,
+                    color=spec_col,
+                    lw=0.5 * size_scale)
             ax.text(se_xpos,
                     spec_ypos + pad_data_units,
                     'Special elections',
