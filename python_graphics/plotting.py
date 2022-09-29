@@ -222,28 +222,32 @@ def generate_line_plot(
         event2_date = doy2dt(int(220))
         text2_placement = doy2dt(int(193))
         
-        ax.annotate("FBI Search", xy=(event2_date, 6.2), xytext=(text2_placement, 7.4),
+        ax.annotate("", xy=(event2_date, 6.2), xytext=(event2_date, 7.4),
                 arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+        ax.annotate("FBI search", xy=(text2_placement, 7.5), fontsize=18)
+        
     
     if out_path=="./outputs/dem_senate_seats_2022":
-        # event1_date = doy2dt(int(124))
-        # text1_placement = doy2dt(int(95))
-        
-        # ax.annotate("Dobbs Leak", xy=(event1_date, 48.8), xytext=(text1_placement, 47.4),
-        #         arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
 
         event2_date = doy2dt(int(220))
         text2_placement = doy2dt(int(193))
         
-        ax.annotate("FBI Search", xy=(event2_date, 53.2), xytext=(text2_placement, 54.2),
+        # ax.annotate("FBI Search", xy=(event2_date, 53.2), xytext=(text2_placement, 54.2),
+        #         arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+
+        ax.annotate("", xy=(event2_date, 53.2), xytext=(event2_date, 54.3),
                 arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+        ax.annotate("FBI search", xy=(text2_placement, 54.4), fontsize=18)
     
     if "house" in out_path:
         event1_date = doy2dt(int(175))
         text1_placement = doy2dt(int(132))
         
-        ax.annotate("Dobbs decision", xy=(event1_date, -3.7), xytext=(text1_placement, -6.5),
+        # ax.annotate("Dobbs decision", xy=(event1_date, -3.7), xytext=(text1_placement, -6.5),
+        #         arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+        ax.annotate("", xy=(event1_date, -3.2),  xytext=(event1_date, -5.3),
                 arrowprops=dict(facecolor='black', lw=1.3,arrowstyle="-|>"), fontsize=18)
+        ax.annotate("Dobbs decision", xy=(text1_placement, -5.9), fontsize=18)
 
     
 
@@ -386,11 +390,19 @@ def generate_line_plot(
                           transform=blend(ax.transAxes, ax.transData))
             if hline_lab_colors is None:
                 hline_lab_colors = [col0, col1]
-            ax.text(hline_lab_xpos,
-                    hline_ypos - pad_data_units,
+            
+            if out_path == "./outputs/thumb_dem_senate_seats_2022":
+                ax.text(hline_lab_xpos,
+                    hline_ypos-0.1* np.diff(ax.get_ylim()),
                     hline_labels[0].format(**title_fillers),
                     color=hline_lab_colors[0],
                     **txt_kw,)
+            else:
+                ax.text(hline_lab_xpos,
+                        hline_ypos - pad_data_units,
+                        hline_labels[0].format(**title_fillers),
+                        color=hline_lab_colors[0],
+                        **txt_kw,)
             ax.text(hline_lab_xpos,
                     hline_ypos + pad_data_units,
                     hline_labels[1].format(**title_fillers),
