@@ -868,7 +868,7 @@ def generate_histogram(
     # last date label
     if thumbnail: last_date_label_pos = None
     if last_date_label_pos is not None:
-        h_filename = data_file.split('_')[0] + '_estimate_history'
+        h_filename = data_file.split('_')[0] + '_estimate_history_2022'
         c_filename = h_filename + '_columns'
         hdata_path = os.path.join(data_dir, h_filename+'.csv')
         cdata_path = os.path.join(data_dir, c_filename+'.csv')

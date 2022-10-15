@@ -25,6 +25,10 @@ style_and_start = """
         max-width: 640px;
         font-size: 12px;
         border: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        border-left: 1px solid #eee;
+        border-top: 1px solid #eee;
+        border-right: 1px solid #eee;
     }
 
     th {
@@ -262,7 +266,7 @@ def main():
     html = style_and_start2
     html_full = style_and_start2
     n = 0
-    magicNum = 43
+    magicNum = 46
     count = 0
     for key in sorted_margins:
         seats = magicNum +count
