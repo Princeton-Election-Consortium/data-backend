@@ -136,7 +136,7 @@ def main():
 
     banner = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 49-55) Control: ({sen_mm_str}) from toss-up</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 47-52) Control: ({sen_mm_str}) from toss-up</span>
         <br>
         <span>  <a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</span>
         <br>
@@ -147,7 +147,7 @@ def main():
     banner_table = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <table>
-            <tr><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats}  (range: 49-55) Control: ({sen_mm_str}) from toss-up<</tr>
+            <tr><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats}  (range: 47-52) Control: ({sen_mm_str}) from toss-up<</tr>
             <br>
             <tr><a href="/election-tracking-2022-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</tr>
             <br>
@@ -158,7 +158,7 @@ def main():
 
     banner_col1 = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 49-55)Control: ({sen_mm_str}) from toss-up</span>
+        <span><a href="/election-tracking-2022-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 47-52)Control: ({sen_mm_str}) from toss-up</span>
     </div>
     """
 
