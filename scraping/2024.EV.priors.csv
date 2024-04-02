@@ -1,0 +1,52 @@
+code,name,num,prior
+AL,Alabama,1,-25.5
+AK,Alaska,2,-10.1
+AZ,Arizona,3,0.31
+AR,Arkansas,4,-27.6
+CA,California,5,29.2
+CO,Colorado,6,13.5
+CT,Connecticut,7,20.1
+DC,D.C.,8,86.8
+DE,Delaware,9,19
+FL,Florida,10,-3.4
+GA,Georgia,11,0.24
+HI,Hawaii,12,29.5
+ID,Idaho,13,-30.8
+IL,Illinois,14,17
+IN,Indiana,15,-16.1
+IA,Iowa,16,-8.2
+KS,Kansas,17,-14.7
+KY,Kentucky,18,-25.9
+LA,Louisiana,19,-18.6
+ME,Maine,20,9.1
+MD,Maryland,21,33.2
+MA,Massachusetts,22,33.5
+MI,Michigan,23,2.8
+MN,Minnesota,24,7.1
+MS,Mississippi,25,-16.5
+MO,Missouri,26,-15.4
+MT,Montana,27,-16.4
+NE,Nebraska,28,-19.2
+NV,Nevada,29,2.4
+NH,New Hampshire,30,7.4
+NJ,New Jersey,31,15.9
+NM,New Mexico,32,10.8
+NY,New York,33,23.1
+NC,North Carolina,34,-1.3
+ND,North Dakota,35,-33.4
+OH,Ohio,36,-8
+OK,Oklahoma,37,-33.1
+OR,Oregon,38,16.1
+PA,Pennsylvania,39,1.2
+RI,Rhode Island,40,20.8
+SC,South Carolina,41,-11.7
+SD,South Dakota,42,-26.2
+TN,Tennessee,43,-23.2
+TX,Texas,44,-5.6
+UT,Utah,45,-20.5
+VT,Vermont,46,35.4
+VA,Virginia,47,10.1
+WA,Washington,48,19.2
+WV,West Virginia,49,-38.9
+WI,Wisconsin,50,0.63
+WY,Wyoming,51,-43.4

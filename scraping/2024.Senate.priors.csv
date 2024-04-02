@@ -1,0 +1,35 @@
+code,name,num,prior,dem,rep
+AZ,Arizona,1,0,Sinema (I),Rep
+CA,California,2,0,Dem,Rep
+CT,Connecticut,3,0,Murphy,Rep
+DE,Delaware,4,0,Dem,Rep
+FL,Florida,5,0,Dem,Scott
+HI,Hawaii,6,0,Hirono,Rep
+IN,Indiana,7,0,Dem,Rep
+MA,Massachusetts,8,0,Warren,Rep
+MD,Maryland,9,0,Dem,Rep
+ME,Maine,10,0,King (I),Rep
+MI,Michigan,11,0,Dem,Rep
+MN,Minnesota,12,0,Klobuchar,Rep
+MO,Missouri,13,0,Dem,Hawley
+MS,Mississippi,14,0,Dem,Wicker
+MT,Montana,15,0,Tester,Rep
+ND,North Dakota,16,0,Dem,Cramer
+NE,Nebraska,17,0,Dem,Fischer
+NS,Nebraska-Special,18,0,Ricketts
+NJ,New Jersey,19,0,Menendez,Rep
+NM,New Mexico,20,0,Heinrich,Rep
+NV,Nevada,21,0,Rosen,Rep
+NY,New York,22,0,Gillibrand,Rep
+OH,Ohio,23,0,Brown,Rep
+PA,Pennsylvania,24,0,Casey Jr.,Rep
+RI,Rhode Island,25,0,Whitehouse,Rep
+TN,Tennessee,26,0,Dem,Blackburn
+TX,Texas,27,0,Dem,Cruz
+UT,Utah,28,0,Dem,Open
+VA,Virginia,29,0,Kaine,Rep
+VT,Vermont,30,0,Sanders (I),Rep
+WA,Washington,31,0,Cantwell,Rep
+WI,Wisconsin,32,0,Baldwin,Rep
+WV,West Virginia,33,0,Dem,Rep
+WY,Wyoming,34,0,Dem,Barrasso
