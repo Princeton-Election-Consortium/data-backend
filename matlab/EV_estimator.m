@@ -10,7 +10,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EV_estimator.m
 % 
-% This script loads 'poll.median.txt' and generates or updates/replaces 4 CSV files:
+% This script loads '2024.EV.polls.median.txt' and generates or updates/replaces 4 CSV files:
 % 
 % EV_estimates.csv
 %    all in one line:
@@ -22,10 +22,10 @@
 %    1 value - number of state polls used to make the estimates.
 %    1 value - (calculated by EV_metamargin and appended) the meta-margin.
 % 
-% Another file, EV_estimate_history, is updated with the same
+% Another file, EV_estimate_history.csv, is updated with the same
 % information as EV_estimates.csv plus 1 value for the date.
 %
-% stateprobs.csv
+% EV_stateprobs.csv
 %    A 51-line file giving percentage probabilities for candidate #1 win of the popular vote, state by state. 
 %    Note that for EV calculation, NE and ME were assumed to have a winner-take-all rule, but in fact they do not. 
 %    Because in practice NE and ME have not split their votes, for now this is a satisfactory approximation.
@@ -47,9 +47,8 @@
 
 whereoutput='outputs/'; % the output path for CSV and TXT files
 
-polls.state=[
- 'AL,AK,AZ,AR,CA,CO,CT,DC,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,M1,M2,N1,N2,N3 '];
-polls.EV=[9 3 11 6 55 9 7 3 3 29 16 4 4 20 11 6 6 8 8 2 10 11 16 10 6 10 3 2 6 4 14 5 29 15 3 18 7 7 20 4 9 3 11 38 6 3 13 12 5 10 3 1 1 1 1 1]; % add Maine and Nebraska - deployed October 28 2016
+polls.state= EV_STATES
+polls.EV= EV_PER_STATE
 num_states=size(polls.EV,2);
 
 assignedEV(3)=sum(polls.EV);
@@ -73,7 +72,6 @@ end
 if ~exist('analysisdate','var')
     analysisdate=0;
 end
-todayte=floor(today-datenum('31-dec-2019'));
 
 if ~exist('metacalc','var')
     metacalc=1;
@@ -82,21 +80,21 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%% Load and parse polling data %%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-polldata=load('2020.EV.polls.median.txt');
+polldata=load(EV_POLLS_TXT);
 % wants groups of 51 lines, most recent group first (reverse time order)
 % in each line, fields should be 
 %    #polls, datelastpoll?, pollmargin, pollSEM, date_update, statenum
 numlines = size(polldata,1);
 if mod(numlines,51)>0
-    warning('Warning: polls.median.txt is not a multiple of 51 lines long');
+    warning('Warning: ' + EV_POLLS_TXT + ' is not a multiple of 51 lines long');
 end
 % Currently we are using median and effective SEM of the last 3 polls.
 % To de-emphasize extreme outliers, in place of SD we use (median absolute deviation)/0.6745
 
 % find the desired data within the file;
 if analysisdate>0  && numlines>51
-    foo=find(polldata(:,5)==analysisdate,1,'first'); % find the specified date if available
-    foo2=find(polldata(:,5)==max(polldata(:,5)),1,'first'); % find the newest data
+    foo=find(polldata(:,2)==analysisdate,1,'first'); % find the specified date if available
+    foo2=find(polldata(:,2)==max(polldata(:,5)),1,'first'); % find the newest data
     ind=max([foo2 foo]); % take whichever data comes further down in the file
     polldata=polldata(ind:ind+50,:);
     clear foo2 foo ind
@@ -106,8 +104,8 @@ elseif numlines>51
 end
 
 % Use statistics from data file
-polls.margin=polldata(:,3)';
-polls.SEM=polldata(:,4)';
+polls.margin=polldata(:,4)';
+polls.SEM=polldata(:,5)';
 polls.SEM=max(polls.SEM,zeros(1,51)+3); % put a floor on the uncertainty of 3 percentage points
 totalpollsused=sum(polldata(:,1));
 
@@ -118,11 +116,11 @@ totalpollsused=sum(polldata(:,1));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%% Generate values for Maine, Nebraska districts %%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%  PVI updated May 2020 %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%  PVI updated May 2024 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-polls.margin(52:53)=polls.margin(20)+[10 -10]; % 2* the differences in Cook PVI
+polls.margin(52:53)=polls.margin(20)+[15 -15]; % the differences are 2* the differences in Cook PVI
 polls.SEM(52:53)=sqrt(polls.SEM(20)^2+4);
-polls.margin(54:56)=polls.margin(28)+[-6 20 -26];
+polls.margin(54:56)=polls.margin(28)+[8 26 -34];
 polls.SEM(54:56)=sqrt(polls.SEM(28)^2+4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,11 +153,12 @@ text(EVmintick+2,max(histogram)*19,datelabel(1:6),'FontSize',12)
 text(EVmintick+2,max(histogram)*13,'election.princeton.edu','FontSize',12)
 if biaspct==0
     set(gcf,'PaperPositionMode','auto')
-    print -djpeg EV_histogram_today.jpg %stays in same path as scripts
-    if analysisdate==0
-        EVhistfilename=['oldhistograms/EV_histogram_' num2str(polldata(1,5),'%i') '.jpg'] % assumes a graph exists
-        copyfile('EV_histogram_today.jpg',EVhistfilename);
-    end
+    print -djpeg EV_histogram_today_2024.jpg %stays in same path as scripts
+    % screen2jpeg([EV_HISTOGRAM_TODAY_JPG])
+    % if analysisdate==0
+    %     EVhistfilename=['oldhistograms/EV_histogram_' num2str(polldata(1,2),'%i') '.jpg'] % assumes a graph exists
+    %     copyfile(EV_HISTOGRAM_TODAY_JPG,EVhistfilename);
+    % end
 end
 
 % Calculate median and confidence bands from cumulative histogram
@@ -190,7 +189,7 @@ end
 % Write a file of unbiased statewise percentage probabilities
 % Only write this file if bias is zero!
 outs=[medianEV modeEV assignedEV confidenceintervals totalpollsused];    
-daystoelection=datenum(2020,11,3)-today;
+daystoelection=ELECTION_DATE-today;
 if daystoelection>90
     sigmadrift=7;
 elseif daystoelection<1
@@ -201,11 +200,11 @@ end
 if biaspct==0
     save 'EVoutput' %save workspace for inspection, doesn't go into whereoutput
 %   Export probability histogram:
-    dlmwrite(strcat(whereoutput,'EV_histogram.csv'),histogram')
+    dlmwrite(strcat(whereoutput,EV_HISTOGRAM_CSV),histogram')
 %   Export state-by-state percentage probabilities as CSV, with 2-letter state abbreviations:
 %   Each line includes hypothetical probabilities for D+2% and R+2% biases
-    if exist(strcat(whereoutput,'EV_stateprobs.csv'),'file')
-        delete(strcat(whereoutput,'EV_stateprobs.csv'))
+    if exist(strcat(whereoutput,EV_STATEPROBS_CSV),'file')
+        delete(strcat(whereoutput,EV_STATEPROBS_CSV))
     end
     foo=(polls.margin+2)./polls.SEM;
     D2probs=round((erf(foo/sqrt(2))+1)*50);
@@ -215,7 +214,7 @@ if biaspct==0
     Novprobs=round((erf(foo/sqrt(2))+1)*50);
     for i=1:num_states
         foo=[num2str(stateprobs(i)) ',' num2str(polls.margin(i)) ',' num2str(D2probs(i)) ',' num2str(R2probs(i)) ',' statename(i) ',' num2str(Novprobs(i))];
-        dlmwrite(strcat(whereoutput,'EV_stateprobs.csv'),foo,'-append','delimiter','')
+        dlmwrite(strcat(whereoutput,EV_STATEPROBS_CSV),foo,'-append','delimiter','')
     end
 end
 write_270towin_strings(stateprobs,D2probs,R2probs,'',whereoutput); % to make a working URL, set string to 'http://www.270towin.com/maps/'
@@ -240,7 +239,7 @@ else
         EVtest(itest)=medianEV(1);
     end
     metamargin=-min(testvalues(find(EVtest>=269)));
-    dlmwrite(strcat(whereoutput,'EV_MM_table.csv'), [(testvalues+metamargin)' EVtest'])
+    dlmwrite(strcat(whereoutput,EV_MM_TABLE_CSV), [(testvalues+metamargin)' EVtest'])
     biaspct=foo; 
     clear foo
     outs=[outs metamargin];
@@ -261,7 +260,7 @@ November_win_probability=drift_winprob;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 outputs=[outs drift_winprob bayesian_winprob]
-dlmwrite(strcat(whereoutput,'EV_estimates.csv'), outputs)
+dlmwrite(strcat(whereoutput,EV_ESTIMATES_CSV), outputs)
 if forhistory
-   dlmwrite(strcat(whereoutput,'EV_estimate_history.csv'),[polldata(1,5) outputs],'-append')
+   dlmwrite(strcat(whereoutput,EV_ESTIMATE_HISTORY_CSV),[polldata(1,2) outputs],'-append')
 end

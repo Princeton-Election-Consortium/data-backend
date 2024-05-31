@@ -29,7 +29,8 @@
 % Set up range of possibilities
 clear now
 today=floor(now);
-daystoelection=datenum(2020,11,3)-today; % assuming date is set correctly in machine
+
+daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
 MMsigma=min(0.4*sqrt(daystoelection),3); % historical levels of Presidential drift post-2012 and consistent with 2020 so far
 MMsigma=max(MMsigma,2); % final systematic uncertainty
 
@@ -62,6 +63,7 @@ for ii=length(Mrange)
     % data from: http://presidentelect.org/e2008.html
     % be sure that the order of this array matches the order of the state array in EV_estimator
     % 2004 data:  kvoters=[1883 313 2013 1055 12422 2130 1579 375 228 7610 3302 429 598 5274 2468 1507 1188 1796 1943 741 2387 2912 4839 2828 1152 2731 450 778 830 678 3612 756 7391 3501 313 5628 1464 1837 5770 437 1618 388 2437 7411 928 312 3198 2859 756 2997 243];
+    % Data from 2020, needs to be updated with voter turnout in 2020
     voters=[2099819 326197 2293475 1086617 13464495 2401361 1646783 265853 412412 8390744 3921693 453568 655032 5513635 2751054 1530386 1235801 1826620 1960761 731163 2622549 3080985 5001766 2900873 1289865 2925205 490109 798444 961581 707611 3868237 830158 7590551 4296847 316621 5697927 1462661 1814251 5992384 471766 1920969 381975 2599749 8077795 942678 325046 3716905 3036878 713451 2976356 253137];
     voters=[voters voters(20)/2 voters(20)/2 voters(28)/3 voters(28)/3 voters(28)/3]; % add Maine and Nebraska - deployed October 28 2016
     kvoters=round(voters/1000);
@@ -79,11 +81,11 @@ jerseyvotes=100*jerseyv_accumulator/max(jerseyv_accumulator);
 % normalizes to the most powerful state, which is defined as 100; see
 % discussion 8/8/08 with James
 
-for i=1:num_states
-    if i~=31
-        jerseyvotes(i)=roundn(jerseyvotes(i),-1);
-    end
-end
+% for i=1:num_states
+%     if i~=31
+%         jerseyvotes(i)=roundn(jerseyvotes(i),-1);
+%     end
+% end
 % round everything but NJ itself to the nearest tenth
 
 [foo, ijersey]=sort(jerseyvotes);
@@ -93,7 +95,7 @@ display_num=56
 if ~exist(whereoutput)
     whereoutput='';
 end
-EVjerseyfile=strcat(whereoutput,'EV_jerseyvotes.csv');
+EVjerseyfile=strcat(whereoutput,EV_JERSEYVOTES_CSV);
 if exist(EVjerseyfile,'file')
         delete(EVjerseyfile)
 end

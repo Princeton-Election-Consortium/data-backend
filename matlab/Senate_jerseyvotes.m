@@ -1,5 +1,5 @@
 %%%  Senate_jerseyvotes.m - a MATLAB script
-%%%  Copyright 2008, 2014, 2016 by Samuel S.-H. Wang
+%%%  Copyright 2008, 2014, 2016. 2022 by Samuel S.-H. Wang
 %%%  Noncommercial-use-only license: 
 %%%  You may use or modify this software, but only for noncommercial purposes. 
 %%%  To seek a commercial-use license, contact the author at sswang@princeton.edu.
@@ -8,7 +8,7 @@
 %%%  states are displayed.
 %%%
 %%%  Updated from EV to Senate-specific calculation in July 2014 by Sam
-%%%  Wang. Updated to reflect current races in June 2016.
+%%%  Wang. Updated to reflect current races in 2022.
 
 % Likelihood analysis of all possible outcomes of election based 
 % on the meta-analytical methods of Prof. Sam Wang, Princeton University.
@@ -31,7 +31,7 @@
 % Set up range of possibilities
 clear now
 today=floor(now);
-daystoelection=datenum(2020,11,3)-today; % assuming date is set correctly in machine
+daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
 MMsigma=max(0.4*sqrt(daystoelection),1.5);
 
 % A distribution of possible amounts of drift from now to Election Day:
@@ -63,8 +63,10 @@ for ii=length(Mrange)
     % actual number of voters in previous election
     % data from: http://www.electproject.org/2016g
     % be sure that the order of this array matches the order of the state array in Senate_estimator
-    % in 2020: 'AL,AK,AZ,CO,GA,GS,IA,KS,KY,ME,MI,MN,MT,NH,NM,NC,SC,TX,MS ' 19 races. GS=Georgia special
-    kvoters=[2134 321 2661 2859 4165 4165 1581 1226 1955 772 4875 2968 517 756 804 4770 2124 8975 1186]; %2016 numbers
+    % in 2022: 'AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WI ' 12 races.
+    kvoters=[3387 3257 11067 5000 3026 5525 806 1405 5922 6915 1488]; %2020 numbers -- need to fix for 2024
+    disp(size(difference))
+    disp(size(kvoters))
     jerseyvotes=difference./kvoters; % convert to per-voter power
 
     jerseyv_accumulator=jerseyv_accumulator+jerseyvotes*nowdensity(ii);
@@ -81,7 +83,8 @@ jerseyvotes=100*jerseyv_accumulator/max(jerseyv_accumulator);
 
 for i=1:num_states
     if i~=31
-        jerseyvotes(i)=roundn(jerseyvotes(i),-1);
+        % jerseyvotes(i)=roundn(jerseyvotes(i),-1); % roundn deprecated
+        jerseyvotes(i)=round(jerseyvotes(i),-1);
     end
 end
 % round everything but NJ itself to the nearest tenth
@@ -96,12 +99,12 @@ display_num=num_states;
 if ~exist(whereoutput)
         whereoutput='';
 end
-if exist(strcat(whereoutput,'Senate_jerseyvotes.csv'),'file')
-        delete(strcat(whereoutput,'Senate_jerseyvotes.csv'))
+if exist(strcat(whereoutput,SENATE_JERSEYVOTES_CSV),'file')
+        delete(strcat(whereoutput,SENATE_JERSEYVOTES_CSV))
 end
 for i=num_states:-1:(num_states-display_num+1)
     foo=[num2str(ijersey(i)) ',' statename2(ijersey(i),polls.state) ',' num2str(polldata(ijersey(i),3)) ',' num2str(jerseyvotes(ijersey(i))) ];
-    dlmwrite(strcat(whereoutput,'Senate_jerseyvotes.csv'),foo,'-append','delimiter','')
+    dlmwrite(strcat(whereoutput,SENATE_JERSEYVOTES_CSV),foo,'-append','delimiter','')
 end
 %foo=[num2str(31) ',' statename(31) ',' num2str(jerseyvotes(31)) ];
 %dlmwrite('jerseyvotes.csv',foo,'-append','delimiter','')

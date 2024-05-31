@@ -1,6 +1,10 @@
 %clear
 close
-load outputs/EV_estimate_history.csv
+
+% Reference the constants script
+run('EV_constants_2024.m');
+
+EV_estimate_history=load(strcat(whereoutput,EV_ESTIMATE_HISTORY_CSV));
 %    Each line of EV_estimate_history should contain:
 %    1 value - date code
 %    2 values - medianEV for the two candidates, where a margin>0 favors the first candidate (in our case, Clinton);
@@ -11,7 +15,8 @@ load outputs/EV_estimate_history.csv
 %    1 value - number of state polls used to make the estimates.
 %    1 value - (calculated by EV_metamargin and appended) the meta-margin.
 
-load outputs/EV_prediction.csv
+% load outputs/EV_prediction_2024.csv
+EV_prediction=load(strcat(whereoutput,EV_PREDICTION_CSV));
 %    EV_prediction.csv currently contains 2-sigma and 1-sigma confidence
 %    bands for landing on Election Day
 
@@ -39,7 +44,7 @@ text(125,263,'Biden leads','FontSize',11)
 
 plot(dates,medianDT,'-k','LineWidth',1.5)
 plot(dates(length(dates)),medianDT(length(dates)),'.k','LineWidth',1.5)
-strikedate=datenum('4-nov-2020')-datenum('31-dec-2019');
+strikedate=datenum('6-nov-2024')-datenum('31-dec-2023');
 plot([strikedate strikedate],[538-EV_prediction(3:4)],'-y','LineWidth',3)
 plot([strikedate strikedate],[538-EV_prediction(1:2)],'-r','LineWidth',3)
 
@@ -51,4 +56,7 @@ plot([strikedate strikedate],[538-EV_prediction(1:2)],'-r','LineWidth',3)
 % text(330,285,'McCain EV','Rotation',270,'HorizontalAlignment','center','VerticalAlignment','middle','FontSize',14)
 
 set(gcf,'PaperPositionMode','auto')
-print -djpeg EV_history.jpg
+% print -djpeg EV_HISTORY_JPG
+% print("-djpeg", strcat(whereoutput,EV_HISTORY_JPG))
+
+screen2jpeg([EV_HISTORY_JPG])

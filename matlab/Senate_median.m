@@ -29,7 +29,7 @@ clear nextEV
 % all 2,251,799,813,685,248 (2.3 quadrillion) possible outcomes. (Wow!)
 % 5 July 2014: code is same for Senate. In 2014, 36 races with 11 races in
 % question. Therefore 2^11=2048 possibilities. In 2018, 10 races so 1024
-% possibilities.
+% possibilities. In 2022, 12 races, 4096 possibilities. In 2024, 11 & 2048.
 
 % Cumulative histogram of all possibilities
 histogram=EV_distribution(2:num_states+1); %index of 1 for 1 Dem/Ind seat...num_states for num_states seats
@@ -44,7 +44,7 @@ cumulative_prob=cumsum(histogram);
 Senateseats=Demsafe+1:Demsafe+num_states;
 R_Senate_control_probability=cumulative_prob(max(50-Demsafe,0));
 % if Democrats/Independents get 49 or fewer, Republicans take over
-% 49 because VP Biden is a Democrat. will need Demsafe from other script
+% 49 because VP Harris is a Democrat. will need Demsafe from other script
 % 50 in years when VP is a Republican.
 D_Senate_control_probability=1-R_Senate_control_probability;
 median_seats=Senateseats(min(find(cumulative_prob>=0.5))); % 50% of outcomes
