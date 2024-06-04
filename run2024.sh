@@ -18,7 +18,9 @@ cd matlab
 cd ..
 
 # PYTHON GRAPHICS
-python python_graphics/graphics_util.py
+cd python_graphics          # need to run in this directory
+python graphics_util.py 
+cd ..
 
 # BANNER CODE
 python banner/banner_util.py
