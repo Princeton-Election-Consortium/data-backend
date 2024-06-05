@@ -9,6 +9,7 @@
 % so they can be run in the same MATLAB environment as loaded via the Unix
 % script nightly.sh
 
+clear
 close
 federal_constants_2024
 
@@ -36,5 +37,4 @@ federal_constants_2024
 
 House_prediction
 
-clear
-quit                    % closes MATLAB when done
+% quit                    % closes MATLAB when done
