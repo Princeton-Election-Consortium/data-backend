@@ -4,6 +4,7 @@ DIR_PATH = '../scraping/outputs/';
 
 TODAYTE = floor(today-datenum('31-dec-2023')); % today's date
 ELECTION_DATE = datenum(2024,11,5); % November 5, Julian 310
+DAYS_UNTIL_ELECTION = ELECTION_DATE - TODAYTE;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EV CONSTANTS
@@ -16,6 +17,9 @@ EV_POLLS_TXT = strcat(DIR_PATH, num2str(YEAR), '.EV.polls.median.txt');
 EV_STATES = [
  'AL,AK,AZ,AR,CA,CO,CT,DC,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,M1,M2,N1,N2,N3 '];
 EV_PER_STATE = [9  3  11  6 54 10 7  3  3  30 16  4 4  19 11  6  6  8  8  2 10 11 15 10 6  10  4  2  6  4 14 5  28 16  3 17  7  8 19  4  9  3 11 40  6  3 13 12  4 10  3  1  1  1  1  1]; % add Maine and Nebraska - deployed October 28 2016
+
+% EV_prediction
+EV_MAXDRIFT = 4 % Sam 05/16/24
 
 % Output files 
 EV_ESTIMATES_CSV = strcat('EV_estimates_', num2str(YEAR), '.csv');
@@ -49,14 +53,15 @@ SENATE_HISTOGRAM_CSV = strcat('Senate_histogram_', num2str(YEAR), '.csv');
 SENATE_HISTOGRAM_TODAY_JPG = strcat('Senate_histogram_today_', num2str(YEAR), '.jpg');
 SENATE_STATEPROBS_CSV = strcat('Senate_stateprobs_', num2str(YEAR), '.csv');
 SENATE_JERSEYVOTES_CSV = strcat('Senate_jerseyvotes_', num2str(YEAR), '.csv');
+SENATE_D_NOV_CONTROL_PROB_CSV = strcat('Senate_D_November_control_probability_', num2str(YEAR), '.csv'); % from Senate_November_prediction
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HOUSE CONSTANTS
 
 % House_prediction
 HOUSE_POLLS_TXT = strcat(DIR_PATH, num2str(YEAR), '.house.polls.median.txt');
-HOUSE_SPECIALS_PRIOR = 4.5; % LAST UPDATE: April 21 2024
-HOUSE_SPECIALS_SD = 3; % not that many previous examples
+HOUSE_SPECIALS_PRIOR = 5.0; % LAST UPDATE: 05/31/2024
+HOUSE_SPECIALS_SD = 3.5; % not that many previous examples
 
 % Output files
 HOUSE_PREDICTIONS_CSV = strcat('House_predictions_', num2str(YEAR), '.csv');

@@ -36,4 +36,5 @@ federal_constants_2024
 
 House_prediction
 
-% quit                    % closes MATLAB when done
+clear
+quit                    % closes MATLAB when done

@@ -3,9 +3,9 @@ whereoutputs='outputs/';
 
 %House_history=load(strcat(whereoutputs,'2024.generic.polls.median.txt'));
 House_history=load(HOUSE_POLLS_TXT);
-d=House_history(:,5);
-House_m=House_history(:,3);
-House_msd=House_history(:,4);
+d=House_history(:,2);           % julian_date
+House_m=House_history(:,4);     % median_margin
+House_msd=House_history(:,5);   % median_abs_dev
 
 %%%%% Combine diffusion with a special-election-based prior 
 today=floor(now)

@@ -1,7 +1,7 @@
 whereoutputs='outputs/';
-Senate_history=load(strcat(whereoutputs,'Senate_estimate_history.csv'));
-d=Senate_history(:,1);
-mm=Senate_history(:,12);
+Senate_history=load(strcat(whereoutputs,SENATE_ESTIMATE_HISTORY_CSV));
+d=Senate_history(:,1); % date
+mm=Senate_history(:,12); % meta-margin
 
 % GE candidates are not even known until the end of August in some cases. 
 % It is best to wait until 90 days before election to attempt Senate prediction
@@ -20,11 +20,12 @@ mm=Senate_history(:,12);
    % June-August 2016: 1.7% MM per single-party seat change.
 
 %%%%% Combine diffusion with a prognosticator-based prior (Sabato)
-h=datenum('08-Nov-2022')-today; % days until election (note: November 8, Julian 314)
+% h=datenum('08-Nov-2022')-today; % days until election (note: November 8, Julian 314)
+h=DAYS_UNTIL_ELECTION
 current_mm=mm(max(find(d==max(d)))); % Find the most recent Meta-Margin
 
 [predicted_mm,drift,bayes]=Bayesian_November_prediction(h,current_mm,0.6,4.5,1.5,2.5,8)
 D_November_control_probability=bayes*100;
 
-dlmwrite(strcat(whereoutputs,'Senate_D_November_control_probability.csv'),[today-datenum('31-Dec-2021') D_November_control_probability predicted_mm])
+dlmwrite(strcat(whereoutputs,SENATE_D_NOV_CONTROL_PROB_CSV),[num2str(TODAYTE) D_November_control_probability predicted_mm])
 %%%%% end November prediction calculation

@@ -7,7 +7,7 @@ N=ELECTION_DATE-today; % assuming date is set correctly in machine
 % MMdrift=sigmadrift;
 % maxdrift=1.8; % empirical from 2012; used it that year
 % maxdrift=6; % historical data, Eisenhower to 2012. Used this 6/1 to 8/19
-maxdrift=3; % in between. Similar to what it was in 1996-2012. Assumes modern levels of entrenchment
+maxdrift=EV_MAXDRIFT; % in between. Similar to what it was in 1996-2012. Assumes modern levels of entrenchment
 MMdrift=min(0.4*sqrt(N),maxdrift);
 MMdrift=real(max(MMdrift,1.5)); % just in case something is screwy like N<0. In 2016 the min ws set at 0.4 points, led to probability error. change to 1.5 for 2020 which would have given 31% win probability for Trump
 
