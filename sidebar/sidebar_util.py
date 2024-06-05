@@ -191,7 +191,7 @@ def get_margins(path):
 
 
     today = datetime.now()
-    julian_date = today.strftime("%j")
+    # julian_date = today.strftime("%j")
 
     margins = OrderedDict({})
 
@@ -200,11 +200,17 @@ def get_margins(path):
 
         i = 0
         for row in reader:
-            if row[1] < julian_date: break
+            julian_date = row[1]
+            state_num = row[5]
+            median_margin = row[3] 
+
+            # Check that the scraping file is up-to-date
+            if julian_date < today.strftime("%j"):
+                break
 
             if i >0:
-                margins[hash[int(row[5])]] = {
-                    'margin': round(float(row[3]), 1)
+                margins[hash[int(state_num)]] = {
+                    'margin': round(float(median_margin), 1)
                 }
             i+=1
     return margins
@@ -315,6 +321,7 @@ def main():
     
     names = get_candidates(SENATE_PRIORS_CSV)
     margins = get_margins(SENATE_POLLS_CSV)
+    print(margins)
     votes = get_jerseyvotes(SENATE_JERSEYVOTES_CSV)
     
     write_senate_jv_widget(names, margins, votes)
