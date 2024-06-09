@@ -1,5 +1,5 @@
 %%%  EV_estimator.m - a MATLAB script
-%%%  Copyright 2012, 2020 by Samuel S.-H. Wang
+%%%  Copyright 2008, 2016, 2020, 2022, 2024 by Samuel S.-H. Wang
 %%%  Noncommercial-use-only license: 
 %%%  You may use or modify this software, but only for noncommercial purposes. 
 %%%  To seek a commercial-use license, contact the author at sswang@princeton.edu.
@@ -10,7 +10,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EV_estimator.m
 % 
-% This script loads '2024.EV.polls.median.txt' and generates or updates/replaces 4 CSV files:
+% This script loads 'EV.polls.median.txt' for the current election year
+% and generates or updates/replaces 4 CSV files:
 % 
 % EV_estimates.csv
 %    all in one line:
@@ -152,8 +153,8 @@ end
 text(EVmintick+2,max(histogram)*19,datelabel(1:6),'FontSize',12)
 text(EVmintick+2,max(histogram)*13,'election.princeton.edu','FontSize',12)
 if biaspct==0
-    set(gcf,'PaperPositionMode','auto')
-    print -djpeg EV_histogram_today_2024.jpg %stays in same path as scripts
+    % set(gcf,'PaperPositionMode','auto')
+    print('-djpeg', EV_HISTOGRAM_TODAY_JPG);
     % screen2jpeg([EV_HISTOGRAM_TODAY_JPG])
     % if analysisdate==0
     %     EVhistfilename=['oldhistograms/EV_histogram_' num2str(polldata(1,2),'%i') '.jpg'] % assumes a graph exists
@@ -189,16 +190,16 @@ end
 % Write a file of unbiased statewise percentage probabilities
 % Only write this file if bias is zero!
 outs=[medianEV modeEV assignedEV confidenceintervals totalpollsused];    
-daystoelection=ELECTION_DATE-today;
-if daystoelection>90
+%daystoelection=ELECTION_DATE-today;
+if DAYS_UNTIL_ELECTION>90
     sigmadrift=7;
-elseif daystoelection<1
+elseif DAYS_UNTIL_ELECTION<1
     sigmadrift=1.5;
 else
-    sigmadrift=sqrt((daystoelection/90*7)^2+1.5^2); % the 1.5 term adds a minimal uncertainty CHANGE FROM 2016
+    sigmadrift=sqrt((DAYS_UNTIL_ELECTION/90*7)^2+1.5^2); % the 1.5 term adds a minimal uncertainty CHANGE FROM 2016
 end
 if biaspct==0
-    save 'EVoutput' %save workspace for inspection, doesn't go into whereoutput
+    % save 'EVoutput' %save workspace for inspection, doesn't go into whereoutput
 %   Export probability histogram:
     dlmwrite(strcat(whereoutput,EV_HISTOGRAM_CSV),histogram')
 %   Export state-by-state percentage probabilities as CSV, with 2-letter state abbreviations:

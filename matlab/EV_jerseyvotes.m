@@ -1,11 +1,8 @@
 %%%  EV_jerseyvotes.m - a MATLAB script
-%%%  Copyright 2008 by Samuel S.-H. Wang
+%%%  Copyright by Samuel S.-H. Wang
 %%%  Noncommercial-use-only license: 
 %%%  You may use or modify this software, but only for noncommercial purposes. 
 %%%  To seek a commercial-use license, contact the author at sswang@princeton.edu.
-%%%
-%%%  Updated by Andrew Ferguson on Oct 8, 2008 to ensure that at least ten
-%%%  states are displayed.
 
 % Likelihood analysis of all possible outcomes of election based 
 % on the meta-analytical methods of Prof. Sam Wang, Princeton University.
@@ -27,11 +24,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Set up range of possibilities
-clear now
-today=floor(now);
+%clear now
+%today=floor(now);
 
-daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
-MMsigma=min(0.4*sqrt(daystoelection),3); % historical levels of Presidential drift post-2012 and consistent with 2020 so far
+%daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
+MMsigma=min(0.4*sqrt(DAYS_UNTIL_ELECTION),3); % historical levels of Presidential drift post-2012 and consistent with 2020 so far
 MMsigma=max(MMsigma,2); % final systematic uncertainty
 
 Mrange=[-2*MMsigma:0.1:2*MMsigma];% cover range of +/-2*MMsigma

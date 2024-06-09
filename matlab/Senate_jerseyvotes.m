@@ -29,10 +29,10 @@
 %           election outcome, normalized to a voter in NJ
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set up range of possibilities
-clear now
-today=floor(now);
-daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
-MMsigma=max(0.4*sqrt(daystoelection),1.5);
+%clear now
+%today=floor(now);
+%daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
+MMsigma=max(0.4*sqrt(DAYS_UNTIL_ELECTION),1.5);
 
 % A distribution of possible amounts of drift from now to Election Day:
 Mrange=[-2*MMsigma:0.1:2*MMsigma];% cover range of +/-2*MMsigma

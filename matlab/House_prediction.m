@@ -1,15 +1,13 @@
 %whereoutputs='C:\Users\sswang\Desktop\pollcalc\pollcalc20\outputs\'; 
 whereoutputs='outputs/'; 
 
-%House_history=load(strcat(whereoutputs,'2024.generic.polls.median.txt'));
 House_history=load(HOUSE_POLLS_TXT);
 d=House_history(:,2);           % julian_date
 House_m=House_history(:,4);     % median_margin
 House_msd=House_history(:,5);   % median_abs_dev
 
 %%%%% Combine diffusion with a special-election-based prior 
-today=floor(now)
-N=datenum(ELECTION_DATE)-today; % days until election
+N=DAYS_UNTIL_ELECTION
 current_mm=House_m(max(find(d==max(d)))); % Find the most recent median margin
 current_msd=House_msd(max(find(d==max(d)))); % Find the most recent median margin
 
@@ -25,9 +23,7 @@ nowdensity=tpdf((Mrange-current_mm)/Mdrift,3); % t-distribution is long-tailed. 
 nowdensity=nowdensity/sum(nowdensity);
 
 % What was long-term prediction? (the prior)
-specials_prior=HOUSE_SPECIALS_PRIOR;
-specials_SD=HOUSE_SPECIALS_SD;
-prior=tpdf((Mrange-specials_prior)/specials_SD,1); % make it really long-tailed, df=1
+prior=tpdf((Mrange-HOUSE_SPECIALS_PRIOR)/HOUSE_SPECIALS_SD,1); % make it really long-tailed, df=1
 prior=prior/sum(prior);
 
 % Combine to make prediction

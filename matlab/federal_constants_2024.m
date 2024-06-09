@@ -47,20 +47,23 @@ DEM_ASSIGNED = 42;
 REP_ASSIGNED = 47;
 
 % Output files 
+% from Senate_estimator.m
 SENATE_ESTIMATES_CSV = strcat('Senate_estimates_', num2str(YEAR), '.csv');
 SENATE_ESTIMATE_HISTORY_CSV = strcat('Senate_estimate_history_', num2str(YEAR), '.csv');
 SENATE_HISTOGRAM_CSV = strcat('Senate_histogram_', num2str(YEAR), '.csv');
 SENATE_HISTOGRAM_TODAY_JPG = strcat('Senate_histogram_today_', num2str(YEAR), '.jpg');
 SENATE_STATEPROBS_CSV = strcat('Senate_stateprobs_', num2str(YEAR), '.csv');
-SENATE_JERSEYVOTES_CSV = strcat('Senate_jerseyvotes_', num2str(YEAR), '.csv');
-SENATE_D_NOV_CONTROL_PROB_CSV = strcat('Senate_D_November_control_probability_', num2str(YEAR), '.csv'); % from Senate_November_prediction
+% from Senate_jerseyvotes.m
+SENATE_JERSEYVOTES_CSV = strcat('Senate_jerseyvotes_', num2str(YEAR), '.csv'); 
+% from Senate_November_prediction
+SENATE_D_NOV_CONTROL_PROB_CSV = strcat('Senate_D_November_control_probability_', num2str(YEAR), '.csv'); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % HOUSE CONSTANTS
 
 % House_prediction
 HOUSE_POLLS_TXT = strcat(DIR_PATH, num2str(YEAR), '.house.polls.median.txt');
-HOUSE_SPECIALS_PRIOR = 5.0; % LAST UPDATE: 05/31/2024
+HOUSE_SPECIALS_PRIOR = 4.5; % LAST UPDATE: 05/31/2024
 HOUSE_SPECIALS_SD = 3.5; % not that many previous examples
 
 % Output files

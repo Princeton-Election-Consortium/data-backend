@@ -1,11 +1,15 @@
 
-import csv
 import os
+import csv
+
 from decimal import *
 from state_code_util import *
 from collections import OrderedDict
 from datetime import datetime
 import operator
+
+# ======================================================================
+# GLOBAL VARIABLES
 
 YEAR = 2024
 
@@ -318,10 +322,8 @@ def write_senate_table(names, margins, votes):
 # ======================================================================
 
 def main():
-    
     names = get_candidates(SENATE_PRIORS_CSV)
     margins = get_margins(SENATE_POLLS_CSV)
-    print(margins)
     votes = get_jerseyvotes(SENATE_JERSEYVOTES_CSV)
     
     write_senate_jv_widget(names, margins, votes)

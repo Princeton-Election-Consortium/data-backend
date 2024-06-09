@@ -5,13 +5,15 @@ import numpy as np
 import pandas as pd
 import datetime as dt
 
-from plotting_util import generate_line_plot, generate_histogram
+from plotting_util import generate_line_plot, generate_superimposed_line_plot, generate_histogram
+
+# ======================================================================
+# GLOBAL VARIABLES
 
 out_dir = './outputs'
 os.makedirs(out_dir, exist_ok=True)
 
-YEAR = 2024
-ELECTION_DAY = dt.datetime(2022, 11, 8) # TODO: Use this
+YEAR = 2024 # Takes care of having to change file names every election cycle
 
 # == HOUSE =============================================================
 
@@ -19,11 +21,11 @@ def generate_house_meta_lead_graphics():
         house_meta_lead_kw = dict(
                 # Data
                 data_dir = '../scraping/outputs/', 
-                data_file = '2024.house.polls.median.txt',
+                data_file = f'{YEAR}.house.polls.median.txt',
                 read_csv_kw = dict(delimiter=r"\s+"), 
                 x_column=1,             # julian_date
                 y_column=3,             # median_margin
-                yerr_columns=[4],       # esd
+                yerr_columns=[4],       # median_std_dev
                 
                 # Lines
                 ylim=(-14, 14),
@@ -32,11 +34,11 @@ def generate_house_meta_lead_graphics():
 
                 # Customs
                 meta_lead_graphic=True,
-                strike_zone_data_file = '../matlab/outputs/House_predictions_2024.csv', 
+                strike_zone_data_file = f'../matlab/outputs/House_predictions_{YEAR}.csv', 
                 strike_zone_house = True,
                 custom_twin_axis = True,
                 custom_twin_axis_offset=0,
-                custom_twin_axis_label='2024 generic ballot D-R',
+                custom_twin_axis_label=f'{YEAR} generic ballot D-R',
                 custom_hline=True,
                 custom_hline_label='Prior from special elections',
                 custom_hline_ypos=4.5, # TODO: Need to set this in 2 diff places
@@ -73,7 +75,7 @@ def generate_senate_meta_lead_graphics():
         senate_meta_lead_kw = dict(
                 # Data
                 data_dir = '../matlab/outputs', 
-                data_file='Senate_estimate_history_2024.csv',
+                data_file=f'Senate_estimate_history_{YEAR}.csv',
                 x_column=0,             # date
                 y_column=11,            # meta-margin
 
@@ -115,7 +117,7 @@ def generate_senate_dem_seats():
         senate_dem_seats_kw = dict(
                 # Data
                 data_dir = '../matlab/outputs', 
-                data_file='Senate_estimate_history_2024.csv',
+                data_file=f'Senate_estimate_history_{YEAR}.csv',
                 x_column=0,             # date
                 y_column=2,             # mean_seats
                 yerr_columns= [8,9],    # ['1sigma_lower', '1sigma_upper'],
@@ -150,7 +152,6 @@ def generate_senate_dem_seats():
                 out_path=thumb_senate_dem_seats,
         )
 
-# histogram graphics in Matlab?
 def generate_senate_histogram_graphics():
         senate_histogram_kw = dict(
                 # Data
@@ -225,7 +226,6 @@ def generate_ev_meta_lead_graphics():
                 out_path=ev_meta_lead,
         )
 
-        ## generate thumbnail version
         thumb_ev_meta_lead = os.path.join(out_dir, f'thumb_ev_meta_lead_{YEAR}')
         generate_line_plot(
                 **ev_meta_lead_kw,
@@ -342,14 +342,69 @@ def generate_presidential_graphics():
         generate_ev_estimator_graphics()
         generate_ev_histogram_graphics()
 
-def generate_histogram_test():
-        generate_senate_histogram_graphics()
-        generate_ev_histogram_graphics()
+def generate_superimposed_graphic():
+        all_meta_lead_kw = dict(
+                # House data
+                house_data_dir = '../scraping/outputs/', 
+                house_data_file = f'{YEAR}.house.polls.median.txt',
+                house_read_csv_kw = dict(delimiter=r"\s+"), 
+                house_x_column=1,             # julian_date
+                house_y_column=3,             # median_margin
+
+                # Senate data
+                senate_data_dir = '../matlab/outputs', 
+                senate_data_file=f'Senate_estimate_history_{YEAR}.csv',
+                senate_x_column=0,             # date
+                senate_y_column=11,            # meta-margin
+
+                # EV data
+                ev_data_dir = '../matlab/outputs', 
+                ev_data_file=f'EV_estimate_history_{YEAR}.csv',
+                ev_x_column=0,             # date
+                ev_y_column=13,            # meta-margin
+                
+                # Lines
+                ylim=(-14, 8),
+                # ylim=(-9, 3),
+                # ylim=(-6, 2), 
+
+                yticks_interval=2,
+                hline_ypos = 0, 
+
+                # Customs
+                meta_lead_graphic=True,
+        )
+
+        all_meta_lead = os.path.join(out_dir, f'all_meta_lead_{YEAR}')
+        generate_superimposed_line_plot(
+               **all_meta_lead_kw,
+
+                # Text
+                title_txt='House, Senate, and Presidential meta-margin', 
+                ylab_txt='Meta-margin', # good
+
+                # title_txt='House control meta-margin: {party}{last_value:.01f}%',
+                # title_txt = 'Popular meta-lead for Senate control: {party}{last_value:.01f}%',
+                # title_txt = 'Popular meta-lead for President: {party}{last_value:.01f}%',
+                # hline_labels = ['R control', 'D+I control'], # if needed, move to right by changing HLINE_LAB_XPOS
+                # hline_labels = ['Trump leads','Biden leads'],
+
+                # corner_label = '{party}{last_value:.01f}%',  # House
+                # corner_label = '{party}{last_value:.01f}%',  # Senate
+
+                # Output
+                out_path=all_meta_lead,
+        )
+
+# def generate_histogram_test():
+#         generate_senate_histogram_graphics()
+#         generate_ev_histogram_graphics()
 
 def main():
-        generate_house_graphics()
-        generate_senate_graphics()
+        generate_house_graphics()               
+        generate_senate_graphics()              
         generate_presidential_graphics()
+        generate_superimposed_graphic()
 
 if __name__ == '__main__':
     main()

@@ -10,53 +10,13 @@ from matplotlib.transforms import blended_transform_factory as blend
 from pandas.plotting import register_matplotlib_converters
 
 register_matplotlib_converters()
-# TODO: Move to another call
-
-# dir_path = os.path.dirname(os.path.realpath(__file__))
 
 # ======================================================================
-
-
-DEM_COLOR = '#1660CE'
-REP_COLOR = '#C62535'
-ZONE_COLORS = [DEM_COLOR, REP_COLOR] # 0th index represents incumbent
-
-WATERMARK = 'election.princeton.edu'
-WATERMARK_POS = (0.77, 0.95)
-
-# Figure parameters
-WIDTH = 9 # inches
-HEIGHT_TO_WIDTH = 0.80 # ratio
-WIDTH_PIXELS_SAVE = 2000
-AXES_BOX = [0.15, 0.15, 0.7, 0.7]
-
-GRID_ALPHA = 0.5
-
-FONT_SIZE = 20 # SET 
-FONT_SIZE_MED = FONT_SIZE * 0.85
-
-TITLE_PAD = 5
-
-# Shared between line plot and histogram
-GRID_LW = 0.5 # or 0.25
-SPINE_LW = 0.5 # or 0.25
-LINE_LW = 1 # horizontal or vertical
-
-TICK_LW = 0.5
-TICK_LENGTH = 5
-TICK_PAD = 1
-
-TXT_KW = dict(ha='center', va='center')
-SHADING_KW = dict(zorder=0, alpha=0.15, lw=0)
-
-OUT_FORMAT = 'png'
+# GLOBAL VARIABLES
 
 YEAR = dt.datetime.now().year
 ELECTION_DATE = dt.datetime(2024, 11, 5)
-
-# ======================================================================
-
-month_names = {
+MONTH_NAMES = {
             1: 'Jan',
             2: 'Feb',
             3: 'Mar',
@@ -71,13 +31,60 @@ month_names = {
             12: 'Dec',
            }
 
+DEM_COLOR = '#1660CE'
+REP_COLOR = '#C62535'
+ZONE_COLORS = [DEM_COLOR, REP_COLOR] # 0th index represents incumbent Presidential party
+
+# Figure
+WIDTH = 9 # inches
+HEIGHT_TO_WIDTH = 0.80 # ratio
+WIDTH_PIXELS_SAVE = 2000
+AXES_BOX = [0.15, 0.15, 0.7, 0.7]
+GRID_ALPHA = 0.5
+
+# Visual feel
+FONT_SIZE = 20 # SET 
+FONT_SIZE_MED = FONT_SIZE * 0.85
+TITLE_PAD = 5
+GRID_LW = 0.5 # or 0.25
+SPINE_LW = 0.5 # or 0.25
+LINE_LW = 1 # horizontal or vertical
+TICK_LW = 0.5
+TICK_LENGTH = 5
+TICK_PAD = 1
+
+TXT_KW = dict(ha='center', va='center')
+SHADING_KW = dict(zorder=0, alpha=0.15, lw=0)
+
+# Output
+OUT_FORMAT = 'png'
+WATERMARK = 'election.princeton.edu'
+WATERMARK_POS = (0.77, 0.95)
+
+# = LINE PLOTS =========================================================
+
 def doy2dt(d):
     """
-    Converts day of year to datetime
+    Convert a given day of the year (doy) to a corresponding datetime object (dt).
+
+    Args:
+    - d (int): The day of the year to convert.
+
+    Returns:
+    - datetime: A datetime object representing the specified day of the year.
     """
     return dt.datetime(YEAR, 1, 1) + dt.timedelta(int(d) - 1)
 
 def get_mid_day(month):
+    """
+    Gets the middle day of the specified month in the current year.
+
+    Args:
+    - month (int): The month for which to find the middle day (1-12).
+
+    Returns:
+    - int: The middle day of the specified month.
+    """
     num_days = calendar.monthrange(YEAR, month)
     return int(np.round(num_days[-1] / 2))
 
@@ -88,31 +95,30 @@ def load_data(data_dir, data_file, read_csv_kw):
 
 def prepare_data(data, x_column, y_column):
     """
-    data: DataFrame
+    Prepares data for plotting.
 
-    Assuming days is an array of Julian days for the current calendar year
+    Args:
+    - data (DataFrame): The input DataFrame containing x and y data.
+    - x_column (int): The column index for x-values.
+    - y_column (int): The column index for y-values.
 
-    julian_days are the julian day integers
-    dates are in datetime 
+    Returns:
+    - julian_days (ndarray): Array of Julian days extracted from the DataFrame.
+    - dates (ndarray): Array of datetime objects corresponding to the Julian days.
+    - vals (ndarray): Array of y-values extracted from the DataFrame.
     """
     # Sort data based on x-values 
-    # print(data)
     data.sort_values(by=x_column, inplace=True)
 
-    # Extract x-values and convert to datetime objects
+    # Extract x-values (Julian days) and convert to datetime objects
     days = data[x_column].values
     julian_days = days
-    # Creates a pandas datetime object for the start of the year (January 1st, 2024)
-    # Adds a timedelta corresponding to the Julian days to get the desired dates
-    # dates = pd.to_datetime('2024-01-01') + pd.to_timedelta(julian_days - 1, unit='D')
     dates = np.array([doy2dt(d) for d in days])
     
     # Extract y-values (data to plot)
     vals = data[y_column].values
     
     return julian_days, dates, vals
-
-# ======================================================================
 
 def generate_line_plot(
         # Data
@@ -172,7 +178,7 @@ def generate_line_plot(
     
     # -- PRE-PROCESSING ------------------------------------------------
 
-    # Load data
+    # Read data
     data = load_data(data_dir, data_file, read_csv_kw) 
     julian_days, dates, vals = prepare_data(data, x_column, y_column)
 
@@ -197,7 +203,7 @@ def generate_line_plot(
             lw=DATA_LW,
             zorder=100)
     
-    # Plot circle on most recent data point (if unnecessary, set circle_size to 0)
+    # Plot circle on most recent data point
     last_value_color = DEM_COLOR if vals[-1] > hline_ypos else REP_COLOR
     ax.plot(dates[-1], vals[-1], 
             marker='o', 
@@ -265,7 +271,7 @@ def generate_line_plot(
         for td in tick_label_dates:
             ax.text(x=pd.to_datetime(td), 
                     y=-0.045, # trial-and-error
-                    s=month_names[td.month],
+                    s=MONTH_NAMES[td.month],
                     fontsize=FONT_SIZE,
                     color='black',
                     transform=blend(ax.transData, ax.transAxes),
@@ -548,22 +554,417 @@ def generate_line_plot(
 
     plt.close(fig)
 
+def generate_superimposed_line_plot(
+        # Data
+        house_data_dir="",            # required
+        house_data_file="",           # required
+        house_read_csv_kw={},               # optional, for House polls file
+        house_x_column=None,          # required
+        house_y_column=None,          # required
+        house_color='orange',
+
+        senate_data_dir="",            # required
+        senate_data_file="",           # required
+        senate_x_column=None,          # required
+        senate_y_column=None,          # required
+        read_csv_kw={},
+        senate_color='green',
+
+        # EV data
+        ev_data_dir = '../matlab/outputs', 
+        ev_data_file=f'EV_estimate_history_{YEAR}.csv',
+        ev_x_column=0,             # date
+        ev_y_column=13,            # meta-margin
+        ev_color='purple',
+
+        # ------------------------------------------------------
+
+        # Lines
+        ylim=None,              # optional, recommended
+        yticks_interval=1,      # optional, recommended
+        hline_ypos=None,        # required
+
+        # Text
+        title_txt='',           # required
+        ylab_txt='',            # required
+        hline_labels=None,      # optional, recommended
+        corner_label=None,      # optional, str or list, only in thumbnail
+
+        # Customs               # all optional
+        meta_lead_graphic=False,
+        
+        # ------------------------------------------------------
+        
+        # Output
+        thumbnail=False,        # optional
+        out_path='',            # required
+
+    ):
+    
+    # -- SET PARAMETERS ------------------------------------------------
+
+    # Specific to line plot
+    DATA_LW = 3
+    HLINE_LAB_PAD = 0.06
+    HLINE_LAB_XPOS = 0.75
+
+    # General labels
+    if meta_lead_graphic: 
+        yticks_font_size = FONT_SIZE * 0.75   # Smaller tick font
+        ylab_pad = 0.18                       # More padding
+    else:
+        yticks_font_size = FONT_SIZE
+        ylab_pad = 0.135
+    
+    # -- PRE-PROCESSING ------------------------------------------------
+
+    # Prepare figure
+    fig = plt.figure(figsize=(WIDTH, WIDTH * HEIGHT_TO_WIDTH))
+    ax = fig.add_axes(AXES_BOX)
+
+    # Prepare grid
+    ax.grid('on', 
+            linewidth=GRID_LW, 
+            alpha=GRID_ALPHA)
+
+    # Prepare spines
+    plt.setp(ax.spines.values(), 
+             linewidth=SPINE_LW)
+
+    # -- PLOT HOUSE DATA -----------------------------------------------
+
+    # Read data
+    house_data = load_data(house_data_dir, house_data_file, house_read_csv_kw) 
+    house_julian_days, house_dates, house_vals = prepare_data(house_data, house_x_column, house_y_column)
+
+    # Plot data line
+    house_line, = ax.plot(house_dates, house_vals, 
+                            color=house_color,
+                            lw=DATA_LW,
+                            zorder=100,
+                            label='House')
+    
+    # Plot circle on most recent data point
+    last_value_color = DEM_COLOR if house_vals[-1] > hline_ypos else REP_COLOR
+    ax.plot(house_dates[-1], house_vals[-1], 
+            marker='o', 
+            markersize=4.5, # Set 
+            markerfacecolor=last_value_color, 
+            markeredgewidth=0, 
+            zorder=101)
+
+    # Use data for figure titles/labels
+    title_fillers = dict(
+        last_value = house_vals[-1],              # percentage for incumbent
+        inv_last_value = 100 - house_vals[-1],    # percentage for opponent
+        inv_pres_last_value = 538 - house_vals[-1],
+        party = '',
+    )   
+    # print("Last value:", title_fillers['last_value'])
+
+    # Add label
+    # ax.annotate("House", 
+    #         xy=(house_dates[-1], house_vals[-1]),  
+    #         xytext=(3, 3),  # Offset of the label from the point
+    #         textcoords='offset points',
+    #         fontsize=FONT_SIZE_MED-2,
+    #         color=house_color,
+    #         weight='semibold') 
+    
+    # -- PLOT SENATE DATA ----------------------------------------------
+
+    # Read data
+    senate_data = load_data(senate_data_dir, senate_data_file, read_csv_kw) 
+    senate_julian_days, senate_dates, senate_vals = prepare_data(senate_data, senate_x_column, senate_y_column)
+    # print(senate_vals)
+
+    # Plot data line
+    senate_line, = ax.plot(senate_dates, senate_vals, 
+                            color=senate_color,
+                            lw=DATA_LW,
+                            zorder=100,
+                            label='Senate')
+    
+    # Plot circle on most recent data point
+    last_value_color = DEM_COLOR if senate_vals[-1] > hline_ypos else REP_COLOR
+    ax.plot(senate_dates[-1], senate_vals[-1], 
+            marker='o', 
+            markersize=4.5, # Set 
+            markerfacecolor=last_value_color, 
+            markeredgewidth=0, 
+            zorder=101)
+
+    # Use data for figure titles/labels
+    title_fillers = dict(
+        last_value = senate_vals[-1],              # percentage for incumbent
+        inv_last_value = 100 - senate_vals[-1],    # percentage for opponent
+        inv_pres_last_value = 538 - senate_vals[-1],
+        party = '',
+    )   
+    # print("Last value:", title_fillers['last_value'])
+
+    # -- PLOT EV DATA ----------------------------------------------
+
+    # Read data
+    ev_data = load_data(ev_data_dir, ev_data_file, read_csv_kw) 
+    ev_julian_days, ev_dates, ev_vals = prepare_data(ev_data, ev_x_column, ev_y_column)
+    # print(senate_vals)
+
+    # Plot data line
+    ev_line, = ax.plot(ev_dates, ev_vals, 
+                        color=ev_color,
+                        lw=DATA_LW,
+                        zorder=100,
+                        label='Presidential')
+    
+    # Plot circle on most recent data point
+    last_value_color = DEM_COLOR if ev_vals[-1] > hline_ypos else REP_COLOR
+    ax.plot(senate_dates[-1], ev_vals[-1], 
+            marker='o', 
+            markersize=4.5, # Set 
+            markerfacecolor=last_value_color, 
+            markeredgewidth=0, 
+            zorder=101)
+
+    # Use data for figure titles/labels
+    title_fillers = dict(
+        last_value = ev_vals[-1],              # percentage for incumbent
+        inv_last_value = 100 - ev_vals[-1],    # percentage for opponent
+        inv_pres_last_value = 538 -ev_vals[-1],
+        party = '',
+    )   
+    # print("Last value:", title_fillers['last_value'])
+
+    # Add legend
+    ax.legend(handles=[house_line, senate_line, ev_line], loc='best')
+    
+    # -- X-AXIS --------------------------------------------------------
+
+    # Set x-axis limits (dates) in datetime format
+    min_house = np.min(house_julian_days)
+    min_senate = np.min(senate_julian_days)
+    min_ev = np.min(ev_julian_days)
+    first_day = min(min_house, min_senate, min_ev) # first day with any data -OR- all data
+    last_day = 335                                 # hard-set to November 30
+    x0, x1 = doy2dt(first_day), doy2dt(last_day)
+    ax.set_xlim(x0, x1)
+
+    # Set x-ticks at month boundaries (first day of each month)
+    date_range = pd.date_range(x0, x1)
+    tick_dates = date_range[date_range.day == 1]
+    ax.set_xticks(np.array([pd.to_datetime(td) for td in tick_dates]))
+
+    # Re-set x-tick labels at month centers (excluding thumbnails)
+    if not thumbnail:
+        ax.set_xticklabels([]) 
+        mid_months = np.array([get_mid_day(d.month) for d in date_range])
+        tick_label_dates = date_range[date_range.day == mid_months]
+        for td in tick_label_dates:
+            ax.text(x=pd.to_datetime(td), 
+                    y=-0.045, # trial-and-error
+                    s=MONTH_NAMES[td.month],
+                    fontsize=FONT_SIZE,
+                    color='black',
+                    transform=blend(ax.transData, ax.transAxes),
+                    **TXT_KW)
+
+    # -- Y-AXIS --------------------------------------------------------
+    
+    # Set y-axis limits
+    if ylim is not None: 
+        # If provided, use input values
+        min_y, max_y = ylim
+        y0, y1 = ylim
+    
+    # Set y-axis limits
+    ax.set_ylim(y0, y1)
+    ylim = ax.get_ylim()
+
+    # Set y-axis label
+    ax.text(x=-ylab_pad, 
+            y=0.5, # trial-and-error
+            s=ylab_txt,
+            fontsize=FONT_SIZE,
+            rotation=90,
+            transform=ax.transAxes,
+            **TXT_KW)
+
+    # Set y-ticks
+    ax.set_yticks(np.arange(ylim[0], ylim[1] + yticks_interval, yticks_interval))
+
+    # Format y-axis tick labels (if applicable)
+    if meta_lead_graphic: 
+        yticks_lab = []
+        for tick in ax.get_yticks():
+            plus = '+' if tick != 0 else ''
+            party = 'D' if tick > 0 else 'R'
+            if tick == 0:
+                party = ''
+
+            formatted_tick = f'{party}{plus}{abs(tick):0.0f}%'
+            yticks_lab.append(formatted_tick)
+        ax.set_yticklabels(yticks_lab)
+    
+    # Set tick parameters (both x and y)
+    ax.tick_params(labelsize=yticks_font_size, 
+                   length=TICK_LENGTH, 
+                   pad=TICK_PAD, 
+                   width=TICK_LW)
+    ax.tick_params(which='minor', length=0) # hide minor ticks
+    
+    # -- LINE/SHADING --------------------------------------------------
+
+    # Set horizontal line
+    if hline_ypos is not None:
+        ax.axhline(hline_ypos,
+                   color='dimgrey', 
+                   lw=LINE_LW)
+        
+        if hline_labels is not None: 
+            pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
+            
+            # Opponent (2024: Trump/Rep)
+            ax.text(x=HLINE_LAB_XPOS,
+                    y=hline_ypos - pad_data_units,
+                    s=hline_labels[0].format(**title_fillers),
+                    fontsize=FONT_SIZE_MED,
+                    color=ZONE_COLORS[1],
+                    transform=blend(ax.transAxes, ax.transData),
+                    **TXT_KW)
+            
+            # Incumbent (2024: Biden/Dem)
+            ax.text(x=HLINE_LAB_XPOS,
+                    y=hline_ypos + pad_data_units,
+                    s=hline_labels[1].format(**title_fillers),
+                    fontsize=FONT_SIZE_MED,
+                    color=ZONE_COLORS[0],
+                    transform=blend(ax.transAxes, ax.transData),
+                    **TXT_KW)
+    
+    # Shade background of plot regions 
+    ax.axhspan(ax.get_ylim()[0], hline_ypos, color=REP_COLOR, **SHADING_KW)
+    ax.axhspan(hline_ypos, ax.get_ylim()[1], color=DEM_COLOR, **SHADING_KW)
+    
+    # -- FORMATTING ----------------------------------------------------
+    
+    # Set title
+    last_value = title_fillers['last_value']
+    if last_value >= 0:    
+        # Incumbent (2024: Biden/Dem) 
+        title_fillers['party'] = 'D+'
+    else:                  
+        # Opponent (2024: Trump/Rep) 
+        title_fillers['party'] = 'R+'
+        title_fillers['last_value'] = abs(last_value)
+
+    ax.set_title(title_txt.format(**title_fillers),
+                 pad=TITLE_PAD,
+                 fontsize=FONT_SIZE,
+                 weight='bold')    
+
+    # Regular size image with watermark
+    if not thumbnail:
+        ax.text(x=WATERMARK_POS[0],
+                y=WATERMARK_POS[1],
+                s=WATERMARK,
+                fontsize=FONT_SIZE_MED,
+                color='black',
+                alpha=0.3,
+                style='italic',
+                zorder=200,
+                transform=ax.transAxes,
+                **TXT_KW)
+    
+    # Thumbnail size image with hidden axes and spines
+    else:
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['bottom'].set_visible(False)
+
+        # Set corner label in bottom-right (if applicable)
+        if corner_label is not None:
+            pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
+
+            if type(corner_label) == str:       # length one
+                ax.text(x=HLINE_LAB_XPOS,
+                        y=ylim[0] + 1.5*pad_data_units,
+                        s=corner_label.format(**title_fillers), # index 0?
+                        color=last_value_color,
+                        fontsize=FONT_SIZE_MED,
+                        transform=blend(ax.transAxes, ax.transData),
+                        **TXT_KW)
+                
+            elif type(corner_label) == list:    # length two
+                # Opponent (2024: Trump/Rep)
+                ax.text(x=HLINE_LAB_XPOS,
+                        y=ylim[0] + 1.5*pad_data_units,
+                        s=corner_label[0].format(**title_fillers),
+                        fontsize=FONT_SIZE_MED,
+                        color=ZONE_COLORS[1],
+                        transform=blend(ax.transAxes, ax.transData),
+                        **TXT_KW)
+                
+                # Incumbent (2024: Biden/Dem)
+                ax.text(x=HLINE_LAB_XPOS,
+                        y=ylim[0] + 3*pad_data_units,
+                        s=corner_label[1].format(**title_fillers),
+                        fontsize=FONT_SIZE_MED,
+                        color=ZONE_COLORS[0],
+                        transform=blend(ax.transAxes, ax.transData),
+                        **TXT_KW)
+    
+    # -- SAVE FIGURE ---------------------------------------------------
+
+    # Calculate dots per inch (dpi)
+    dpi = WIDTH_PIXELS_SAVE / WIDTH
+
+    # If the output path does not already have the specified output format, append it 
+    if not out_path.endswith(OUT_FORMAT):
+        out_path = f'{out_path}.{OUT_FORMAT}'
+
+    # Tight bounding box to remove excess whitespace
+    plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+
+    plt.close(fig)
+
 # == HISTOGRAM =========================================================
 
 def compute_rv_median(p, xs):
-        p = p/np.sum(p)
-        cum = np.cumsum(p)
-        #x1 = xs[np.argwhere(cum <= 0.5).squeeze()[-1]]
-        #x2 = xs[np.argwhere(cum >= 0.5).squeeze()[0]]
-        #return np.mean([x1, x2])
-        return xs[np.argwhere(cum>=0.5).squeeze()[0]]
+        """
+        Compute the median value of a probability distribution.
 
-## hard set pres median to matlab median
+        Args:
+        - p (array-like): Probability distribution values.
+        - xs (array-like): Corresponding values.
+
+        Returns:
+        - float: The median value of the distribution.
+        """
+        p = p / np.sum(p)  # Normalize the probability distribution
+        cum = np.cumsum(p)  # Compute the cumulative sum of probabilities
+
+        # Find the value corresponding to the cumulative probability >= 0.5
+        median_value = xs[np.argwhere(cum >= 0.5).squeeze()[0]]
+
+        return median_value
+
 def get_estimates(path):
+    """
+    Read estimates from a CSV file and return them.
+
+    Args:
+    - path (str): The path to the CSV file containing estimates.
+
+    Returns:
+    - list or None: A list of estimates read from the CSV file, or None if the file is empty.
+    """
     estimates = None
     with open(path, 'r') as est_file:
         reader = csv.reader(est_file)
-        # only one line
+        # Read only the first row (assuming there's only one line)
         for row in reader:
             estimates = row
             break
@@ -615,7 +1016,7 @@ def generate_histogram(
 
     # -- PRE-PROCESSING ------------------------------------------------
 
-    # Load data
+    # Read data
     data_path = os.path.join(data_dir, data_file)
     data = pd.read_csv(data_path, header=None)
     data = data.values.squeeze() * 100.0 # Scale by set data factor

@@ -87,14 +87,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%% Load and parse polling data %%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 polldata=load(SENATE_POLLS_TXT);
-% column 1 - numpolls
-% column 2 - lastdate
-% column 3 - median margin
-% column 4 - SEM 
-% column 5 - date of monitoring
-% column 6 - state index
-% column 7 (not implemented yet)
-% column 8 (not implemented yet)
+% see Stephanie's documentation of columns
 
 numlines = size(polldata,1);
 if mod(numlines,num_states)>0
@@ -164,8 +157,8 @@ text(Senateseats(2)+0.3,max(histogram)*100,datelabel(1:6),'FontSize',12)
 text(Senateseats(2)+0.3,max(histogram)*94,'election.princeton.edu','FontSize',12)
 if biaspct==0
 %    set(gcf,'PaperPositionMode','auto')
-    print -djpeg Senate_histogram_today_2024.jpg
-    screen2jpeg(['Senate_histogram_today_2024.jpg'])
+    print('-djpeg', SENATE_HISTOGRAM_TODAY_JPG);
+    % screen2jpeg(['Senate_histogram_today_2024.jpg'])
 end
 %
 % end plot
@@ -236,7 +229,7 @@ statenovprobs=round(statenovprobs*100); D2probs=round(D2probs*100); R2probs=roun
 if exist(strcat(whereoutput,SENATE_STATEPROBS_CSV),'file')
     delete(strcat(whereoutput,SENATE_STATEPROBS_CSV))
 end
-% what the columns mean in Senate_stateprobs_2024.csv:
+% what the columns mean in Senate_stateprobs.csv:
 % column 1: Today's snapshot D win probability
 % column 2: November D win probability
 % column 3: median margin (positive indicates D is front-runner)

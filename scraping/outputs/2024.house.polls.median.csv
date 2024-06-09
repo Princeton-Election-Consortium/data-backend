@@ -1,4 +1,5 @@
-num_polls,julian_date,date_most_recent_poll,median_margin,median_abs_dev
+num_polls,julian_date,date_most_recent_poll,median_margin,median_std_dev
+5,160,157,-1.62,3.88
 5,159,157,-1.62,3.88
 5,158,157,-1.62,3.88
 8,157,157,-1.26,2.61

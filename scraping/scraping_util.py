@@ -1,5 +1,6 @@
 import os
 import csv 
+
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -7,10 +8,14 @@ from datetime import datetime, timedelta
 # ======================================================================
 # GLOBAL VARIABLES
 
-dir_path = os.path.dirname(os.path.realpath(__file__)) # For file paths
-start_date = datetime(year=2024, month=1, day=1)       # Current election year
-
+dir_path = os.path.dirname(os.path.realpath(__file__))
 FIVETHIRTYEIGHT_API_URL = 'https://projects.fivethirtyeight.com/polls/polls.json'
+
+YEAR = 2024
+START_DATE = datetime(year=YEAR, month=1, day=1)    
+PRES_CANDS = [['Biden'], ['Trump']]
+DEM_CAND = 'Biden'
+REP_CAND = 'Trump'
 
 # ======================================================================
 # MAIN 538 POLL SCRAPING / CLEANING
@@ -150,12 +155,14 @@ def parse_candidate(row, party, cand_list=None):
 
 def parse_dminusr(row, generic=False, dem_cand=None, rep_cand=None):
     """
+    NOTE: Used for House, Senate, and Presidential polls.
+
     Parses a poll (row) to calculate the margin between the Dem and Rep 
     party/candidate.
 
     Args:
     - row (pandas.Series): A row of poll data with the 'answers' field.
-    - generic (bool, optional): Whether or not the poll is generic. 
+    - generic (bool, optional): Whether or not the poll is generic (meaning for House). 
         Default is False.
     - dem_cand (str, optional: Name of Democratic candidate choice.
         Default is None (not needed for generic polls).
@@ -316,7 +323,7 @@ def write_state_day_stats(day, state, polls, file):
         - Julian date
         - date of the most recent poll
         - median margin
-        - median absolute deviation
+        - median standard deviation
         - state number
         - state code
     """
@@ -330,9 +337,9 @@ def write_state_day_stats(day, state, polls, file):
     state_num = int(state['num'])
 
     # Initialize default/prior values
-    date_most_recent_poll = datetime(year=2024, month=1, day=1).strftime("%j")
+    date_most_recent_poll = datetime(year=YEAR, month=1, day=1).strftime("%j")
     median_margin = float(state['prior'])
-    median_abs_dev = -999
+    median_std_dev = -999
 
     # If there are polls, update statistics
     if num_polls > 0:
@@ -340,14 +347,15 @@ def write_state_day_stats(day, state, polls, file):
 
         x = pd.Series(polls['dminusr'])
         median_margin = x.median()
-        median_abs_dev = x.sub(x.median()).abs().median() * 1.4826
+        median_abs_dev = x.sub(x.median()).abs().median()
+        median_std_dev = median_abs_dev * 1.4826 # set multiplicative factor
 
     # Write the statistics to the specified file
     file.write('%-3d %-4s %-4s %-7.2f %-7.2f %-3d\n' % (num_polls, 
                                                        julian_date,
                                                        date_most_recent_poll, 
                                                        median_margin, 
-                                                       median_abs_dev,
+                                                       median_std_dev,
                                                        state_num))
     
     # Return a dictionary with the calculated statistics
@@ -355,7 +363,7 @@ def write_state_day_stats(day, state, polls, file):
                 julian_date=julian_date, 
                 date_most_recent_poll=date_most_recent_poll, 
                 median_margin=median_margin, 
-                median_abs_dev=median_abs_dev, 
+                median_std_dev=median_std_dev, 
                 state_num=state_num)
 
 # ======================================================================
@@ -378,10 +386,14 @@ def process_house_polls(polls, start_date):
     print("Number of 'generic-ballot' polls:", len(house_polls))
 
     # For each poll, calculate D-R margins
-    house_polls.loc[:, 'dminusr'] = house_polls.apply(lambda row: parse_dminusr(row, generic=True), axis=1)
+    # house_polls.loc[:, 'dminusr'] = house_polls.apply(lambda row: parse_dminusr(row, generic=True), axis=1)
+    # June 2024: Getting rid of 'SettingWithCopyWarning' 
+    house_polls_copy = house_polls.copy()
+    house_polls_copy['dminusr'] = house_polls_copy.apply(lambda row: parse_dminusr(row, generic=True), axis=1)
+    house_polls = house_polls_copy
 
     # --> Generic algorithm
-    path = os.path.join(dir_path, 'outputs/2024.house.polls.median.txt')
+    path = os.path.join(dir_path, f'outputs/{YEAR}.house.polls.median.txt') 
     all_output = []
 
     with open(path, 'w') as f:
@@ -401,24 +413,25 @@ def process_house_polls(polls, start_date):
             median_margin = final_polls['dminusr'].median()
 
             x = pd.Series(final_polls['dminusr'])
-            median_abs_dev = x.sub(x.median()).abs().median() * 1.4826
+            median_abs_dev = x.sub(x.median()).abs().median() 
+            median_std_dev = median_abs_dev * 1.4826 # set multiplicative factor
 
             f.write('%-3d %-4s %-4s %-7.2f %-7.2f \n' % (num_polls, 
                                                         julian_date,
                                                         date_most_recent_poll, 
                                                         median_margin, 
-                                                        median_abs_dev))
+                                                        median_std_dev))
 
             # Append statistics to all_output list
             all_output.append(dict(num_polls=num_polls, 
                                    julian_date=julian_date, 
                                    date_most_recent_poll=date_most_recent_poll, 
                                    median_margin=median_margin,
-                                   median_abs_dev=median_abs_dev))
+                                   median_std_dev=median_std_dev))
 
     # Convert all_output to DataFrame and write to CSV file
     df = pd.DataFrame(all_output)
-    path = os.path.join(dir_path, 'outputs/2024.house.polls.median.csv')
+    path = os.path.join(dir_path, f'outputs/{YEAR}.house.polls.median.csv')
     df.to_csv(path, index=False, float_format='%.2f')
 
 # ======================================================================
@@ -438,7 +451,7 @@ def get_sen_states_cands():
     """
     sen_states = []
     
-    path = os.path.join(dir_path, '2024.Senate.priors.csv')
+    path = os.path.join(dir_path, f'{YEAR}.Senate.priors.csv')
     with open(path, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -484,7 +497,7 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
     sen_polls['dminusr'] = sen_polls.apply(lambda row: parse_dminusr(row, dem_cand=row['dem_cand'], rep_cand=row['rep_cand']), axis=1)
 
     # --> Generic algorithm
-    path = os.path.join(dir_path, 'outputs/2024.Senate.polls.median.txt')
+    path = os.path.join(dir_path, f'outputs/{YEAR}.Senate.polls.median.txt')
     all_output = [] 
 
     with open(path, 'w') as f:
@@ -510,7 +523,7 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
 
     # Convert all_output to DataFrame and write to CSV file
     df = pd.DataFrame(all_output)
-    path = os.path.join(dir_path, 'outputs/2024.Senate.polls.median.csv')
+    path = os.path.join(dir_path, f'outputs/{YEAR}.Senate.polls.median.csv')
     df.to_csv(path, index=False, float_format='%.2f')
 
 # ======================================================================
@@ -527,7 +540,7 @@ def get_pres_states():
     """
     states = [] 
 
-    path = os.path.join(dir_path, '2024.EV.priors.csv')
+    path = os.path.join(dir_path, f'{YEAR}.EV.priors.csv')
     with open(path, 'r') as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -553,23 +566,23 @@ def process_presidential_polls(polls, start_date, states):
     print("Number of 'president-general' polls:", len(pres_polls))
 
     # For each poll, parse Dem/Rep candidates
-    pres_cands = [['Biden'], ['Trump']]
+    
     pres_polls = pres_polls.assign(
-        dem_cand=lambda x: x.apply(parse_candidate, axis=1, party='Dem', cand_list=pres_cands),
-        rep_cand=lambda x: x.apply(parse_candidate, axis=1, party='Rep', cand_list=pres_cands)
+        dem_cand=lambda x: x.apply(parse_candidate, axis=1, party='Dem', cand_list=PRES_CANDS),
+        rep_cand=lambda x: x.apply(parse_candidate, axis=1, party='Rep', cand_list=PRES_CANDS)
     )
 
     # Cleaning: Remove rows with other match-ups and national polls
-    pres_polls = pres_polls[(pres_polls['dem_cand'] == 'Biden') & (pres_polls['rep_cand'] == 'Trump')]
+    pres_polls = pres_polls[(pres_polls['dem_cand'] == DEM_CAND) & (pres_polls['rep_cand'] == REP_CAND)]
     pres_polls = pres_polls[pres_polls['state'] != 'National']
 
     print("Number of polls after cleaning:", len(pres_polls))
 
     # For each poll, calculate D-R margins
-    pres_polls['dminusr'] = pres_polls.apply(lambda row: parse_dminusr(row, dem_cand='Biden', rep_cand='Trump'), axis=1)
+    pres_polls['dminusr'] = pres_polls.apply(lambda row: parse_dminusr(row, dem_cand=DEM_CAND, rep_cand=REP_CAND), axis=1)
 
     # --> Generic algorithm
-    path = os.path.join(dir_path, 'outputs/2024.EV.polls.median.txt')
+    path = os.path.join(dir_path, f'outputs/{YEAR}.EV.polls.median.txt')
     all_output = []
 
     with open(path, 'w') as f:
@@ -596,20 +609,19 @@ def process_presidential_polls(polls, start_date, states):
     
     # Convert all_output to DataFrame and write to CSV file
     df = pd.DataFrame(all_output)
-    path = os.path.join(dir_path, 'outputs/2024.EV.polls.median.csv')
+    path = os.path.join(dir_path, f'outputs/{YEAR}.EV.polls.median.csv')
     df.to_csv(path, index=False, float_format='%.2f')
 
 # ======================================================================
 
 def main():
-    # ALL POLLS
     print("Scraping all 538 API polls...")
-    all_polls = get_all_polls(2024)
+    all_polls = get_all_polls(YEAR)
     print("Total number of polls:", len(all_polls))
 
     # HOUSE
     print("Generating House medians...")
-    process_house_polls(all_polls, start_date)
+    process_house_polls(all_polls, START_DATE)
     print("Done generating House medians...")
 
     # SENATE
@@ -618,14 +630,14 @@ def main():
     sen_cands = get_sen_states_cands()[1:]
     # print("sen_states:", sen_states)
     # print("sen_cands:", sen_cands)
-    process_senate_polls(all_polls, start_date, sen_states, sen_cands)
+    process_senate_polls(all_polls, START_DATE, sen_states, sen_cands)
     print("Done generating Senate medians...")
 
     # PRESIDENTIAL
     print("Generating presidential medians...")
     pres_states = get_pres_states() 
     # print("pres_states:", pres_states)
-    process_presidential_polls(all_polls, start_date, pres_states)
+    process_presidential_polls(all_polls, START_DATE, pres_states)
     print("Done generating Presidential medians...")
 
 if __name__ == '__main__':

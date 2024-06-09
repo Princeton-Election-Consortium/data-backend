@@ -1,8 +1,7 @@
 %clear
 close
 
-% Reference the constants script
-run('EV_constants_2024.m');
+whereoutput='outputs/';
 
 EV_estimate_history=load(strcat(whereoutput,EV_ESTIMATE_HISTORY_CSV));
 %    Each line of EV_estimate_history should contain:

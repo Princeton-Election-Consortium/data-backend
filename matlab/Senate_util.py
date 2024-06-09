@@ -3,7 +3,8 @@ import pandas as pd
 from scipy.stats import t
 from datetime import datetime
 
-# Initialize variables
+# Initialize global variables
+data_file = '../scraping/outputs/2024.Senate.polls.median.csv'
 output_path = 'outputs/'
 # TODO: Check with the spreadsheet
 polling_states = ['AZ', 'FL', 'MD', 'MI', 'MT', 'NV', 'OH', 'PA', 'TX', 'WI', 'WV'] # 11 races
@@ -163,8 +164,6 @@ def Senate_estimator(polls, bias_pct=0, for_history=0, analysis_date=0):
     # TODO: Rename these variables
     state_probs, state_nov_probs, histogram, cumulative_prob, R_control_probs, D_control_probs, median_seats, mean_seats = Senate_median(sen_polls, bias_pct, num_polling_states, dem_safe)
 
-    # PLOT THE HISTOGRAM ----------
-
     # OUTPUTS----------------------
     # confidenceintervals(3)=Senateseats(find(cumulative_prob<=0.025,1,'last')); % 95-pct lower limit
     # confidenceintervals(1)=Senateseats(find(cumulative_prob<=0.15865,1,'last')); % 1-sigma lower limit
@@ -246,9 +245,6 @@ def Senate_regenerate(polls):
 
 # == SENATE ============================================================
 
-
-
-data_file = '../scraping/outputs/2024.Senate.polls.median.csv'
 sen_polls = pd.read_csv(data_file)
 # print(sen_polls)
 
