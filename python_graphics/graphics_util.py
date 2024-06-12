@@ -37,36 +37,36 @@ def generate_house_meta_lead_graphics():
                 strike_zone_data_file = f'../matlab/outputs/House_predictions_{YEAR}.csv', 
                 strike_zone_house = True,
                 custom_twin_axis = True,
-                custom_twin_axis_offset=0,
+                custom_twin_axis_offset=0,      # Remember to also set this in banner_util.py
                 custom_twin_axis_label=f'{YEAR} generic ballot D-R',
                 custom_hline=True,
                 custom_hline_label='Prior from special elections',
-                custom_hline_ypos=4.5, # TODO: Need to set this in 2 diff places
+                custom_hline_ypos=4.5,          # Remember to also set this in federal_constants.m
         )
 
-        house_meta_margin = os.path.join(out_dir, f'house_meta_margin_{YEAR}')
+        house_meta_lead = os.path.join(out_dir, f'house_meta_lead_{YEAR}')
         generate_line_plot(
                **house_meta_lead_kw,
 
                 # Text
-                title_txt='House control meta-margin: {party}{last_value:.01f}%',
-                ylab_txt='House control meta-margin',
+                title_txt='House control meta-lead: {party}{last_value:.01f}%',
+                ylab_txt='House control meta-lead',
 
                 # Output
-                out_path=house_meta_margin,
+                out_path=house_meta_lead,
         )
 
-        thumb_house_meta_margin = os.path.join(out_dir, f'thumb_house_meta_margin_{YEAR}')
+        thumb_house_meta_lead = os.path.join(out_dir, f'thumb_house_meta_lead_{YEAR}')
         generate_line_plot(
                 **house_meta_lead_kw, 
 
                 # Text
-                title_txt="House control meta-margin",
+                title_txt="House control meta-lead",
                 corner_label = '{party}{last_value:.01f}%', 
 
                 # Output
                 thumbnail=True,
-                out_path=thumb_house_meta_margin,
+                out_path=thumb_house_meta_lead,
         )
 
 # == SENATE ============================================================
@@ -77,7 +77,7 @@ def generate_senate_meta_lead_graphics():
                 data_dir = '../matlab/outputs', 
                 data_file=f'Senate_estimate_history_{YEAR}.csv',
                 x_column=0,             # date
-                y_column=11,            # meta-margin
+                y_column=11,            # meta-lead
 
                 # Lines
                 ylim=(-9, 3),
@@ -93,7 +93,7 @@ def generate_senate_meta_lead_graphics():
 
                 # Text
                 title_txt = 'Popular meta-lead for Senate control: {party}{last_value:.01f}%',
-                ylab_txt='Meta-margin',
+                ylab_txt='Meta-lead',
                 hline_labels = ['R control', 'D+I control'],
 
                 # Output
@@ -105,7 +105,7 @@ def generate_senate_meta_lead_graphics():
                 **senate_meta_lead_kw,
 
                 # Text
-                title_txt = 'Senate control meta-margin',
+                title_txt = 'Senate control meta-lead',
                 corner_label = '{party}{last_value:.01f}%', 
 
                 # Output
@@ -157,14 +157,17 @@ def generate_senate_histogram_graphics():
                 # Data
                 data_dir = '../matlab/outputs', 
                 data_file=f'Senate_histogram_{YEAR}.csv',
-                xvals=np.arange(46, 57), # 2020- (43,61)
+                # xvals=np.arange(46, 57), # 2020- (43,61)
+                # xvals=np.arange(45, 56), # TODO: I think I need to play around here
+                # xvals=np.arange(42, 47),
+                xvals=None,
 
                 # Lines
-                xlim=(46,57),
+                xlim=(44,54),
                 xticks_interval=1,
                 ylim=(0, 1.15),
                 yticks_interval=5,
-                vline_xpos = 49.6,
+                vline_xpos = 49.5,
                 vline_lab_pad = 0.125,
 
                 # Text
@@ -201,7 +204,7 @@ def generate_ev_meta_lead_graphics():
                 data_dir = '../matlab/outputs', 
                 data_file=f'EV_estimate_history_{YEAR}.csv',
                 x_column=0,             # date
-                y_column=13,            # meta-margin
+                y_column=13,            # meta-lead
 
                 # Lines
                 ylim=(-6, 2), 
@@ -220,7 +223,7 @@ def generate_ev_meta_lead_graphics():
                 
                 # Text
                 title_txt = 'Popular meta-lead for President: {party}{last_value:.01f}%',
-                ylab_txt='Meta-margin',
+                ylab_txt='Meta-lead',
         
                 # Output
                 out_path=ev_meta_lead,
@@ -231,7 +234,7 @@ def generate_ev_meta_lead_graphics():
                 **ev_meta_lead_kw,
 
                 # Text
-                title_txt = 'Presidential Meta-margin',
+                title_txt = 'Presidential Meta-lead',
 
                 # Output
                 thumbnail = True,
@@ -355,13 +358,13 @@ def generate_superimposed_graphic():
                 senate_data_dir = '../matlab/outputs', 
                 senate_data_file=f'Senate_estimate_history_{YEAR}.csv',
                 senate_x_column=0,             # date
-                senate_y_column=11,            # meta-margin
+                senate_y_column=11,            # meta-lead
 
                 # EV data
                 ev_data_dir = '../matlab/outputs', 
                 ev_data_file=f'EV_estimate_history_{YEAR}.csv',
                 ev_x_column=0,             # date
-                ev_y_column=13,            # meta-margin
+                ev_y_column=13,            # meta-lead
                 
                 # Lines
                 ylim=(-14, 8),
@@ -369,7 +372,6 @@ def generate_superimposed_graphic():
                 # ylim=(-6, 2), 
 
                 yticks_interval=2,
-                hline_ypos = 0, 
 
                 # Customs
                 meta_lead_graphic=True,
@@ -380,17 +382,14 @@ def generate_superimposed_graphic():
                **all_meta_lead_kw,
 
                 # Text
-                title_txt='House, Senate, and Presidential meta-margin', 
-                ylab_txt='Meta-margin', # good
+                title_txt='House, Senate, and Presidential meta-lead', 
+                ylab_txt='Meta-lead', 
 
-                # title_txt='House control meta-margin: {party}{last_value:.01f}%',
-                # title_txt = 'Popular meta-lead for Senate control: {party}{last_value:.01f}%',
-                # title_txt = 'Popular meta-lead for President: {party}{last_value:.01f}%',
+                house_label = 'House: {party}{last_value:.01f}%',  
+                senate_label = 'Senate: {party}{last_value:.01f}%',  
+                ev_label = 'Presidential: {party}{last_value:.01f}%',  
+
                 # hline_labels = ['R control', 'D+I control'], # if needed, move to right by changing HLINE_LAB_XPOS
-                # hline_labels = ['Trump leads','Biden leads'],
-
-                # corner_label = '{party}{last_value:.01f}%',  # House
-                # corner_label = '{party}{last_value:.01f}%',  # Senate
 
                 # Output
                 out_path=all_meta_lead,
@@ -405,6 +404,8 @@ def main():
         generate_senate_graphics()              
         generate_presidential_graphics()
         generate_superimposed_graphic()
+
+        generate_senate_histogram_graphics()
 
 if __name__ == '__main__':
     main()

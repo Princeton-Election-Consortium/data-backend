@@ -19,8 +19,19 @@ SENATE_PRIORS_CSV = os.path.join(DIR_PATH, '../scraping/', f'{YEAR}.Senate.prior
 SENATE_POLLS_CSV = os.path.join(DIR_PATH, '../scraping/outputs/', f'{YEAR}.Senate.polls.median.csv')
 SENATE_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'Senate_jerseyvotes_{YEAR}.csv')
 
+EV_STATEPROBS_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_stateprobs_{YEAR}.csv')
+EV_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_jerseyvotes_{YEAR}.csv')
+
 FIVETHIRTYEIGHT_SENATE_URL = "https://projects.fivethirtyeight.com/polls/senate/"
 
+# Constants to set for the current election cycle
+D_SEATS_START = 43
+
+# ======================================================================
+# HTML SNIPPETS
+
+# Used for both Senate and Presidential table
+# Columns: State, Margin, Voter Power
 style_and_start = """
 <style scoped>
     label {
@@ -73,7 +84,7 @@ style_and_start = """
 </style>
 
 <div>
-<table id="senate-table">
+<table id="table">
     <tr> 
         <th colspan="1">State</th>
         <th colspan="1">Margin</th>
@@ -147,7 +158,7 @@ close = """
 
 # ======================================================================
 
-def get_candidates(path):
+def get_sen_candidates(path):
     candidates = {}
     
     with open(path, 'r') as f:
@@ -159,9 +170,11 @@ def get_candidates(path):
             }
     return candidates
 
-# *** note *** currently relies on Senate_jerseyvotes.m to be maximal voting power 
-# sorted in order for table to be like-so
-def get_jerseyvotes(path):
+def get_sen_jerseyvotes(path):
+    """
+    *** note *** currently relies on Senate_jerseyvotes.m to be maximal voting power 
+    sorted in order for table to be like-so   
+    """
     votes = OrderedDict({})
 
     with open(path, 'r') as f:
@@ -173,9 +186,26 @@ def get_jerseyvotes(path):
             }
     return votes
 
+def get_ev_jerseyvotes(path):
+    votes = OrderedDict({})
+
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            #print(row[1] + " " + str(round(float(row[2]), 1)))
+            if row[1] == "NJ":
+                votes[row[1]] = {
+                    'jersey_votes' : float(row[2])
+                }
+            else :
+                votes[row[1]] = {
+                    'jersey_votes' : round(float(row[2]), 1)
+                }
+    return votes
+
 # **** made in response to apparent matlab issue processing poll margins 7/22/20
 # *** can be deleted in future
-def get_margins(path):
+def get_sen_margins(path):
 
     # SENATE_STATES = ['AZ,FL,MD,MI,MT,NV,OH,PA,TX,WI,WV ']; % 11 races
 
@@ -219,6 +249,26 @@ def get_margins(path):
             i+=1
     return margins
 
+def get_ev_margins(path):
+    margins = {}
+    
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            margins[row[4]] = {
+                'state'  : row[4],
+                'margin' : round(float(row[1]),1)
+            }
+    return margins
+
+# FOR EV
+def get_538_link(postal_code):
+    # no links available for following states:
+    # DC, HI, ID, IL, LA, OR, RI, SD, VT, WY
+    if postal_code not in ["DC", "HI", "ID", "IL", "LA", "OR", "RI", "SD", "VT", "WY"]:
+        return fivethirtyeight + get_formatted_state(postal_code, url_format=True)
+    return fivethirtyeight 
+
 def sort(margins):
     tempMargins = {}
     sorted_dict = {}
@@ -231,6 +281,7 @@ def sort(margins):
     return sort_dict
 
 # ======================================================================
+# SENATE
 
 def write_senate_jv_widget(names, margins, votes):
     ## append style + table start, iteratively add rows, append close
@@ -278,10 +329,9 @@ def write_senate_table(names, margins, votes):
     html = style_and_start2
     html_full = style_and_start2
     n = 0
-    magicNum = 46
     count = 0
     for key in sorted_margins:
-        seats = magicNum +count
+        seats = D_SEATS_START +count
         postal_code = key
         state_full = get_formatted_state(key, inverse=True)
         hyperlink = FIVETHIRTYEIGHT_SENATE_URL +  get_formatted_state(key, url_format=True)
@@ -320,14 +370,127 @@ def write_senate_table(names, margins, votes):
         full.write(html_full)
 
 # ======================================================================
+# PRESIDENTIAL
+
+# margin spread in which we consider polling to be tied (i.e. 0.5 for +-0.5 to be tie instead of Biden/Trump)
+tie_threshold = 0.0
+
+fivethirtyeight = "https://projects.fivethirtyeight.com/polls/president-general/"
+
+candidates = {
+    "dem" : "Biden",
+    "rep" : "Trump"
+}
+
+def write_presidential_race_table(margins, votes):
+    ## append style + table start, iteratively add rows, append close
+    html = style_and_start
+    
+    n = 0
+
+    for key in votes: 
+        postal_code = key
+        # state_full = get_formatted_state(key, inverse=True)
+        state_full = key 
+        if "1" in key or "2" in key or "3" in key:
+            state_full = get_formatted_state(key, electoral_district=True)
+        hyperlink = get_538_link(postal_code)
+        candiate_str = ""
+        link_color = "#000000"
+        # set leading candidate str based of margin as well as link color
+        if margins[key]['margin'] > 0:
+            candiate_str = candidates["dem"]
+            link_color = "#1660CE"
+        elif margins[key]['margin'] < 0:
+            candiate_str = candidates["rep"]
+            link_color = "#C62535"
+        else: candiate_str = "Tie"
+
+        margin = " +" + str(margins[key]['margin']).replace('-','')
+        jersey_votes = votes[key]['jersey_votes']
+        ## force NJ to display 2 significant digits (value often quite small)
+        if key == "NJ":
+            jersey_votes = format(votes[key]['jersey_votes'], '.2g')
+
+        # only add districts above thresholds to widget table
+        if votes[key]['jersey_votes'] >= 50 or n<6 or key=="NJ":
+            html += "\n\t" + "<tr>"
+            html += "\n\t\t" + f"<td>{state_full}</td>"
+            html += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
+            html += "\n\t\t" + f"<td>{jersey_votes}</td>"
+            html += "\n\t" + "</tr>"
+
+        n += 1
+    
+    html += close
+
+    path = os.path.join(DIR_PATH, 'Presidential_Race_Table.html')
+    with open(path, 'w') as widget:
+        widget.write(html)
+    
+def write_presidential_race_table_full(margins, votes):
+    html_full = style_and_start
+
+    n = 0
+
+    for key in votes: 
+        postal_code = key
+        # state_full = get_formatted_state(key, inverse=True)
+        state_full = key 
+        if "1" in key or "2" in key or "3" in key:
+            state_full = get_formatted_state(key, electoral_district=True)
+        hyperlink = get_538_link(postal_code)
+        candiate_str = ""
+        link_color = "#000000"
+        # set leading candidate str based of margin as well as link color
+        if margins[key]['margin'] > 0:
+            candiate_str = candidates["dem"]
+            link_color = "#1660CE"
+        elif margins[key]['margin'] < 0:
+            candiate_str = candidates["rep"]
+            link_color = "#C62535"
+        else: candiate_str = "Tie"
+
+        margin = " +" + str(margins[key]['margin']).replace('-','')
+        jersey_votes = votes[key]['jersey_votes']
+        ## force NJ to display 2 significant digits (value often quite small)
+        if key == "NJ":
+            jersey_votes = format(votes[key]['jersey_votes'], '.2g')
+        
+        # add all districts to full table
+        html_full += "\n\t" + "<tr>"
+        html_full += "\n\t\t" + f"<td>{state_full}</td>"
+        html_full += "\n\t\t" + f"<td><a href= {hyperlink} style=color:{link_color}; >{candiate_str}{margin}</a> </td>"
+        html_full += "\n\t\t" + f"<td>{jersey_votes}</td>"
+        html_full += "\n\t" + "</tr>"
+
+        n += 1
+    
+    html_full += close
+
+    path = os.path.join(DIR_PATH, 'Presidential_Race_Table_Full.html')
+    with open(path, 'w') as full:
+        full.write(html_full)
+
+# ======================================================================
 
 def main():
-    names = get_candidates(SENATE_PRIORS_CSV)
-    margins = get_margins(SENATE_POLLS_CSV)
-    votes = get_jerseyvotes(SENATE_JERSEYVOTES_CSV)
+    # SENATE
+    sen_names = get_sen_candidates(SENATE_PRIORS_CSV)
+    sen_margins = get_sen_margins(SENATE_POLLS_CSV)
+    sen_votes = get_sen_jerseyvotes(SENATE_JERSEYVOTES_CSV)
     
-    write_senate_jv_widget(names, margins, votes)
-    write_senate_table(names, margins, votes)
+    write_senate_jv_widget(sen_names, sen_margins, sen_votes)
+    write_senate_table(sen_names, sen_margins, sen_votes)
+
+    # PRESIDENTIAL
+    ev_margins = get_ev_margins(EV_STATEPROBS_CSV)
+    ev_votes = get_ev_jerseyvotes(EV_JERSEYVOTES_CSV)
+
+    write_presidential_race_table(ev_margins, ev_votes)
+    write_presidential_race_table_full(ev_margins, ev_votes)
+
+
 
 if __name__ == "__main__":
     main()

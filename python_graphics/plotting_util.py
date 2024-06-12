@@ -554,41 +554,90 @@ def generate_line_plot(
 
     plt.close(fig)
 
+ #====
+
+def get_plotting_data(data_dir, data_file, read_csv_kw, x_column, y_column):
+    # Read data
+    data = load_data(data_dir, data_file, read_csv_kw) 
+    julian_days, dates, vals = prepare_data(data, x_column, y_column)
+
+    # Use data for figure titles/labels
+    title_fillers = dict(
+        last_value = vals[-1],              # percentage for incumbent
+        party = '',
+    )   
+    # print("Last value:", title_fillers['last_value'])
+
+    # # Set title
+    last_value = title_fillers['last_value']
+    if last_value >= 0:    
+        # Incumbent (2024: Biden/Dem) 
+        title_fillers['party'] = 'D+'
+    else:                  
+        # Opponent (2024: Trump/Rep) 
+        title_fillers['party'] = 'R+'
+        title_fillers['last_value'] = abs(last_value)
+
+    last_val_color = DEM_COLOR if vals[-1] > 0 else REP_COLOR
+
+    return julian_days, dates, vals, title_fillers, last_val_color
+
+    # ====
+
+    # Plot data line
+    house_line, = ax.plot(dates, vals, 
+                            color=house_color,
+                            lw=DATA_LW,
+                            zorder=100,
+                            label=house_label.format(**house_title_fillers))
+    
+    # Plot circle on most recent data point
+    last_value_color = DEM_COLOR if house_vals[-1] > HLINE_LAB_YPOS else REP_COLOR
+    ax.plot(house_dates[-1], house_vals[-1], 
+            marker='o', 
+            markersize=4.5, # Set 
+            markerfacecolor=last_value_color, 
+            markeredgewidth=0, 
+            zorder=101)
+
 def generate_superimposed_line_plot(
-        # Data
+        # House
         house_data_dir="",            # required
         house_data_file="",           # required
         house_read_csv_kw={},               # optional, for House polls file
         house_x_column=None,          # required
         house_y_column=None,          # required
         house_color='orange',
+        house_label=None,             # required
 
+        # Senate
         senate_data_dir="",            # required
         senate_data_file="",           # required
         senate_x_column=None,          # required
         senate_y_column=None,          # required
         read_csv_kw={},
         senate_color='green',
+        senate_label=None,             # required
 
-        # EV data
+        # EV 
         ev_data_dir = '../matlab/outputs', 
         ev_data_file=f'EV_estimate_history_{YEAR}.csv',
         ev_x_column=0,             # date
         ev_y_column=13,            # meta-margin
         ev_color='purple',
+        ev_label=None,                  # required
 
         # ------------------------------------------------------
 
         # Lines
         ylim=None,              # optional, recommended
         yticks_interval=1,      # optional, recommended
-        hline_ypos=None,        # required
+        # hline_ypos=None,        # required
 
         # Text
         title_txt='',           # required
         ylab_txt='',            # required
-        hline_labels=None,      # optional, recommended
-        corner_label=None,      # optional, str or list, only in thumbnail
+        hline_labels=None,      # optional, recommended, check?
 
         # Customs               # all optional
         meta_lead_graphic=False,
@@ -606,6 +655,7 @@ def generate_superimposed_line_plot(
     # Specific to line plot
     DATA_LW = 3
     HLINE_LAB_PAD = 0.06
+    HLINE_LAB_YPOS = 0
     HLINE_LAB_XPOS = 0.75
 
     # General labels
@@ -632,111 +682,79 @@ def generate_superimposed_line_plot(
              linewidth=SPINE_LW)
 
     # -- PLOT HOUSE DATA -----------------------------------------------
-
-    # Read data
-    house_data = load_data(house_data_dir, house_data_file, house_read_csv_kw) 
-    house_julian_days, house_dates, house_vals = prepare_data(house_data, house_x_column, house_y_column)
+    
+    house_plotting_data = get_plotting_data(house_data_dir, house_data_file, house_read_csv_kw, house_x_column, house_y_column)
+    house_julian_days = house_plotting_data[0]
+    house_dates = house_plotting_data[1]
+    house_vals = house_plotting_data[2]
+    house_title_fillers = house_plotting_data[3]
+    house_last_val_color = house_plotting_data[4]
 
     # Plot data line
     house_line, = ax.plot(house_dates, house_vals, 
                             color=house_color,
                             lw=DATA_LW,
                             zorder=100,
-                            label='House')
+                            label=house_label.format(**house_title_fillers))
     
     # Plot circle on most recent data point
-    last_value_color = DEM_COLOR if house_vals[-1] > hline_ypos else REP_COLOR
     ax.plot(house_dates[-1], house_vals[-1], 
             marker='o', 
             markersize=4.5, # Set 
-            markerfacecolor=last_value_color, 
+            markerfacecolor=house_last_val_color, 
             markeredgewidth=0, 
             zorder=101)
-
-    # Use data for figure titles/labels
-    title_fillers = dict(
-        last_value = house_vals[-1],              # percentage for incumbent
-        inv_last_value = 100 - house_vals[-1],    # percentage for opponent
-        inv_pres_last_value = 538 - house_vals[-1],
-        party = '',
-    )   
-    # print("Last value:", title_fillers['last_value'])
-
-    # Add label
-    # ax.annotate("House", 
-    #         xy=(house_dates[-1], house_vals[-1]),  
-    #         xytext=(3, 3),  # Offset of the label from the point
-    #         textcoords='offset points',
-    #         fontsize=FONT_SIZE_MED-2,
-    #         color=house_color,
-    #         weight='semibold') 
     
     # -- PLOT SENATE DATA ----------------------------------------------
 
-    # Read data
-    senate_data = load_data(senate_data_dir, senate_data_file, read_csv_kw) 
-    senate_julian_days, senate_dates, senate_vals = prepare_data(senate_data, senate_x_column, senate_y_column)
-    # print(senate_vals)
+    senate_plotting_data = get_plotting_data(senate_data_dir, senate_data_file, read_csv_kw, senate_x_column, senate_y_column)
+    senate_julian_days = senate_plotting_data[0]
+    senate_dates = senate_plotting_data[1]
+    senate_vals = senate_plotting_data[2]
+    senate_title_fillers = senate_plotting_data[3]
+    senate_last_val_color = senate_plotting_data[4]
 
     # Plot data line
     senate_line, = ax.plot(senate_dates, senate_vals, 
                             color=senate_color,
                             lw=DATA_LW,
                             zorder=100,
-                            label='Senate')
+                            label=senate_label.format(**senate_title_fillers))
     
     # Plot circle on most recent data point
-    last_value_color = DEM_COLOR if senate_vals[-1] > hline_ypos else REP_COLOR
     ax.plot(senate_dates[-1], senate_vals[-1], 
             marker='o', 
             markersize=4.5, # Set 
-            markerfacecolor=last_value_color, 
+            markerfacecolor=senate_last_val_color, 
             markeredgewidth=0, 
             zorder=101)
 
-    # Use data for figure titles/labels
-    title_fillers = dict(
-        last_value = senate_vals[-1],              # percentage for incumbent
-        inv_last_value = 100 - senate_vals[-1],    # percentage for opponent
-        inv_pres_last_value = 538 - senate_vals[-1],
-        party = '',
-    )   
-    # print("Last value:", title_fillers['last_value'])
-
     # -- PLOT EV DATA ----------------------------------------------
 
-    # Read data
-    ev_data = load_data(ev_data_dir, ev_data_file, read_csv_kw) 
-    ev_julian_days, ev_dates, ev_vals = prepare_data(ev_data, ev_x_column, ev_y_column)
-    # print(senate_vals)
+    ev_plotting_data = get_plotting_data(ev_data_dir, ev_data_file, read_csv_kw, ev_x_column, ev_y_column)
+    ev_julian_days = ev_plotting_data[0]
+    ev_dates = ev_plotting_data[1]
+    ev_vals = ev_plotting_data[2]
+    ev_title_fillers = ev_plotting_data[3]
+    ev_last_val_color = ev_plotting_data[4]
 
     # Plot data line
     ev_line, = ax.plot(ev_dates, ev_vals, 
                         color=ev_color,
                         lw=DATA_LW,
                         zorder=100,
-                        label='Presidential')
+                        label=ev_label.format(**ev_title_fillers))
     
     # Plot circle on most recent data point
-    last_value_color = DEM_COLOR if ev_vals[-1] > hline_ypos else REP_COLOR
     ax.plot(senate_dates[-1], ev_vals[-1], 
             marker='o', 
             markersize=4.5, # Set 
-            markerfacecolor=last_value_color, 
+            markerfacecolor=ev_last_val_color, 
             markeredgewidth=0, 
             zorder=101)
 
-    # Use data for figure titles/labels
-    title_fillers = dict(
-        last_value = ev_vals[-1],              # percentage for incumbent
-        inv_last_value = 100 - ev_vals[-1],    # percentage for opponent
-        inv_pres_last_value = 538 -ev_vals[-1],
-        party = '',
-    )   
-    # print("Last value:", title_fillers['last_value'])
-
     # Add legend
-    ax.legend(handles=[house_line, senate_line, ev_line], loc='best')
+    ax.legend(handles=[house_line, senate_line, ev_line], loc='lower right')
     
     # -- X-AXIS --------------------------------------------------------
 
@@ -815,49 +833,39 @@ def generate_superimposed_line_plot(
     # -- LINE/SHADING --------------------------------------------------
 
     # Set horizontal line
-    if hline_ypos is not None:
-        ax.axhline(hline_ypos,
+    if HLINE_LAB_YPOS is not None:
+        ax.axhline(HLINE_LAB_YPOS,
                    color='dimgrey', 
                    lw=LINE_LW)
         
-        if hline_labels is not None: 
-            pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
+    #     if hline_labels is not None: 
+    #         pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
             
-            # Opponent (2024: Trump/Rep)
-            ax.text(x=HLINE_LAB_XPOS,
-                    y=hline_ypos - pad_data_units,
-                    s=hline_labels[0].format(**title_fillers),
-                    fontsize=FONT_SIZE_MED,
-                    color=ZONE_COLORS[1],
-                    transform=blend(ax.transAxes, ax.transData),
-                    **TXT_KW)
+    #         # Opponent (2024: Trump/Rep)
+    #         ax.text(x=HLINE_LAB_XPOS,
+    #                 y=hline_ypos - pad_data_units,
+    #                 s=hline_labels[0].format(**title_fillers),
+    #                 fontsize=FONT_SIZE_MED,
+    #                 color=ZONE_COLORS[1],
+    #                 transform=blend(ax.transAxes, ax.transData),
+    #                 **TXT_KW)
             
-            # Incumbent (2024: Biden/Dem)
-            ax.text(x=HLINE_LAB_XPOS,
-                    y=hline_ypos + pad_data_units,
-                    s=hline_labels[1].format(**title_fillers),
-                    fontsize=FONT_SIZE_MED,
-                    color=ZONE_COLORS[0],
-                    transform=blend(ax.transAxes, ax.transData),
-                    **TXT_KW)
+    #         # Incumbent (2024: Biden/Dem)
+    #         ax.text(x=HLINE_LAB_XPOS,
+    #                 y=hline_ypos + pad_data_units,
+    #                 s=hline_labels[1].format(**title_fillers),
+    #                 fontsize=FONT_SIZE_MED,
+    #                 color=ZONE_COLORS[0],
+    #                 transform=blend(ax.transAxes, ax.transData),
+    #                 **TXT_KW)
     
     # Shade background of plot regions 
-    ax.axhspan(ax.get_ylim()[0], hline_ypos, color=REP_COLOR, **SHADING_KW)
-    ax.axhspan(hline_ypos, ax.get_ylim()[1], color=DEM_COLOR, **SHADING_KW)
+    ax.axhspan(ax.get_ylim()[0], HLINE_LAB_YPOS, color=REP_COLOR, **SHADING_KW)
+    ax.axhspan(HLINE_LAB_YPOS, ax.get_ylim()[1], color=DEM_COLOR, **SHADING_KW)
     
     # -- FORMATTING ----------------------------------------------------
-    
-    # Set title
-    last_value = title_fillers['last_value']
-    if last_value >= 0:    
-        # Incumbent (2024: Biden/Dem) 
-        title_fillers['party'] = 'D+'
-    else:                  
-        # Opponent (2024: Trump/Rep) 
-        title_fillers['party'] = 'R+'
-        title_fillers['last_value'] = abs(last_value)
 
-    ax.set_title(title_txt.format(**title_fillers),
+    ax.set_title(title_txt,
                  pad=TITLE_PAD,
                  fontsize=FONT_SIZE,
                  weight='bold')    
@@ -884,37 +892,37 @@ def generate_superimposed_line_plot(
         ax.spines['top'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
 
-        # Set corner label in bottom-right (if applicable)
-        if corner_label is not None:
-            pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
+        # # Set corner label in bottom-right (if applicable)
+        # if corner_label is not None:
+        #     pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
 
-            if type(corner_label) == str:       # length one
-                ax.text(x=HLINE_LAB_XPOS,
-                        y=ylim[0] + 1.5*pad_data_units,
-                        s=corner_label.format(**title_fillers), # index 0?
-                        color=last_value_color,
-                        fontsize=FONT_SIZE_MED,
-                        transform=blend(ax.transAxes, ax.transData),
-                        **TXT_KW)
+        #     if type(corner_label) == str:       # length one
+        #         ax.text(x=HLINE_LAB_XPOS,
+        #                 y=ylim[0] + 1.5*pad_data_units,
+        #                 s=corner_label.format(**title_fillers), # index 0?
+        #                 color=last_value_color,
+        #                 fontsize=FONT_SIZE_MED,
+        #                 transform=blend(ax.transAxes, ax.transData),
+        #                 **TXT_KW)
                 
-            elif type(corner_label) == list:    # length two
-                # Opponent (2024: Trump/Rep)
-                ax.text(x=HLINE_LAB_XPOS,
-                        y=ylim[0] + 1.5*pad_data_units,
-                        s=corner_label[0].format(**title_fillers),
-                        fontsize=FONT_SIZE_MED,
-                        color=ZONE_COLORS[1],
-                        transform=blend(ax.transAxes, ax.transData),
-                        **TXT_KW)
+        #     elif type(corner_label) == list:    # length two
+        #         # Opponent (2024: Trump/Rep)
+        #         ax.text(x=HLINE_LAB_XPOS,
+        #                 y=ylim[0] + 1.5*pad_data_units,
+        #                 s=corner_label[0].format(**title_fillers),
+        #                 fontsize=FONT_SIZE_MED,
+        #                 color=ZONE_COLORS[1],
+        #                 transform=blend(ax.transAxes, ax.transData),
+        #                 **TXT_KW)
                 
-                # Incumbent (2024: Biden/Dem)
-                ax.text(x=HLINE_LAB_XPOS,
-                        y=ylim[0] + 3*pad_data_units,
-                        s=corner_label[1].format(**title_fillers),
-                        fontsize=FONT_SIZE_MED,
-                        color=ZONE_COLORS[0],
-                        transform=blend(ax.transAxes, ax.transData),
-                        **TXT_KW)
+        #         # Incumbent (2024: Biden/Dem)
+        #         ax.text(x=HLINE_LAB_XPOS,
+        #                 y=ylim[0] + 3*pad_data_units,
+        #                 s=corner_label[1].format(**title_fillers),
+        #                 fontsize=FONT_SIZE_MED,
+        #                 color=ZONE_COLORS[0],
+        #                 transform=blend(ax.transAxes, ax.transData),
+        #                 **TXT_KW)
     
     # -- SAVE FIGURE ---------------------------------------------------
 
@@ -992,7 +1000,7 @@ def generate_histogram(
         ylab_txt='',            # required
         vline_labels=None,      # optional, recommended
 
-        # Customs               # all optional
+        # Customs               # all optional, for EV only?
         hard_median = False, 
         hard_median_data_file=None,
 
@@ -1020,10 +1028,12 @@ def generate_histogram(
     data_path = os.path.join(data_dir, data_file)
     data = pd.read_csv(data_path, header=None)
     data = data.values.squeeze() * 100.0 # Scale by set data factor
+    print(data)
     if xvals is not None and len(xvals) != len(data):
         raise ValueError("xvals and data arrays must have same length")
     elif xvals is None:
-        xvals = np.arange(len(data))
+        # xvals = np.arange(len(data))
+        xvals = np.arange(43, 43 + len(data)) # TESTING HERE - For some reason, need to add 1 to 42 here
 
     # Prepare figure
     fig = plt.figure(figsize=(WIDTH, WIDTH * HEIGHT_TO_WIDTH))
@@ -1041,6 +1051,7 @@ def generate_histogram(
     # -- PLOT DATA -----------------------------------------------------
 
     # Plot data bars
+    print(xvals)
     ax.bar(xvals, data,
            color='black',
            width=BAR_WIDTH,
@@ -1049,8 +1060,10 @@ def generate_histogram(
     # Use data for figure titles/labels
     title_fillers = dict(
         mean_value = np.sum(data * xvals) / np.sum(data),
+        # median_value = 100 - compute_rv_median(data, xvals),
         median_value = compute_rv_median(data, xvals),
     )
+    print(title_fillers['median_value'])
 
     # Get external median
     if hard_median: 

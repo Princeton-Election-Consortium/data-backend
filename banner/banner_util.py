@@ -20,6 +20,9 @@ SENATE_JERSEYVOTES_CSV = os.path.join(DIR_PATH, MATLAB_OUTPUTS_DIR, f'Senate_jer
 EV_ESTIMATES_CSV = os.path.join(DIR_PATH, MATLAB_OUTPUTS_DIR, f'EV_estimates_{YEAR}.csv')
 EV_JERSEYVOTES_CSV = os.path.join(DIR_PATH, MATLAB_OUTPUTS_DIR, f'EV_jerseyvotes_{YEAR}.csv')
 
+# Constants to set for the current election cycle
+HOUSE_OFFSET = 0    # Same as custom_twin_axis_offset in graphics_util.py
+
 # ======================================================================
 
 def get_estimates(path, dict_csv=False):
@@ -82,7 +85,7 @@ def get_sen_moneyball_states(n):
 
 def parse_house():
     estimates = get_estimates(HOUSE_POLLS_CSV, dict_csv=True)
-    gen_metamargin = (Decimal(estimates['median_margin']) - 2).quantize(Decimal('0.1'))
+    gen_metamargin = (Decimal(estimates['median_margin']) - HOUSE_OFFSET).quantize(Decimal('0.1'))
     gen_polling = (Decimal(estimates['median_margin'])).quantize(Decimal('0.1'))
 
     gen_ahead_str = 'D+'
@@ -180,20 +183,20 @@ def main():
     </div>
     """
 
-    banner_col1 = f"""
+    banner_senate = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span><a href="/election-tracking-{YEAR}-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 47-52)Control: ({sen_mm_str}) from toss-up</span>
     </div>
     """
 
-    banner_col2 = f"""
+    banner_house = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span><a href="/election-tracking-{YEAR}-part-1-the-u-s-house/">House</a> Generic polling: {gen_poll_mm_str} Control {gen_mm_str}</span>
     </div>
     """
 
     
-    banner_col3 = f"""
+    banner_senate_moneyball = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
         <span><a href="/election-tracking-{YEAR}-u-s-senate/">Senate</a> {sen_moneyball_states}, Governor/SoS: NV AZ Supreme Courts: OH NC</span>
     </div>
@@ -216,17 +219,17 @@ def main():
     with open(path, 'w') as bannerfile:
         bannerfile.write(banner_table)
 
-    path = os.path.join(DIR_PATH, 'banner_col1.html')
+    path = os.path.join(DIR_PATH, 'banner_senate.html')
     with open(path, 'w') as bannerfile:
-        bannerfile.write(banner_col1)
+        bannerfile.write(banner_senate)
     
-    path = os.path.join(DIR_PATH, 'banner_col2.html')
+    path = os.path.join(DIR_PATH, 'banner_house.html')
     with open(path, 'w') as bannerfile:
-        bannerfile.write(banner_col2)
+        bannerfile.write(banner_house)
 
-    path = os.path.join(DIR_PATH, 'banner_col3.html')
+    path = os.path.join(DIR_PATH, 'banner_senate_moneyball.html')
     with open(path, 'w') as bannerfile:
-        bannerfile.write(banner_col3)
+        bannerfile.write(banner_senate_moneyball)
     
     path = os.path.join(DIR_PATH, 'banner_old.html')
     with open(path, 'w') as bannerfile:

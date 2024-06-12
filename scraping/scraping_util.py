@@ -13,7 +13,7 @@ FIVETHIRTYEIGHT_API_URL = 'https://projects.fivethirtyeight.com/polls/polls.json
 
 YEAR = 2024
 START_DATE = datetime(year=YEAR, month=1, day=1)    
-PRES_CANDS = [['Biden'], ['Trump']]
+PRES_CANDS = [['Biden'], ['Trump']] # must be Dem, Rep order
 DEM_CAND = 'Biden'
 REP_CAND = 'Trump'
 
@@ -566,7 +566,6 @@ def process_presidential_polls(polls, start_date, states):
     print("Number of 'president-general' polls:", len(pres_polls))
 
     # For each poll, parse Dem/Rep candidates
-    
     pres_polls = pres_polls.assign(
         dem_cand=lambda x: x.apply(parse_candidate, axis=1, party='Dem', cand_list=PRES_CANDS),
         rep_cand=lambda x: x.apply(parse_candidate, axis=1, party='Rep', cand_list=PRES_CANDS)
