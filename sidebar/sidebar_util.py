@@ -264,8 +264,8 @@ def get_ev_margins(path):
 # FOR EV
 def get_538_link(postal_code):
     # no links available for following states:
-    # DC, HI, ID, IL, LA, OR, RI, SD, VT, WY
-    if postal_code not in ["DC", "HI", "ID", "IL", "LA", "OR", "RI", "SD", "VT", "WY"]:
+    # DC, HI, ID, IN, KY, ND, VT, WY
+    if postal_code not in ["DC", "HI", "ID", "IN", "KY", "ND", "VT", "WY"]:
         return fivethirtyeight + get_formatted_state(postal_code, url_format=True)
     return fivethirtyeight 
 
