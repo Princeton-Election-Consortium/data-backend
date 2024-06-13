@@ -52,4 +52,4 @@ git add .
 git commit -m "today's output"
 git push
 
-
+curl https://election.princeton.edu/import_stats.php > /dev/null
