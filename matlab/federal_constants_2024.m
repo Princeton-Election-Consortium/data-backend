@@ -2,9 +2,10 @@
 YEAR = 2024;
 DIR_PATH = '../scraping/outputs/';
 
-TODAYTE = floor(today-datenum('31-dec-2023')); % today's date
-ELECTION_DATE = datenum(2024,11,5); % November 5, Julian 310
-DAYS_UNTIL_ELECTION = ELECTION_DATE - TODAYTE;
+% TODAYTE = floor(today-datenum('31-dec-2023')); % today's date
+ELECTION_DATE = datetime(2024,11,5); % November 5, Julian 310
+% DAYS_UNTIL_ELECTION = ELECTION_DATE - TODAYTE;
+DAYS_UNTIL_ELECTION = days(ELECTION_DATE - datetime("today")); 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EV CONSTANTS
