@@ -36,16 +36,16 @@ REP_COLOR = '#C62535'
 ZONE_COLORS = [DEM_COLOR, REP_COLOR] # 0th index represents incumbent Presidential party
 
 # Figure
-WIDTH = 9 # inches
-HEIGHT_TO_WIDTH = 0.80 # ratio
+WIDTH = 10 # inches
+HEIGHT_TO_WIDTH = 0.9 # ratio
 WIDTH_PIXELS_SAVE = 2000
-AXES_BOX = [0.15, 0.15, 0.7, 0.7]
+AXES_BOX = [0.16, 0.12, 0.79, 0.76] # Leave space for text
 GRID_ALPHA = 0.5
 
 # Visual feel
-FONT_SIZE = 20 # SET 
-FONT_SIZE_MED = FONT_SIZE * 0.85
-TITLE_PAD = 5
+FONT_SIZE = 24 # SET 
+FONT_SIZE_MED = FONT_SIZE * 0.925
+TITLE_PAD = 7
 GRID_LW = 0.5 # or 0.25
 SPINE_LW = 0.5 # or 0.25
 LINE_LW = 1 # horizontal or vertical
@@ -165,13 +165,13 @@ def generate_line_plot(
 
     # Specific to line plot
     DATA_LW = 3
-    HLINE_LAB_PAD = 0.06
-    HLINE_LAB_XPOS = 0.75
+    HLINE_LAB_PAD = 0.045
+    HLINE_LAB_XPOS = 0.78
 
     # General labels
     if meta_lead_graphic: 
         yticks_font_size = FONT_SIZE * 0.75   # Smaller tick font
-        ylab_pad = 0.18                       # More padding
+        ylab_pad = 0.15                       # More padding
     else:
         yticks_font_size = FONT_SIZE
         ylab_pad = 0.135
@@ -184,7 +184,12 @@ def generate_line_plot(
 
     # Prepare figure
     fig = plt.figure(figsize=(WIDTH, WIDTH * HEIGHT_TO_WIDTH))
-    ax = fig.add_axes(AXES_BOX)
+    if meta_lead_graphic and strike_zone_house and not thumbnail: # Special case (twin axis)
+        axes_box = [0.16, 0.12, 0.69, 0.76]     # Reduce width by 0.10
+        ylab_pad = 0.18                         # Even more padding
+        ax = fig.add_axes(axes_box)
+    else:
+        ax = fig.add_axes(AXES_BOX)
 
     # Prepare grid
     ax.grid('on', 
@@ -453,7 +458,7 @@ def generate_line_plot(
         ax.axhline(custom_hline_ypos,
                    color='orange',
                    lw=LINE_LW)
-        ax.text(x=0.33,                   # trial-and-error
+        ax.text(x=0.39,                   # trial-and-error
                 y=custom_hline_ypos + 1,  # trial-and-error
                 s=custom_hline_label,
                 fontsize=FONT_SIZE_MED,
@@ -549,12 +554,15 @@ def generate_line_plot(
     if not out_path.endswith(OUT_FORMAT):
         out_path = f'{out_path}.{OUT_FORMAT}'
 
-    # Tight bounding box to remove excess whitespace
-    plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    if thumbnail:
+        # Tight bounding box to remove excess whitespace
+        plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    else:
+        plt.savefig(out_path, dpi=dpi)
+
+    # plt.subplots_adjust(left=0.10, bottom=0.15, right=0.85, top=0.85)
 
     plt.close(fig)
-
- #====
 
 def get_plotting_data(data_dir, data_file, read_csv_kw, x_column, y_column):
     # Read data
@@ -582,29 +590,11 @@ def get_plotting_data(data_dir, data_file, read_csv_kw, x_column, y_column):
 
     return julian_days, dates, vals, title_fillers, last_val_color
 
-    # ====
-
-    # Plot data line
-    house_line, = ax.plot(dates, vals, 
-                            color=house_color,
-                            lw=DATA_LW,
-                            zorder=100,
-                            label=house_label.format(**house_title_fillers))
-    
-    # Plot circle on most recent data point
-    last_value_color = DEM_COLOR if house_vals[-1] > HLINE_LAB_YPOS else REP_COLOR
-    ax.plot(house_dates[-1], house_vals[-1], 
-            marker='o', 
-            markersize=4.5, # Set 
-            markerfacecolor=last_value_color, 
-            markeredgewidth=0, 
-            zorder=101)
-
 def generate_superimposed_line_plot(
         # House
         house_data_dir="",            # required
         house_data_file="",           # required
-        house_read_csv_kw={},               # optional, for House polls file
+        house_read_csv_kw={},         # optional, for House polls file
         house_x_column=None,          # required
         house_y_column=None,          # required
         house_color='orange',
@@ -632,12 +622,10 @@ def generate_superimposed_line_plot(
         # Lines
         ylim=None,              # optional, recommended
         yticks_interval=1,      # optional, recommended
-        # hline_ypos=None,        # required
 
         # Text
         title_txt='',           # required
         ylab_txt='',            # required
-        hline_labels=None,      # optional, recommended, check?
 
         # Customs               # all optional
         meta_lead_graphic=False,
@@ -654,14 +642,12 @@ def generate_superimposed_line_plot(
 
     # Specific to line plot
     DATA_LW = 3
-    HLINE_LAB_PAD = 0.06
     HLINE_LAB_YPOS = 0
-    HLINE_LAB_XPOS = 0.75
 
     # General labels
     if meta_lead_graphic: 
         yticks_font_size = FONT_SIZE * 0.75   # Smaller tick font
-        ylab_pad = 0.18                       # More padding
+        ylab_pad = 0.15                       # More padding
     else:
         yticks_font_size = FONT_SIZE
         ylab_pad = 0.135
@@ -754,7 +740,9 @@ def generate_superimposed_line_plot(
             zorder=101)
 
     # Add legend
-    ax.legend(handles=[house_line, senate_line, ev_line], loc='lower right')
+    ax.legend(handles=[house_line, senate_line, ev_line], 
+              loc='lower right',
+              fontsize=FONT_SIZE_MED)
     
     # -- X-AXIS --------------------------------------------------------
 
@@ -790,8 +778,6 @@ def generate_superimposed_line_plot(
     
     # Set y-axis limits
     if ylim is not None: 
-        # If provided, use input values
-        min_y, max_y = ylim
         y0, y1 = ylim
     
     # Set y-axis limits
@@ -837,27 +823,6 @@ def generate_superimposed_line_plot(
         ax.axhline(HLINE_LAB_YPOS,
                    color='dimgrey', 
                    lw=LINE_LW)
-        
-    #     if hline_labels is not None: 
-    #         pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
-            
-    #         # Opponent (2024: Trump/Rep)
-    #         ax.text(x=HLINE_LAB_XPOS,
-    #                 y=hline_ypos - pad_data_units,
-    #                 s=hline_labels[0].format(**title_fillers),
-    #                 fontsize=FONT_SIZE_MED,
-    #                 color=ZONE_COLORS[1],
-    #                 transform=blend(ax.transAxes, ax.transData),
-    #                 **TXT_KW)
-            
-    #         # Incumbent (2024: Biden/Dem)
-    #         ax.text(x=HLINE_LAB_XPOS,
-    #                 y=hline_ypos + pad_data_units,
-    #                 s=hline_labels[1].format(**title_fillers),
-    #                 fontsize=FONT_SIZE_MED,
-    #                 color=ZONE_COLORS[0],
-    #                 transform=blend(ax.transAxes, ax.transData),
-    #                 **TXT_KW)
     
     # Shade background of plot regions 
     ax.axhspan(ax.get_ylim()[0], HLINE_LAB_YPOS, color=REP_COLOR, **SHADING_KW)
@@ -891,38 +856,6 @@ def generate_superimposed_line_plot(
         ax.spines['right'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.spines['bottom'].set_visible(False)
-
-        # # Set corner label in bottom-right (if applicable)
-        # if corner_label is not None:
-        #     pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
-
-        #     if type(corner_label) == str:       # length one
-        #         ax.text(x=HLINE_LAB_XPOS,
-        #                 y=ylim[0] + 1.5*pad_data_units,
-        #                 s=corner_label.format(**title_fillers), # index 0?
-        #                 color=last_value_color,
-        #                 fontsize=FONT_SIZE_MED,
-        #                 transform=blend(ax.transAxes, ax.transData),
-        #                 **TXT_KW)
-                
-        #     elif type(corner_label) == list:    # length two
-        #         # Opponent (2024: Trump/Rep)
-        #         ax.text(x=HLINE_LAB_XPOS,
-        #                 y=ylim[0] + 1.5*pad_data_units,
-        #                 s=corner_label[0].format(**title_fillers),
-        #                 fontsize=FONT_SIZE_MED,
-        #                 color=ZONE_COLORS[1],
-        #                 transform=blend(ax.transAxes, ax.transData),
-        #                 **TXT_KW)
-                
-        #         # Incumbent (2024: Biden/Dem)
-        #         ax.text(x=HLINE_LAB_XPOS,
-        #                 y=ylim[0] + 3*pad_data_units,
-        #                 s=corner_label[1].format(**title_fillers),
-        #                 fontsize=FONT_SIZE_MED,
-        #                 color=ZONE_COLORS[0],
-        #                 transform=blend(ax.transAxes, ax.transData),
-        #                 **TXT_KW)
     
     # -- SAVE FIGURE ---------------------------------------------------
 
@@ -933,8 +866,11 @@ def generate_superimposed_line_plot(
     if not out_path.endswith(OUT_FORMAT):
         out_path = f'{out_path}.{OUT_FORMAT}'
 
-    # Tight bounding box to remove excess whitespace
-    plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    if thumbnail:
+        # Tight bounding box to remove excess whitespace
+        plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    else:
+        plt.savefig(out_path, dpi=dpi)
 
     plt.close(fig)
 
@@ -1016,7 +952,7 @@ def generate_histogram(
 
     # Specific to histogram
     BAR_WIDTH = 0.8
-    VLINE_LAB_YPOS = 0.85
+    VLINE_LAB_YPOS = 0.87
     
     # General labels
     XLAB_PAD = 5
@@ -1028,7 +964,6 @@ def generate_histogram(
     data_path = os.path.join(data_dir, data_file)
     data = pd.read_csv(data_path, header=None)
     data = data.values.squeeze() * 100.0 # Scale by set data factor
-    print(data)
     if xvals is not None and len(xvals) != len(data):
         raise ValueError("xvals and data arrays must have same length")
     elif xvals is None:
@@ -1051,7 +986,6 @@ def generate_histogram(
     # -- PLOT DATA -----------------------------------------------------
 
     # Plot data bars
-    print(xvals)
     ax.bar(xvals, data,
            color='black',
            width=BAR_WIDTH,
@@ -1063,7 +997,7 @@ def generate_histogram(
         # median_value = 100 - compute_rv_median(data, xvals),
         median_value = compute_rv_median(data, xvals),
     )
-    print(title_fillers['median_value'])
+    # print(title_fillers['median_value'])
 
     # Get external median
     if hard_median: 
@@ -1187,7 +1121,10 @@ def generate_histogram(
     if not out_path.endswith(OUT_FORMAT):
         out_path = f'{out_path}.{OUT_FORMAT}'
 
-    # Tight bounding box to remove excess whitespace
-    plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    if thumbnail:
+        # Tight bounding box to remove excess whitespace
+        plt.savefig(out_path, dpi=dpi, bbox_inches='tight')
+    else:
+        plt.savefig(out_path, dpi=dpi)
 
     plt.close(fig)

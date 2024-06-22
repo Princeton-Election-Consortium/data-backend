@@ -400,12 +400,13 @@ def generate_superimposed_graphic():
 #         generate_ev_histogram_graphics()
 
 def main():
-        generate_house_graphics()               
-        generate_senate_graphics()              
+        print("Generating House graphics...")
+        generate_house_graphics()       
+        print("Generating Senate graphics...")        
+        generate_senate_graphics()       
+        print("Generating Presidential graphics...")       
         generate_presidential_graphics()
         generate_superimposed_graphic()
-
-        generate_senate_histogram_graphics()
 
 if __name__ == '__main__':
     main()

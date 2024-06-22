@@ -633,7 +633,7 @@ def main():
     print("Done generating Senate medians...")
 
     # PRESIDENTIAL
-    print("Generating presidential medians...")
+    print("Generating Presidential medians...")
     pres_states = get_pres_states() 
     # print("pres_states:", pres_states)
     process_presidential_polls(all_polls, START_DATE, pres_states)

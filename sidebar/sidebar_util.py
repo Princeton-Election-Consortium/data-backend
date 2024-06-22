@@ -15,17 +15,36 @@ YEAR = 2024
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 
+# Senate
 SENATE_PRIORS_CSV = os.path.join(DIR_PATH, '../scraping/', f'{YEAR}.Senate.priors.csv')
 SENATE_POLLS_CSV = os.path.join(DIR_PATH, '../scraping/outputs/', f'{YEAR}.Senate.polls.median.csv')
 SENATE_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'Senate_jerseyvotes_{YEAR}.csv')
+FIVETHIRTYEIGHT_SENATE_URL = "https://projects.fivethirtyeight.com/polls/senate/"
 
+# Presidential
 EV_STATEPROBS_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_stateprobs_{YEAR}.csv')
 EV_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_jerseyvotes_{YEAR}.csv')
-
-FIVETHIRTYEIGHT_SENATE_URL = "https://projects.fivethirtyeight.com/polls/senate/"
+FIVETHIRTYEIGHT_EV_URL = "https://projects.fivethirtyeight.com/polls/president-general/"
 
 # Constants to set for the current election cycle
 D_SEATS_START = 43
+SENATE_STATES = {
+        1: 'AZ',
+        2: 'FL',
+        3: 'MD', 
+        4: 'MI',
+        5: 'MT',
+        6: 'NV',
+        7: 'OH',
+        8: 'PA',
+        9: 'TX',
+        10: 'WI',
+        11: 'WV'
+    }
+EV_CANDIDATES = {
+    "dem" : "Biden",
+    "rep" : "Trump"
+}
 
 # ======================================================================
 # HTML SNIPPETS
@@ -91,10 +110,6 @@ style_and_start = """
         <th colspan="1">Voter Power</th>
     </tr>"""
 
-close = """
-</table>
-</div>"""
-
 style_and_start2 = """
 <style scoped>
     label {
@@ -157,6 +172,29 @@ close = """
 </div>"""
 
 # ======================================================================
+# HELPER
+
+def sort(margins):
+    tempMargins = {}
+    sorted_dict = {}
+
+    for key, value in margins.items():
+        tempMargins[key] = value['margin']
+
+
+    sort_dict= dict(sorted(tempMargins.items(), key=operator.itemgetter(1), reverse=True))
+    return sort_dict
+
+# FOR EV
+def get_538_link(postal_code):
+    # no links available for following states:
+    # DC, HI, ID, IN, KY, ND, VT, WY
+    if postal_code not in ["DC", "HI", "ID", "IN", "KY", "ND", "VT", "WY"]:
+        return FIVETHIRTYEIGHT_EV_URL + get_formatted_state(postal_code, url_format=True)
+    return FIVETHIRTYEIGHT_EV_URL 
+
+# ======================================================================
+# SENATE
 
 def get_sen_candidates(path):
     candidates = {}
@@ -186,43 +224,9 @@ def get_sen_jerseyvotes(path):
             }
     return votes
 
-def get_ev_jerseyvotes(path):
-    votes = OrderedDict({})
-
-    with open(path, 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            #print(row[1] + " " + str(round(float(row[2]), 1)))
-            if row[1] == "NJ":
-                votes[row[1]] = {
-                    'jersey_votes' : float(row[2])
-                }
-            else :
-                votes[row[1]] = {
-                    'jersey_votes' : round(float(row[2]), 1)
-                }
-    return votes
-
 # **** made in response to apparent matlab issue processing poll margins 7/22/20
 # *** can be deleted in future
 def get_sen_margins(path):
-
-    # SENATE_STATES = ['AZ,FL,MD,MI,MT,NV,OH,PA,TX,WI,WV ']; % 11 races
-
-    hash = {
-        1: 'AZ',
-        2: 'FL',
-        3: 'MD', 
-        4: 'MI',
-        5: 'MT',
-        6: 'NV',
-        7: 'OH',
-        8: 'PA',
-        9: 'TX',
-        10: 'WI',
-        11: 'WV'
-    }
-
 
     today = datetime.now()
     # julian_date = today.strftime("%j")
@@ -243,50 +247,16 @@ def get_sen_margins(path):
                 break
 
             if i >0:
-                margins[hash[int(state_num)]] = {
+                margins[SENATE_STATES[int(state_num)]] = {
                     'margin': round(float(median_margin), 1)
                 }
             i+=1
     return margins
 
-def get_ev_margins(path):
-    margins = {}
-    
-    with open(path, 'r') as f:
-        reader = csv.reader(f)
-        for row in reader:
-            margins[row[4]] = {
-                'state'  : row[4],
-                'margin' : round(float(row[1]),1)
-            }
-    return margins
-
-# FOR EV
-def get_538_link(postal_code):
-    # no links available for following states:
-    # DC, HI, ID, IN, KY, ND, VT, WY
-    if postal_code not in ["DC", "HI", "ID", "IN", "KY", "ND", "VT", "WY"]:
-        return fivethirtyeight + get_formatted_state(postal_code, url_format=True)
-    return fivethirtyeight 
-
-def sort(margins):
-    tempMargins = {}
-    sorted_dict = {}
-
-    for key, value in margins.items():
-        tempMargins[key] = value['margin']
-
-
-    sort_dict= dict(sorted(tempMargins.items(), key=operator.itemgetter(1), reverse=True))
-    return sort_dict
-
-# ======================================================================
-# SENATE
-
 def write_senate_jv_widget(names, margins, votes):
     ## append style + table start, iteratively add rows, append close
     html = style_and_start
-    html_full = style_and_start
+
     n = 0
     for key in votes:
         postal_code = key
@@ -326,7 +296,6 @@ def write_senate_jv_widget(names, margins, votes):
 def write_senate_table(names, margins, votes):
     sorted_margins = sort(margins)
 
-    html = style_and_start2
     html_full = style_and_start2
     n = 0
     count = 0
@@ -375,12 +344,34 @@ def write_senate_table(names, margins, votes):
 # margin spread in which we consider polling to be tied (i.e. 0.5 for +-0.5 to be tie instead of Biden/Trump)
 tie_threshold = 0.0
 
-fivethirtyeight = "https://projects.fivethirtyeight.com/polls/president-general/"
+def get_ev_jerseyvotes(path):
+    votes = OrderedDict({})
 
-candidates = {
-    "dem" : "Biden",
-    "rep" : "Trump"
-}
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            #print(row[1] + " " + str(round(float(row[2]), 1)))
+            if row[1] == "NJ":
+                votes[row[1]] = {
+                    'jersey_votes' : float(row[2])
+                }
+            else :
+                votes[row[1]] = {
+                    'jersey_votes' : round(float(row[2]), 1)
+                }
+    return votes
+
+def get_ev_margins(path):
+    margins = {}
+    
+    with open(path, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            margins[row[4]] = {
+                'state'  : row[4],
+                'margin' : round(float(row[1]),1)
+            }
+    return margins
 
 def write_presidential_race_table(margins, votes):
     ## append style + table start, iteratively add rows, append close
@@ -399,10 +390,10 @@ def write_presidential_race_table(margins, votes):
         link_color = "#000000"
         # set leading candidate str based of margin as well as link color
         if margins[key]['margin'] > 0:
-            candiate_str = candidates["dem"]
+            candiate_str = EV_CANDIDATES["dem"]
             link_color = "#1660CE"
         elif margins[key]['margin'] < 0:
-            candiate_str = candidates["rep"]
+            candiate_str = EV_CANDIDATES["rep"]
             link_color = "#C62535"
         else: candiate_str = "Tie"
 
@@ -444,10 +435,10 @@ def write_presidential_race_table_full(margins, votes):
         link_color = "#000000"
         # set leading candidate str based of margin as well as link color
         if margins[key]['margin'] > 0:
-            candiate_str = candidates["dem"]
+            candiate_str = EV_CANDIDATES["dem"]
             link_color = "#1660CE"
         elif margins[key]['margin'] < 0:
-            candiate_str = candidates["rep"]
+            candiate_str = EV_CANDIDATES["rep"]
             link_color = "#C62535"
         else: candiate_str = "Tie"
 
@@ -489,8 +480,6 @@ def main():
 
     write_presidential_race_table(ev_margins, ev_votes)
     write_presidential_race_table_full(ev_margins, ev_votes)
-
-
 
 if __name__ == "__main__":
     main()
