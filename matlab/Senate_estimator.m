@@ -218,7 +218,9 @@ if biaspct==0
 %    foo=(polls.margin-2)./polls.SEM;
 %    R2probs=round((erf(foo/sqrt(2))+1)*50);
 
-daystoelection=ELECTION_DATE-today; % days until election (note: November 8, Julian 314)
+% daystoelection=ELECTION_DATE-today; % days until election (note: November 8, Julian 314)
+% Where is the function Bayesian_November_prediction at?
+daystoelection = DAYS_UNTIL_ELECTION; 
 for istate=1:length(polls.margin)
     [~,statenovprobs(istate),~]=Bayesian_November_prediction(daystoelection,polls.margin(istate),0.8,7,3,polls.margin(istate),10);
     [~,D2probs(istate),~]=Bayesian_November_prediction(daystoelection,polls.margin(istate)+2,0.8,7,3,polls.margin(istate),10);

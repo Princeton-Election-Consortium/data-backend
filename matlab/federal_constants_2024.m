@@ -3,8 +3,11 @@ YEAR = 2024;
 DIR_PATH = '../scraping/outputs/';
 
 TODAYTE = floor(today-datenum('31-dec-2023')); % today's date
-ELECTION_DATE = datenum(2024,11,5); % November 5, Julian 310
-DAYS_UNTIL_ELECTION = ELECTION_DATE - TODAYTE;
+%ELECTION_DATE = datenum(2024,11,5); % November 5, Julian 310
+%DAYS_UNTIL_ELECTION = ELECTION_DATE - TODAYTE;
+
+ELECTION_DATE = '2024-11-05';
+DAYS_UNTIL_ELECTION = calculateDaysUntil(ELECTION_DATE);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % EV CONSTANTS
@@ -68,4 +71,21 @@ HOUSE_SPECIALS_SD = 3.5; % not that many previous examples
 
 % Output files
 HOUSE_PREDICTIONS_CSV = strcat('House_predictions_', num2str(YEAR), '.csv');
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HELPER FUNCTIONS 
+
+function daysUntilDate = calculateDaysUntil(targetDate)
+    % Get the current date
+    currentDate = datetime('today');
+    
+    % Convert the target date to a datetime object if it is not already
+    if ~isa(targetDate, 'datetime')
+        targetDate = datetime(targetDate, 'InputFormat', 'yyyy-MM-dd');
+    end
+    
+    % Calculate the difference in days
+    daysUntilDate = days(targetDate - currentDate);
+end
 
