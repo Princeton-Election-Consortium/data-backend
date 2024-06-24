@@ -66,7 +66,7 @@ for ii=length(Mrange)
     % in 2022: 'AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WI ' 12 races.
     % kvoters=[3387 3257 11067 5000 3026 5525 806 1405 5922 6915 1488]; %2020 numbers -- need to fix for 2024
     % in 2024: 'AZ,FL,MD,MI,MT,NV,OH,PA,TX,WI,WV' 11 races 
-    kvoters = [2592 7797 2031 709 468 1024 4201 5410 8152 2673 495]; % 2022 numbers -- should update when 2024 comes out
+    kvoters = [2592 7797 2031 4500 468 1024 4201 5410 8152 2673 495]; % 2022 numbers -- should update when 2024 comes out
     disp(size(difference))
     disp(size(kvoters))
     jerseyvotes=difference./kvoters; % convert to per-voter power
