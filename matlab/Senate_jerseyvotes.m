@@ -32,7 +32,7 @@
 %clear now
 %today=floor(now);
 %daystoelection=ELECTION_DATE-today; % assuming date is set correctly in machine
-MMsigma=max(0.4*sqrt(DAYS_UNTIL_ELECTION),1.5);
+MMsigma=max(sqrt(DAYS_UNTIL_ELECTION),1.5);
 
 % A distribution of possible amounts of drift from now to Election Day:
 Mrange=[-2*MMsigma:0.1:2*MMsigma];% cover range of +/-2*MMsigma
@@ -86,13 +86,13 @@ jerseyvotes=100*jerseyv_accumulator/max(jerseyv_accumulator);
 % normalizes to the most powerful state, which is defined as 100; see
 % discussion 8/8/08 with James
 
+
 for i=1:num_states
-    if i~=31
-        % jerseyvotes(i)=roundn(jerseyvotes(i),-1); % roundn deprecated
-        jerseyvotes(i)=round(jerseyvotes(i),-1);
-    end
+    %if i~=31
+        % jerseyvotes(i)=roundn(jerseyvotes(i),-1); % roundn deprecated %  No need to do this since NJ is not included in Senate
+    jerseyvotes(i)=round(jerseyvotes(i),-1);
 end
-% round everything but NJ itself to the nearest tenth
+% round everything but NJ itself to the nearest tenth 
 % the index of 31 is not actually right; it needs to be whatever the index
 % of NJ is this year. Decided to leave it out; a step toward retiring the
 % jerseyvote concept
