@@ -41,6 +41,9 @@ nowdensity=nowdensity/sum(nowdensity);
 
 jerseyv_accumulator=zeros(1,num_states);
 
+% Phousawanh 2024-06-27 
+% Changed Senate seat cutoff from 51 -> 50
+
 for ii=length(Mrange)
     polls.margin=polls.margin+Mrange(ii); % set polls to one possible amount of drift
 
@@ -49,13 +52,13 @@ for ii=length(Mrange)
         biaspct=-metamargin; % changed on 8/8/08 to reflect discussion w/reader James
     end
     Senate_median
-    midpoint=cumulative_prob(min(find(Senateseats>=51))); % P(Dem control) under knife-edge conditions
+    midpoint=cumulative_prob(min(find(Senateseats>=50))); % P(Dem control) under knife-edge conditions
 
     clear difference
     for state=1:num_states
         polls.margin(state)=polls.margin(state)-0.1; % perturb one poll by 0.1 percentage point
         Senate_median
-        probability_GOP_win=cumulative_prob(min(find(Senateseats>=51)));
+        probability_GOP_win=cumulative_prob(min(find(Senateseats>=50)));
         difference(state)=(probability_GOP_win-midpoint)*10000; % how much is P(Dem control) changed?
         polls.margin(state)=polls.margin(state)+0.1; % put the poll back where it was
     end

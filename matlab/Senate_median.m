@@ -7,12 +7,13 @@
 %    use EV variable to give 1 seat per race (keep variable name same)
 %
 % Calculate z-score and convert to probability, assuming normal distribution.
+% Changed df of t distribution to be 3
 polls.z=(polls.margin+biaspct)./polls.SEM;
-polls.prob_Dem_win=tcdf(polls.z,2); % polls.prob_Dem_win=(erf(polls.z/sqrt(2))+1)/2;
+polls.prob_Dem_win=tcdf(polls.z,3); % polls.prob_Dem_win=(erf(polls.z/sqrt(2))+1)/2;
 polls.prob_GOP_win=1-polls.prob_Dem_win;
 %
 polls.znov=(polls.margin+biaspct)./sqrt(polls.SEM.*polls.SEM+5*5);
-polls.prob_Dem_November=tcdf(polls.znov,2);
+polls.prob_Dem_November=tcdf(polls.znov,3);
 %polls.prob_Dem_November=(erf(polls.znov/sqrt(2))+1)/2;
 %
 stateprobs=round(polls.prob_Dem_win*100);
