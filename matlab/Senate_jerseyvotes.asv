@@ -106,24 +106,24 @@ end
 
 %}
 
-
 sigma = 6; 
 impact = 1; 
 df = 1;
 kvoters = [2592 7797 2031 4500 468 1024 4201 5410 8152 2673 495];
 
-Senate_median
 
 z = (polls.margin - metamargin)/sigma;
-voterpower = (tpdf(z,df).*impact)./kvoters; 
+
+voterpower = (tpdf(sigma,df)*impact) / kvoters; 
+
 voterpower = (voterpower / max(voterpower))*100;
 
-% round 
-for i=1:num_states
-    voterpower(i) = round(voterpower(i),-1);
-end
 
-jerseyvotes = voterpower; % change later so all jerseyvotes -> voterpower
+polls.margin 
+for state=1:num_states
+    voterpwer(state) = tpdf(polls.margin - metamargin)
+end
+voterpower(istate)=tpdf((margin(istate)-metamargin)/sigma,1)*impact/kvotes/max(voterpower)*100
 
 [foo, ijersey]=sort(jerseyvotes);
 display_num=max(size(uncertain,2), 10);
