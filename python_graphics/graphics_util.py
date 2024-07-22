@@ -211,7 +211,7 @@ def generate_ev_meta_lead_graphics():
                 hline_ypos = 0,
 
                 # Text
-                hline_labels = ['Trump leads','Biden leads'],
+                hline_labels = ['Trump leads','Biden/Harris leads'],
 
                 # Customs
                 meta_lead_graphic=True,
@@ -256,7 +256,7 @@ def generate_ev_estimator_graphics():
                 hline_ypos = 270,
 
                 # Text
-                hline_labels = ['Trump leads', 'Biden leads'],
+                hline_labels = ['Trump leads', 'Biden/Harris leads'],
 
                 # Customs
                 strike_zone_data_file=f'EV_prediction_{YEAR}.csv',
@@ -267,8 +267,8 @@ def generate_ev_estimator_graphics():
                 **ev_estimator_kw, 
 
                 # Text
-                title_txt='{last_value:.0f} Biden electoral votes expected',
-                ylab_txt='Biden electoral votes',
+                title_txt='{last_value:.0f} Biden/Harris electoral votes expected',
+                ylab_txt='Biden/Harris electoral votes',
 
                 # Output
                 out_path=ev_estimator,
@@ -279,7 +279,7 @@ def generate_ev_estimator_graphics():
                 **ev_estimator_kw, 
 
                 # Text
-                title_txt='Today: Biden {last_value:.0f}, Trump {inv_pres_last_value:.0f} EV',
+                title_txt='Today: Biden/Harris {last_value:.0f}, Trump {inv_pres_last_value:.0f} EV',
 
                 # Output
                 thumbnail = True,
@@ -301,8 +301,8 @@ def generate_ev_histogram_graphics():
                 vline_lab_pad = 0.105,
 
                 # Text
-                title_txt='Today\'s median: {median_value:.0f} EV for Biden',
-                vline_labels = ['Trump\nwins', 'Biden\nwins'],                
+                title_txt='Today\'s median: {median_value:.0f} EV for Biden/Harris',
+                vline_labels = ['Trump\nwins', 'Biden/Harris\nwins'],                
 
                 # Customs
                 hard_median = True,
@@ -314,7 +314,7 @@ def generate_ev_histogram_graphics():
                 **ev_histogram_kw, 
 
                 # Text
-                xlab_txt = 'Electoral votes for Biden',
+                xlab_txt = 'Electoral votes for Biden/Harris',
                 ylab_txt='Prob. of exact # of EV (%)',
 
                 # Output
