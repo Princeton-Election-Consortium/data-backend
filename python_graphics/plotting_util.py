@@ -168,7 +168,7 @@ def generate_line_plot(
     # Specific to line plot
     DATA_LW = 3
     HLINE_LAB_PAD = 0.045
-    HLINE_LAB_XPOS = 0.78
+    HLINE_LAB_XPOS = 0.72
 
     # General labels
     if meta_lead_graphic: 
@@ -775,6 +775,22 @@ def generate_superimposed_line_plot(
             markerfacecolor=ev_last_val_color, 
             markeredgewidth=0, 
             zorder=101)
+    
+    # Plot arrowhead for Harris
+    ax.annotate(
+            'Harris', 
+            xy=(HARRIS_DATE, ev_vals[-1] - 0.29),  # trial-and-error
+            xytext=(HARRIS_DATE, ev_vals[-1] - 2.5), # trial-and-error
+            fontsize=FONT_SIZE*0.8,
+            ha = 'center',
+            arrowprops=dict(
+                facecolor='black', 
+                shrink=0.05,
+                width=2,        # trial-and-error
+                headwidth=8,
+                headlength=8
+            )
+        )
 
     # Add legend
     ax.legend(handles=[house_line, senate_line, ev_line], 
