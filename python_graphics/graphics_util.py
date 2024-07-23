@@ -215,6 +215,7 @@ def generate_ev_meta_lead_graphics():
 
                 # Customs
                 meta_lead_graphic=True,
+                custom_arrowhead=True,
         )
 
         ev_meta_lead = os.path.join(out_dir, f'ev_meta_lead_{YEAR}')
@@ -224,7 +225,7 @@ def generate_ev_meta_lead_graphics():
                 # Text
                 title_txt = 'Popular meta-lead for President: {party}{last_value:.01f}%',
                 ylab_txt='Meta-lead',
-        
+                
                 # Output
                 out_path=ev_meta_lead,
         )
@@ -260,6 +261,7 @@ def generate_ev_estimator_graphics():
 
                 # Customs
                 strike_zone_data_file=f'EV_prediction_{YEAR}.csv',
+                custom_arrowhead=True,
         )
 
         ev_estimator = os.path.join(out_dir, f'ev_estimator_{YEAR}')

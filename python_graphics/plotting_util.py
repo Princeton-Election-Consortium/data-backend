@@ -16,6 +16,7 @@ register_matplotlib_converters()
 
 YEAR = dt.datetime.now().year
 ELECTION_DATE = dt.datetime(2024, 11, 5)
+HARRIS_DATE = dt.datetime(2024, 7, 21)
 MONTH_NAMES = {
             1: 'Jan',
             2: 'Feb',
@@ -152,6 +153,7 @@ def generate_line_plot(
         custom_hline=False,
         custom_hline_label=None,
         custom_hline_ypos=None,
+        custom_arrowhead=False,         # for Presidential
         
         # ------------------------------------------------------
         
@@ -467,6 +469,39 @@ def generate_line_plot(
                 alpha=0.9,
                 transform=blend(ax.transAxes, ax.transData),
                 **TXT_KW)
+    
+    # Arrowhead for Presidential
+    
+    # Meta-margin graph
+    if custom_arrowhead and meta_lead_graphic:
+        ax.annotate(
+            'Harris', 
+            xy=(HARRIS_DATE, vals[-1]-0.05),  # trial-and-error
+            xytext=(HARRIS_DATE + pd.Timedelta(days=7), vals[-1] - 1.0), # trial-and-error
+            fontsize=FONT_SIZE,
+            arrowprops=dict(
+                facecolor='black', 
+                shrink=0.05,
+                width=2,        # trial-and-error
+                headwidth=10,
+                headlength=10
+            )
+        )
+    # Presidential margins graph
+    elif custom_arrowhead:
+        ax.annotate(
+            'Harris', 
+            xy=(HARRIS_DATE, vals[-1] - 1), 
+            xytext=(HARRIS_DATE + pd.Timedelta(days=5), vals[-1] - 25),  # trial-and-error
+            fontsize=FONT_SIZE*.8,  # trial-and-error
+            arrowprops=dict(
+                facecolor='black', 
+                shrink=0.05,
+                width=2,        # trial-and-error
+                headwidth=10,
+                headlength=10,
+        )
+    )
 
     # -- FORMATTING ----------------------------------------------------
     
