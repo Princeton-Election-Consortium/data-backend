@@ -476,9 +476,10 @@ def generate_line_plot(
     if custom_arrowhead and meta_lead_graphic:
         ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, vals[-1]-0.05),  # trial-and-error
-            xytext=(HARRIS_DATE + pd.Timedelta(days=7), vals[-1] - 1.0), # trial-and-error
+            xy=(HARRIS_DATE, vals[-1]-0.5),  # trial-and-error
+            xytext=(HARRIS_DATE, vals[-1] - 1.8), # trial-and-error
             fontsize=FONT_SIZE,
+            ha = 'center',
             arrowprops=dict(
                 facecolor='black', 
                 shrink=0.05,
@@ -492,8 +493,9 @@ def generate_line_plot(
         ax.annotate(
             'Harris', 
             xy=(HARRIS_DATE, vals[-1] - 1), 
-            xytext=(HARRIS_DATE + pd.Timedelta(days=5), vals[-1] - 25),  # trial-and-error
+            xytext=(HARRIS_DATE, vals[-1] - 25),  # trial-and-error
             fontsize=FONT_SIZE*.8,  # trial-and-error
+            ha = 'center',
             arrowprops=dict(
                 facecolor='black', 
                 shrink=0.05,
