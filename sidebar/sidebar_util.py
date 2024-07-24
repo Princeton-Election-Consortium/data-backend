@@ -42,7 +42,7 @@ SENATE_STATES = {
         11: 'WV'
     }
 EV_CANDIDATES = {
-    "dem" : "Biden",
+    "dem" : "Biden/Harris",
     "rep" : "Trump"
 }
 
