@@ -120,7 +120,7 @@ voterpower = (voterpower / max(voterpower))*100;
 
 % round 
 for i=1:num_states
-    voterpower(i) = round(voterpower(i),-1);
+    voterpower(i) = round(voterpower(i));
 end
 
 jerseyvotes = voterpower; % change later so all jerseyvotes -> voterpower
