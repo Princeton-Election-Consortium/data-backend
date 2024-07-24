@@ -139,12 +139,12 @@ grid on
 hold on
 bar(histogram*100,'k')
 axis([EVmintick EVmaxtick 0 max(histogram)*105])
-xlabel('Electoral votes for Biden','FontSize',14);
+xlabel('Electoral votes for Biden/Harris','FontSize',14);
 ylabel('Probability of exact # of EV (%)','FontSize',14)
 set(gcf, 'InvertHardCopy', 'off');
 title('Distribution of possible outcomes - snapshot','FontSize',14)
 text(EVmintick+3,max(histogram)*99,'Trump wins','FontSize',14)
-text(EVmaxtick-45,max(histogram)*99,'Biden wins','FontSize',14)
+text(EVmaxtick-45,max(histogram)*99,'Biden/Harris wins','FontSize',14)
 if analysisdate==0
     datelabel=datestr(today);
 else
