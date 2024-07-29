@@ -13,10 +13,8 @@ FIVETHIRTYEIGHT_API_URL = 'https://projects.fivethirtyeight.com/polls/polls.json
 
 YEAR = 2024
 START_DATE = datetime(year=YEAR, month=1, day=1)    
-HARRIS_DATE = datetime(year=YEAR, month=7, day=21)
-PRES_CANDS = [['Biden'], ['Harris'], ['Trump']] # must be Dem, Rep order
-DEM_CAND_BEFORE = 'Biden'
-DEM_CAND_AFTER = 'Harris'
+PRES_CANDS = [['Biden'], ['Trump']] # must be Dem, Rep order
+DEM_CAND = 'Biden'
 REP_CAND = 'Trump'
 
 # ======================================================================
@@ -114,7 +112,7 @@ def get_all_polls(year):
 
 def parse_candidate(row, party, cand_list=None):
     """
-    NOTE: Used for Senate and Presidential (prior to Harris) polls only.
+    NOTE: Used for Senate and Presidential polls only.
 
     Parses a poll (row) to extract the candidate choice based on party 
     affiliation. Returns "parse_candidate_error" if the candidate is not 
@@ -155,52 +153,9 @@ def parse_candidate(row, party, cand_list=None):
     # print(choice)
     return choice
 
-def parse_candidate_presidential(row, party, cand_list=None):
-    """
-    NOTE: Used Presidential polls only to account for split Harris/Biden polls.
-
-    Parses a poll (row) to extract the candidate choice based on party 
-    affiliation. Returns "parse_candidate_error" if the candidate is not 
-    in the provided cand_list. 
-
-    Args:
-    - row (pandas.Series): A row of poll data with the 'answers' field.
-    - party (str, optional): Party affiliation to filter the candidate choices. 
-    - cand_list (list of lists, optional): A list containing three lists,
-        the two for Dem candidate(s), the second for Rep candidate(s). 
-        Used to verify the extracted candidate choice. Default is None.
-
-    Returns: 
-    - choice (str): The name of the candidate choice based on specified party.
-    """
-    choice = None
-
-    # Extract the 'answers' from the row
-    answers = row['answers']
-
-    # Iterate through answers until choice is found
-    for answer in answers:
-        # Check if the candidate choice matches the specified party 
-        # and (if applicable) is in the list of candidates
-        if answer['party'] == party: 
-            if party == 'Dem' and (cand_list is None or answer['choice'] in cand_list[0] or answer['choice'] in cand_list[1]):
-                choice = answer['choice']
-                break   
-            elif party == 'Rep' and (cand_list is None or answer['choice'] in cand_list[2]):
-                choice = answer['choice']
-                break 
-    
-    # If no candidate choice is found, return an error
-    if not choice:
-        # print("PARSE CANDIDATE ERROR IN {} FOR {}: {}".format(row['state'].upper(), party.upper(), answers))
-        return "parse_candidate_error"
-
-    # print(choice)
-    return choice
-
 def parse_dminusr(row, generic=False, dem_cand=None, rep_cand=None):
     """
-    NOTE: Used for House, Senate, and Presidential (prior to Harris) polls.
+    NOTE: Used for House, Senate, and Presidential polls.
 
     Parses a poll (row) to calculate the margin between the Dem and Rep 
     party/candidate.
@@ -234,51 +189,6 @@ def parse_dminusr(row, generic=False, dem_cand=None, rep_cand=None):
     else: # dem_cand, rep_cand are not None
         for answer in answers:
             if answer['party'] == 'Dem' and answer['choice'] == dem_cand:
-                d_sum += float(answer['pct'])
-            elif answer['party'] == 'Rep' and answer['choice'] == rep_cand:
-                r_sum += float(answer['pct'])
-
-    # Calculate and return the margin
-    return d_sum - r_sum
-
-def parse_dminusr_presidential(row, generic=False, dem_cand_before=None, dem_cand_after=None, rep_cand=None):
-    """
-    NOTE: Used for Presidential polls only to account for Harris/Biden split.
-
-    Parses a poll (row) to calculate the margin between the Dem and Rep 
-    party/candidate.
-
-    Args:
-    - row (pandas.Series): A row of poll data with the 'answers' field.
-    - generic (bool, optional): Whether or not the poll is generic (meaning for House). 
-        Default is False.
-    - dem_cand_before (str, optional: Name of Democratic candidate choice prior.
-        Default is None (not needed for generic polls).
-    - dem_cand_after (str, optional: Name of Democratic candidate choice after.
-        Default is None (not needed for generic polls).
-    - rep_cand (str, optional): Name of Republican candidate choice.
-        Default if None (not needed for generic polls).
-    
-    Returns:
-    - dminusr (float): Margin between the Dem and Rep candidates.
-    """
-    d_sum = 0
-    r_sum = 0
-
-    # Extract the 'answers' from the row
-    answers = row['answers']
-
-    # Iterate through answers and calculate polling sums
-    if generic: 
-        for answer in answers:
-            if answer['choice'] == 'Dem':
-                d_sum += float(answer['pct'])
-            elif answer['choice'] == 'Rep':
-                r_sum += float(answer['pct'])
-    
-    else: # dem_cand, rep_cand are not None
-        for answer in answers:
-            if answer['party'] == 'Dem' and (answer['choice'] == dem_cand_before or answer['choice'] == dem_cand_after):
                 d_sum += float(answer['pct'])
             elif answer['party'] == 'Rep' and answer['choice'] == rep_cand:
                 r_sum += float(answer['pct'])
@@ -600,8 +510,7 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
             for state in sen_states:
                 sen_polls_state = sen_polls[sen_polls['state'] == state['name']] 
                 final_polls = clean_and_filter_polls(day=day, 
-                                            polls=sen_polls_state,
-                                            dynamic_timespan=False)
+                                            polls=sen_polls_state)
 
                 # Calculate statistics (dict) and write to TXT file
                 row = write_state_day_stats(day=day,
@@ -658,21 +567,18 @@ def process_presidential_polls(polls, start_date, states):
 
     # For each poll, parse Dem/Rep candidates
     pres_polls = pres_polls.assign(
-        dem_cand=lambda x: x.apply(parse_candidate_presidential, axis=1, party='Dem', cand_list=PRES_CANDS),
-        rep_cand=lambda x: x.apply(parse_candidate_presidential, axis=1, party='Rep', cand_list=PRES_CANDS)
+        dem_cand=lambda x: x.apply(parse_candidate, axis=1, party='Dem', cand_list=PRES_CANDS),
+        rep_cand=lambda x: x.apply(parse_candidate, axis=1, party='Rep', cand_list=PRES_CANDS)
     )
 
     # Cleaning: Remove rows with other match-ups and national polls
-    # Keep Biden polls and remove Harris polls before entry date
-    dem_condition = (pres_polls['dem_cand'] == DEM_CAND_BEFORE) | ((pres_polls['dem_cand'] == DEM_CAND_AFTER) & (pres_polls['startDate'] >= HARRIS_DATE))
-    rep_condition =  (pres_polls['rep_cand'] == REP_CAND)
-    pres_polls = pres_polls[dem_condition & rep_condition]
+    pres_polls = pres_polls[(pres_polls['dem_cand'] == DEM_CAND) & (pres_polls['rep_cand'] == REP_CAND)]
     pres_polls = pres_polls[pres_polls['state'] != 'National']
 
     print("Number of polls after cleaning:", len(pres_polls))
 
     # For each poll, calculate D-R margins
-    pres_polls['dminusr'] = pres_polls.apply(lambda row: parse_dminusr_presidential(row, dem_cand_before=DEM_CAND_BEFORE, dem_cand_after=DEM_CAND_AFTER, rep_cand=REP_CAND), axis=1)
+    pres_polls['dminusr'] = pres_polls.apply(lambda row: parse_dminusr(row, dem_cand=DEM_CAND, rep_cand=REP_CAND), axis=1)
 
     # --> Generic algorithm
     path = os.path.join(dir_path, f'outputs/{YEAR}.EV.polls.median.txt')
@@ -689,8 +595,7 @@ def process_presidential_polls(polls, start_date, states):
             for state in states:
                 pres_polls_state = pres_polls[pres_polls['state'] == state['name']] 
                 final_polls = clean_and_filter_polls(day=day, 
-                                            polls=pres_polls_state,
-                                            dynamic_timespan=False)
+                                            polls=pres_polls_state)
 
                 # Calculate statistics (dict) and write to TXT file
                 row = write_state_day_stats(day=day, 
