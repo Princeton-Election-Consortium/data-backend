@@ -476,8 +476,8 @@ def generate_line_plot(
     if custom_arrowhead and meta_lead_graphic:
         ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, vals[-1]-0.5),  # trial-and-error
-            xytext=(HARRIS_DATE, vals[-1] - 1.8), # trial-and-error
+            xy=(HARRIS_DATE, -3.6),  # trial-and-error
+            xytext=(HARRIS_DATE, -4.5), # trial-and-error
             fontsize=FONT_SIZE,
             ha = 'center',
             arrowprops=dict(
@@ -492,8 +492,8 @@ def generate_line_plot(
     elif custom_arrowhead:
         ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, vals[-1] - 1), 
-            xytext=(HARRIS_DATE, vals[-1] - 25),  # trial-and-error
+            xy=(HARRIS_DATE, 223), 
+            xytext=(HARRIS_DATE, 200),  # trial-and-error
             fontsize=FONT_SIZE*.8,  # trial-and-error
             ha = 'center',
             arrowprops=dict(
@@ -503,7 +503,7 @@ def generate_line_plot(
                 headwidth=10,
                 headlength=10,
         )
-    )
+        )
 
     # -- FORMATTING ----------------------------------------------------
     
@@ -779,8 +779,8 @@ def generate_superimposed_line_plot(
     # Plot arrowhead for Harris
     ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, ev_vals[-1] - 0.29),  # trial-and-error
-            xytext=(HARRIS_DATE, ev_vals[-1] - 2.5), # trial-and-error
+            xy=(HARRIS_DATE, ev_vals[-1] - 0.39),  # trial-and-error
+            xytext=(HARRIS_DATE, ev_vals[-1] - 2.6), # trial-and-error
             fontsize=FONT_SIZE*0.8,
             ha = 'center',
             arrowprops=dict(
