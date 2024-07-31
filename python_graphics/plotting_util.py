@@ -17,6 +17,8 @@ register_matplotlib_converters()
 YEAR = dt.datetime.now().year
 ELECTION_DATE = dt.datetime(2024, 11, 5)
 HARRIS_DATE = dt.datetime(2024, 7, 21)
+EV_START_DATE = dt.datetime(2024, 4, 21)  # Note: Remember to change this is MATLAB script is changed
+HARRIS_INDEX = (HARRIS_DATE - EV_START_DATE).days
 MONTH_NAMES = {
             1: 'Jan',
             2: 'Feb',
@@ -167,8 +169,8 @@ def generate_line_plot(
 
     # Specific to line plot
     DATA_LW = 3
-    HLINE_LAB_PAD = 0.045
-    HLINE_LAB_XPOS = 0.72
+    HLINE_LAB_PAD = 0.045 
+    HLINE_LAB_XPOS = 0.72 # old was 0.72
 
     # General labels
     if meta_lead_graphic: 
@@ -476,8 +478,8 @@ def generate_line_plot(
     if custom_arrowhead and meta_lead_graphic:
         ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, -3.6),  # trial-and-error
-            xytext=(HARRIS_DATE, -4.5), # trial-and-error
+            xy=(HARRIS_DATE, vals[HARRIS_INDEX] - 0.05),  # trial-and-error
+            xytext=(HARRIS_DATE, vals[HARRIS_INDEX] - 1.05), # trial-and-error
             fontsize=FONT_SIZE,
             ha = 'center',
             arrowprops=dict(
@@ -492,8 +494,8 @@ def generate_line_plot(
     elif custom_arrowhead:
         ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, 223), 
-            xytext=(HARRIS_DATE, 200),  # trial-and-error
+            xy=(HARRIS_DATE, vals[HARRIS_INDEX] - 1), 
+            xytext=(HARRIS_DATE, vals[HARRIS_INDEX] - 21),  # trial-and-error
             fontsize=FONT_SIZE*.8,  # trial-and-error
             ha = 'center',
             arrowprops=dict(
@@ -779,8 +781,8 @@ def generate_superimposed_line_plot(
     # Plot arrowhead for Harris
     ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, ev_vals[-1] - 0.39),  # trial-and-error
-            xytext=(HARRIS_DATE, ev_vals[-1] - 2.6), # trial-and-error
+            xy=(HARRIS_DATE, ev_vals[HARRIS_INDEX] - 0.1),  # trial-and-error
+            xytext=(HARRIS_DATE, ev_vals[HARRIS_INDEX] - 3.1), # trial-and-error
             fontsize=FONT_SIZE*0.8,
             ha = 'center',
             arrowprops=dict(
