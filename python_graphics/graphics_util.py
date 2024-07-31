@@ -309,6 +309,7 @@ def generate_ev_histogram_graphics():
                 # Customs
                 hard_median = True,
                 hard_median_data_file = f'EV_estimates_{YEAR}.csv',
+                ev_extra_pad = True,
         )
 
         ev_histogram = os.path.join(out_dir, f'ev_histogram_{YEAR}')
