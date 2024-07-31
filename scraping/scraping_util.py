@@ -311,12 +311,13 @@ def get_polls_in_timespan(day, polls, dynamic_timespan=True):
 
     if dynamic_timespan:
         # Adjust timespan based on the current_month
+        # Rule before 7/31/24 was 4-3-2
         if current_month < 9:       # Before September
-            timespan = timedelta(weeks=4)
-        elif current_month < 10:    # Before October
-            timespan = timedelta(weeks=3)
-        else:                       # October - November
             timespan = timedelta(weeks=2)
+        elif current_month < 10:    # Before October
+            timespan = timedelta(weeks=2)
+        else:                       # October - November
+            timespan = timedelta(weeks=1)
 
     # Filter polls based on end dates within the specified timespan
     filtered_polls = polls[(polls['endDate'] >= day - timespan)
@@ -601,7 +602,7 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
                 sen_polls_state = sen_polls[sen_polls['state'] == state['name']] 
                 final_polls = clean_and_filter_polls(day=day, 
                                             polls=sen_polls_state,
-                                            dynamic_timespan=False)
+                                            dynamic_timespan=True)
 
                 # Calculate statistics (dict) and write to TXT file
                 row = write_state_day_stats(day=day,
@@ -690,7 +691,7 @@ def process_presidential_polls(polls, start_date, states):
                 pres_polls_state = pres_polls[pres_polls['state'] == state['name']] 
                 final_polls = clean_and_filter_polls(day=day, 
                                             polls=pres_polls_state,
-                                            dynamic_timespan=False)
+                                            dynamic_timespan=True)
 
                 # Calculate statistics (dict) and write to TXT file
                 row = write_state_day_stats(day=day, 
