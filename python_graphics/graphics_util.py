@@ -297,10 +297,11 @@ def generate_ev_histogram_graphics():
                 # Lines
                 xlim=(230, 430),
                 xticks_interval=40,
-                ylim=(0, 1.15),
+                ylim=(0, 1.2),
                 yticks_interval=0.5,
                 vline_xpos=270,
                 vline_lab_pad = 0.105,
+                xvals = np.linspace(1, 538, 538),
 
                 # Text
                 title_txt='Today\'s median: {median_value:.0f} EV for Biden/Harris',
