@@ -143,6 +143,7 @@ def generate_line_plot(
         title_txt='',           # required
         ylab_txt='',            # required
         hline_labels=None,      # optional, recommended
+        hline_lab_xpos=0.8,     # optional, recommended
         corner_label=None,      # optional, str or list, only in thumbnail
 
         # Customs               # all optional
@@ -169,8 +170,8 @@ def generate_line_plot(
 
     # Specific to line plot
     DATA_LW = 3
-    HLINE_LAB_PAD = 0.045 
-    HLINE_LAB_XPOS = 0.72 # old was 0.72
+    HLINE_LAB_PAD = 0.038 
+    #HLINE_LAB_XPOS = 0.72 # old was 0.72 0.75
 
     # General labels
     if meta_lead_graphic: 
@@ -361,7 +362,7 @@ def generate_line_plot(
             pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
             
             # Opponent (2024: Trump/Rep)
-            ax.text(x=HLINE_LAB_XPOS,
+            ax.text(x=hline_lab_xpos,
                     y=hline_ypos - pad_data_units,
                     s=hline_labels[0].format(**title_fillers),
                     fontsize=FONT_SIZE_MED,
@@ -370,7 +371,7 @@ def generate_line_plot(
                     **TXT_KW)
             
             # Incumbent (2024: Biden/Dem)
-            ax.text(x=HLINE_LAB_XPOS,
+            ax.text(x=hline_lab_xpos,
                     y=hline_ypos + pad_data_units,
                     s=hline_labels[1].format(**title_fillers),
                     fontsize=FONT_SIZE_MED,
@@ -557,7 +558,7 @@ def generate_line_plot(
             pad_data_units = HLINE_LAB_PAD * np.diff(ax.get_ylim())
 
             if type(corner_label) == str:       # length one
-                ax.text(x=HLINE_LAB_XPOS,
+                ax.text(x=hline_lab_xpos,
                         y=ylim[0] + 1.5*pad_data_units,
                         s=corner_label.format(**title_fillers), # index 0?
                         color=last_value_color,
@@ -567,7 +568,7 @@ def generate_line_plot(
                 
             elif type(corner_label) == list:    # length two
                 # Opponent (2024: Trump/Rep)
-                ax.text(x=HLINE_LAB_XPOS,
+                ax.text(x=hline_lab_xpos,
                         y=ylim[0] + 1.5*pad_data_units,
                         s=corner_label[0].format(**title_fillers),
                         fontsize=FONT_SIZE_MED,
@@ -576,7 +577,7 @@ def generate_line_plot(
                         **TXT_KW)
                 
                 # Incumbent (2024: Biden/Dem)
-                ax.text(x=HLINE_LAB_XPOS,
+                ax.text(x=hline_lab_xpos,
                         y=ylim[0] + 3*pad_data_units,
                         s=corner_label[1].format(**title_fillers),
                         fontsize=FONT_SIZE_MED,

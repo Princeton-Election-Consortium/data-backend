@@ -212,6 +212,7 @@ def generate_ev_meta_lead_graphics():
 
                 # Text
                 hline_labels = ['Trump leads','Biden/Harris leads'],
+                hline_lab_xpos = 0.22,
 
                 # Customs
                 meta_lead_graphic=True,
@@ -258,6 +259,7 @@ def generate_ev_estimator_graphics():
 
                 # Text
                 hline_labels = ['Trump leads', 'Biden/Harris leads'],
+                hline_lab_xpos = 0.22, 
 
                 # Customs
                 strike_zone_data_file=f'EV_prediction_{YEAR}.csv',
