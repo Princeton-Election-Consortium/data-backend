@@ -137,6 +137,7 @@ def generate_line_plot(
         # Lines
         ylim=None,              # optional, recommended
         yticks_interval=1,      # optional, recommended
+        yticks_shift=0,         # optional
         hline_ypos=None,        # required
 
         # Text
@@ -328,7 +329,7 @@ def generate_line_plot(
             **TXT_KW)
 
     # Set y-ticks
-    ax.set_yticks(np.arange(ylim[0], ylim[1] + yticks_interval, yticks_interval))
+    ax.set_yticks(np.arange(ylim[0] + yticks_shift, ylim[1] + yticks_shift + yticks_interval, yticks_interval))
 
     # Format y-axis tick labels (if applicable)
     if meta_lead_graphic: 

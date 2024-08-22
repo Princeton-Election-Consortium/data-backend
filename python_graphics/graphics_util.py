@@ -207,7 +207,7 @@ def generate_ev_meta_lead_graphics():
                 y_column=13,            # meta-lead
 
                 # Lines
-                ylim=(-6, 2), 
+                ylim=(-5, 3), 
                 hline_ypos = 0,
 
                 # Text
@@ -253,8 +253,9 @@ def generate_ev_estimator_graphics():
                 yerr_columns= [10,11],  # ['95ci_lower', '95ci_upper']
 
                 # Lines
-                ylim=(150,300),
+                ylim=(180,340),
                 yticks_interval=40,
+                yticks_shift = 10,
                 hline_ypos = 270,
 
                 # Text
@@ -297,7 +298,7 @@ def generate_ev_histogram_graphics():
                 data_file = f'EV_histogram_{YEAR}.csv',
 
                 # Lines
-                xlim=(230, 430),
+                xlim=(150, 390),
                 xticks_interval=40,
                 ylim=(0, 1.2),
                 yticks_interval=0.5,
