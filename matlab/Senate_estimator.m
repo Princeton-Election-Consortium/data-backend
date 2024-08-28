@@ -112,7 +112,7 @@ end
 % Use statistics from data file
 polls.margin=polldata(:,4)';
 polls.SEM=polldata(:,5)';
-polls.SEM=max(polls.SEM,zeros(1,num_states)+3) % minimum uncertainty of 2%
+polls.SEM=max(polls.SEM,zeros(1,num_states)+3) % minimum uncertainty of 3%
 totalpollsused=sum(polldata(:,1))
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
