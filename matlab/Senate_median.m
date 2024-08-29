@@ -33,8 +33,8 @@ clear nextEV
 % possibilities. In 2022, 12 races, 4096 possibilities. In 2024, 11 & 2048.
 
 % Cumulative histogram of all possibilities
-histogram=EV_distribution(1:num_states);
-% histogram=EV_distribution(2:num_states+1); %index of 1 for 1 Dem/Ind seat...num_states for num_states seats
+% histogram=EV_distribution(1:num_states);
+histogram=EV_distribution(2:num_states+1); %index of 1 for 1 Dem/Ind seat...num_states for num_states seats
 %  Truncate distribution by 1, which implicitly assumes at least one race will go to Democrats.
 %  Seems ok, since otherwise we wouldn't bother doing a simulation.
 cumulative_prob=cumsum(histogram);
@@ -50,5 +50,12 @@ R_Senate_control_probability=cumulative_prob(max(50-Demsafe,0));
 % 50 in years when VP is a Republican.
 D_Senate_control_probability=1-R_Senate_control_probability;
 median_seats=Senateseats(min(find(cumulative_prob>=0.5))); % 50% of outcomes
+
+% edge case when more than 50% of mass is on the first index
+% median is then the first index
+if EV_distribution(1) >=.5
+    median_seats = Demsafe;
+end
+
 mean_seats=sum(histogram.*Senateseats);
 mean_seats=round(mean_seats*100)/100;

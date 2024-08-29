@@ -783,7 +783,7 @@ def generate_superimposed_line_plot(
     # Plot arrowhead for Harris
     ax.annotate(
             'Harris', 
-            xy=(HARRIS_DATE, ev_vals[HARRIS_INDEX] - 0.1),  # trial-and-error
+            xy=(HARRIS_DATE, ev_vals[HARRIS_INDEX] - 0.35),  # trial-and-error
             xytext=(HARRIS_DATE, ev_vals[HARRIS_INDEX] - 3.1), # trial-and-error
             fontsize=FONT_SIZE*0.8,
             ha = 'center',
@@ -985,7 +985,7 @@ def generate_histogram(
         ylim=(0, 1.15),         # optional, recommended
         yticks_interval=0.5,    # optional, recommended
         vline_xpos=None,        # required
-        vline_lab_pad=0.1,      # optional, recommended
+        vline_lab_pad=0.15,     # optional, recommended
 
         # Text
         title_txt='',           # required
