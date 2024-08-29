@@ -302,7 +302,7 @@ def generate_ev_histogram_graphics():
                 xticks_interval=40,
                 ylim=(0, 1.2),
                 yticks_interval=0.5,
-                vline_xpos=270,
+                vline_xpos=269,
                 vline_lab_pad = 0.105,
                 xvals = np.linspace(1, 538, 538),
 
