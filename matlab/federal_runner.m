@@ -11,12 +11,12 @@
 
 clear
 close
-federal_constants_2024
-
-forhistory=1; 
-EV_estimator
-EV_jerseyvotes
-EV_prediction
+% federal_constants_2024
+% 
+% forhistory=1; 
+% EV_estimator
+% EV_jerseyvotes
+% EV_prediction
 
 clear
 federal_constants_2024

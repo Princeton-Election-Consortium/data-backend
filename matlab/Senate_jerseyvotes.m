@@ -38,6 +38,7 @@
 
 %{
 
+DAYS_UNTIL_ELECTION = days(datetime(2024,11,5) - datetime('today'));
 
 MMsigma=max(sqrt(DAYS_UNTIL_ELECTION),1.5);
 
@@ -74,9 +75,10 @@ for ii=length(Mrange)
     % be sure that the order of this array matches the order of the state array in Senate_estimator
     % in 2022: 'AZ,CO,FL,GA,MO,NC,NH,NV,OH,PA,UT,WI ' 12 races.
     % kvoters=[3387 3257 11067 5000 3026 5525 806 1405 5922 6915 1488]; %2020 numbers -- need to fix for 2024
-    % in 2024: 'AZ,FL,MD,MI,MT,NV,OH,PA,TX,WI,WV' 11 races 
+    % in 2024: 'AZ,FL,MD,MI,MT,NE,NV,OH,PA,TX,WI,WV' 11 races 
     
-    kvoters = [2592 7797 2031 4500 468 1024 4201 5410 8152 2673 495]; % 2022 numbers -- should update when 2024 comes out
+    %kvoters = [2592 7797 2031 4500 468 1024 4201 5410 8152 2673 495]; % 2022 numbers -- should update when 2024 comes out
+    kvoters = [3420 11145 3067 5579 612 966 1408 5974 6958 11350 3310 803];
     disp(size(difference))
     disp(size(kvoters))
     jerseyvotes=difference./kvoters; % convert to per-voter power
@@ -106,12 +108,14 @@ end
 
 %}
 
-
+%%{
 sigma = 6; 
 impact = 1; 
 df = 1;
-kvoters = [2592 7797 2031 4500 468 1024 4201 5410 8152 2673 495];
+% in 2024: 'AZ,FL,MD,MI,MT,NE,NV,OH,PA,TX,WI,WV' 11 races 
+% kvoters = [2592 7797 2031 4500 468 1024 4201 5410 8152 2673 495];
 
+kvoters = [3420 11145 3067 5579 612 966 1408 5974 6958 11350 3310 803];
 Senate_median
 
 z = (polls.margin - metamargin)/sigma;
@@ -124,6 +128,7 @@ for i=1:num_states
 end
 
 jerseyvotes = voterpower; % change later so all jerseyvotes -> voterpower
+%}
 
 [foo, ijersey]=sort(jerseyvotes);
 display_num=max(size(uncertain,2), 10);
