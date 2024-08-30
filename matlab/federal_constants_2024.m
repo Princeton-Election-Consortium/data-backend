@@ -44,10 +44,10 @@ SENATE_START_DATE = 46; % February 15
 
 % Senate_estimator
 SENATE_POLLS_TXT = strcat(DIR_PATH, num2str(YEAR), '.Senate.polls.median.txt');
-SENATE_STATES = ['AZ,FL,MD,MI,MT,NE,NV,OH,PA,TX,WI,WV ']; % 11 races
+SENATE_STATES = ['AZ,FL,MD,MI,MT,NV,OH,PA,TX,WI,WV ']; % 11 races
 CONTESTED_STATES = [1:length(SENATE_STATES)/3];
 DEM_ASSIGNED = 42;
-REP_ASSIGNED = 46;
+REP_ASSIGNED = 47;
 
 % Output files 
 % from Senate_estimator.m

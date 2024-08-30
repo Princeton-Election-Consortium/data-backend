@@ -34,13 +34,12 @@ SENATE_STATES = {
         3: 'MD', 
         4: 'MI',
         5: 'MT',
-        6: 'NE',
-        7: 'NV',
-        8: 'OH',
-        9: 'PA',
-        10: 'TX',
-        11: 'WI',
-        12: 'WV'
+        6: 'NV',
+        7: 'OH',
+        8: 'PA',
+        9: 'TX',
+        10: 'WI',
+        11: 'WV'
     }
 EV_CANDIDATES = {
     "dem" : "Biden/Harris",
