@@ -140,7 +140,7 @@ def parse_candidate(row, party, cand_list=None):
         # Check if the candidate choice matches the specified party 
         # and (if applicable) is in the list of candidates
         if answer['party'] == party: 
-            if (party == 'Dem' or party == 'Ind') and (cand_list is None or answer['choice'] in cand_list[0]): 
+            if party == 'Dem' and (cand_list is None or answer['choice'] in cand_list[0]): 
                 choice = answer['choice']
                 break   
             elif party == 'Rep' and (cand_list is None or answer['choice'] in cand_list[1]):
@@ -226,14 +226,14 @@ def parse_dminusr(row, generic=False, dem_cand=None, rep_cand=None):
     # Iterate through answers and calculate polling sums
     if generic: 
         for answer in answers:
-            if answer['choice'] == 'Dem' or answer['choice'] == 'Ind':
+            if answer['choice'] == 'Dem':
                 d_sum += float(answer['pct'])
             elif answer['choice'] == 'Rep':
                 r_sum += float(answer['pct'])
     
     else: # dem_cand, rep_cand are not None
         for answer in answers:
-            if (answer['party'] == 'Dem' or answer['party'] == 'Ind') and answer['choice'] == dem_cand:
+            if answer['party'] == 'Dem' and answer['choice'] == dem_cand:
                 d_sum += float(answer['pct'])
             elif answer['party'] == 'Rep' and answer['choice'] == rep_cand:
                 r_sum += float(answer['pct'])
@@ -578,12 +578,6 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
         dem_cand=lambda x: x.apply(parse_candidate, axis=1, party='Dem', cand_list=sen_cands),
         rep_cand=lambda x: x.apply(parse_candidate, axis=1, party='Rep', cand_list=sen_cands)
     )
-
-    # Adjust for Nebraska 
-    sen_polls['dem_cand'] = sen_polls.apply(
-        lambda row: parse_candidate(row, party='Ind', cand_list=sen_cands) 
-        if row['dem_cand'] == 'parse_candidate_error' else row['dem_cand'], axis=1
-    )
     
     # Cleaning: Remove rows with parse candidate errors
     sen_polls = sen_polls[(sen_polls['dem_cand'] != "parse_candidate_error") & (sen_polls['rep_cand'] != "parse_candidate_error")]
@@ -596,9 +590,6 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
     # --> Generic algorithm
     path = os.path.join(dir_path, f'outputs/{YEAR}.Senate.polls.median.txt')
     all_output = [] 
-
-    print(f"Here's how the polls with just Nebraska looks like:")
-    print(sen_polls[sen_polls['state'] == 'Nebraska'])
 
     with open(path, 'w') as f:
 
