@@ -119,9 +119,9 @@ totalpollsused=sum(polldata(:,1));
 %%%%%%%% Generate values for Maine, Nebraska districts %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%  PVI updated May 2024 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-polls.margin(52:53)=polls.margin(20)+[15 -15]; % the differences are 2* the differences in Cook PVI
+polls.margin(52:53)=polls.margin(20)+[12 -12]; % the differences are 2* the deviation in D vote share from statewide average in davesredistricting.org
 polls.SEM(52:53)=sqrt(polls.SEM(20)^2+4);
-polls.margin(54:56)=polls.margin(28)+[8 26 -34];
+polls.margin(54:56)=polls.margin(28)+[8 21 -28]; % again the differences are 2* the deviation in D vote share from statewide average in davesredistricting.org
 polls.SEM(54:56)=sqrt(polls.SEM(28)^2+4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
