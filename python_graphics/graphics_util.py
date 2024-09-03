@@ -167,7 +167,7 @@ def generate_senate_histogram_graphics():
                 xticks_interval=1,
                 ylim=(0, 1.15),
                 yticks_interval=5,
-                vline_xpos = 49.5,
+                vline_xpos = 50.0,
                 vline_lab_pad = 0.125,
 
                 # Text
