@@ -19,12 +19,12 @@ DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 SENATE_PRIORS_CSV = os.path.join(DIR_PATH, '../scraping/', f'{YEAR}.Senate.priors.csv')
 SENATE_POLLS_CSV = os.path.join(DIR_PATH, '../scraping/outputs/', f'{YEAR}.Senate.polls.median.csv')
 SENATE_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'Senate_jerseyvotes_{YEAR}.csv')
-FIVETHIRTYEIGHT_SENATE_URL = "https://projects.fivethirtyeight.com/polls/senate/"
+FIVETHIRTYEIGHT_SENATE_URL = f"https://projects.fivethirtyeight.com/polls/senate/{YEAR}/"
 
 # Presidential
 EV_STATEPROBS_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_stateprobs_{YEAR}.csv')
 EV_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_jerseyvotes_{YEAR}.csv')
-FIVETHIRTYEIGHT_EV_URL = "https://projects.fivethirtyeight.com/polls/president-general/"
+FIVETHIRTYEIGHT_EV_URL = f"https://projects.fivethirtyeight.com/polls/president-general/{YEAR}/"
 
 # Constants to set for the current election cycle
 D_SEATS_START = 43
