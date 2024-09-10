@@ -674,7 +674,7 @@ def process_presidential_polls(polls, start_date, states):
 
     # Cleaning: Remove rows with other match-ups and national polls
     # Keep Biden polls and remove Harris polls before entry date
-    dem_condition = (pres_polls['dem_cand'] == DEM_CAND_BEFORE) | ((pres_polls['dem_cand'] == DEM_CAND_AFTER) & (pres_polls['startDate'] >= HARRIS_DATE))
+    dem_condition = ((pres_polls['dem_cand'] == DEM_CAND_BEFORE) & (pres_polls['startDate'] < HARRIS_DATE)) | ((pres_polls['dem_cand'] == DEM_CAND_AFTER) & (pres_polls['startDate'] >= HARRIS_DATE))
     rep_condition =  (pres_polls['rep_cand'] == REP_CAND)
     pres_polls = pres_polls[dem_condition & rep_condition]
     pres_polls = pres_polls[pres_polls['state'] != 'National']
