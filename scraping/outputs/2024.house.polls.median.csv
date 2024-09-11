@@ -1,4 +1,5 @@
 num_polls,julian_date,date_most_recent_poll,median_margin,median_std_dev
+8,255,249,1.05,1.48
 12,254,249,1.05,1.48
 13,253,249,2.00,1.48
 14,252,249,2.00,1.48
