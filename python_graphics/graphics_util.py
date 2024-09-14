@@ -211,7 +211,7 @@ def generate_ev_meta_lead_graphics():
                 hline_ypos = 0,
 
                 # Text
-                hline_labels = ['Trump leads','Biden/Harris leads'],
+                hline_labels = ['Trump leads','Harris leads'],
                 hline_lab_xpos = 0.22,
 
                 # Customs
@@ -259,7 +259,7 @@ def generate_ev_estimator_graphics():
                 hline_ypos = 270,
 
                 # Text
-                hline_labels = ['Trump leads', 'Biden/Harris leads'],
+                hline_labels = ['Trump leads', 'Harris leads'],
                 hline_lab_xpos = 0.22, 
 
                 # Customs
@@ -272,8 +272,8 @@ def generate_ev_estimator_graphics():
                 **ev_estimator_kw, 
 
                 # Text
-                title_txt='{last_value:.0f} Biden/Harris electoral votes expected',
-                ylab_txt='Biden/Harris electoral votes',
+                title_txt='{last_value:.0f} Harris electoral votes expected',
+                ylab_txt='Harris electoral votes',
 
                 # Output
                 out_path=ev_estimator,
@@ -284,7 +284,7 @@ def generate_ev_estimator_graphics():
                 **ev_estimator_kw, 
 
                 # Text
-                title_txt='Today: Biden/Harris {last_value:.0f}, Trump {inv_pres_last_value:.0f} EV',
+                title_txt='Today: Harris {last_value:.0f}, Trump {inv_pres_last_value:.0f} EV',
 
                 # Output
                 thumbnail = True,
@@ -307,8 +307,8 @@ def generate_ev_histogram_graphics():
                 xvals = np.linspace(1, 538, 538),
 
                 # Text
-                title_txt='Today\'s median: {median_value:.0f} EV for Biden/Harris',
-                vline_labels = ['Trump\nwins', 'Biden/Harris\nwins'],                
+                title_txt='Today\'s median: {median_value:.0f} EV for Harris',
+                vline_labels = ['Trump\nwins', 'Harris\nwins'],                
 
                 # Customs
                 hard_median = True,
@@ -321,7 +321,7 @@ def generate_ev_histogram_graphics():
                 **ev_histogram_kw, 
 
                 # Text
-                xlab_txt = 'Electoral votes for Biden/Harris',
+                xlab_txt = 'Electoral votes for Harris',
                 ylab_txt='Prob. of exact # of EV (%)',
 
                 # Output

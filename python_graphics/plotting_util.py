@@ -1117,10 +1117,6 @@ def generate_histogram(
 
         if vline_labels is not None:
             pad_data_units = vline_lab_pad * np.diff(ax.get_xlim())
-            if ev_extra_pad: # For EV histogram only
-                x_extra_pad = 13 # trial-and-error 
-            else:
-                x_extra_pad = 0
 
             # Opponent (2024: Trump/Rep)
             ax.text(x=vline_xpos - pad_data_units,
@@ -1132,7 +1128,7 @@ def generate_histogram(
                     **TXT_KW)
             
             # Incumbent (2024: Biden/Dem)
-            ax.text(x=vline_xpos + pad_data_units + x_extra_pad,
+            ax.text(x=vline_xpos + pad_data_units,
                     y=VLINE_LAB_YPOS,
                     s=vline_labels[1],
                     fontsize=FONT_SIZE_MED,
