@@ -155,21 +155,41 @@ def get_ev_moneyball_states(n):
             if read == n:
                 return pres_string
             if read == n - 1:
-                if row[1] == 'M2':
-                    pres_string += 'ME-2'
+                # Maine CDs
+                if row [1] == 'M1':
+                    pres_string += 'ME-01'
+                elif row[1] == 'M2':
+                    pres_string += 'ME-02'
+                    
+                # Nebraska CDs
+                elif row[1] == 'N1':
+                    pres_string += 'NE-01'
                 elif row[1] == 'N2':
-                    pres_string += 'NE-2'
+                    pres_string += 'NE-02'
+                elif row[1] == 'N3':
+                    pres_string += 'NE-03'
+                      
                 else:
                     pres_string += row[1]
             else:
-                if row[1] == 'M2':
-                    pres_string += 'ME-2' + " "
+                # Maine CDs
+                if row [1] == 'M1':
+                    pres_string += 'ME-01' + " "
+                elif row[1] == 'M2':
+                    pres_string += 'ME-02' + " "
+                    
+                # Nebraska CDs
+                elif row[1] == 'N1':
+                    pres_string += 'NE-01' + " "
                 elif row[1] == 'N2':
-                    pres_string += 'NE-2' + " "
+                    pres_string += 'NE-02' + " "
+                elif row[1] == 'N3':
+                    pres_string += 'NE-03' + " "
+                    
                 else:
                     pres_string += row[1] + " "
             read += 1
-    
+            
     return pres_string
 
 def write_ev_banner(ev_dem, ev_mm_str, ev_moneyball_states):
