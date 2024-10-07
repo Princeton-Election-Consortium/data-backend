@@ -110,7 +110,7 @@ def get_sen_moneyball_states(n):
 def write_senate_banner(dem_seats, rep_seats, sen_mm_str):
     banner_senate = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span><a href="/election-tracking-{YEAR}-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 47-52) Control: ({sen_mm_str}) from toss-up</span>
+        <span><a href="/election-tracking-{YEAR}-u-s-senate/">Senate</a> Senate: {dem_seats} | {rep_seats} (range: 47-52) Control: {sen_mm_str} from toss-up</span>
     </div>
     """
 
@@ -195,7 +195,7 @@ def get_ev_moneyball_states(n):
 def write_ev_banner(ev_dem, ev_mm_str, ev_moneyball_states):
     banner_ev = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Nov 3 polls: Harris {ev_dem} EV ({ev_mm_str})</span>
+        <span>Nov 3 polls: Harris: {ev_dem} EV ({ev_mm_str} from toss-up)</span>
         <br>
         <span><a href="/data/moneyball/">Moneyball</a> states: President {ev_moneyball_states}</span>
     </div>
