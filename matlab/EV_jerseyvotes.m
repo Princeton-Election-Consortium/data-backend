@@ -37,7 +37,7 @@ nowdensity=nowdensity/sum(nowdensity);
 
 jerseyv_accumulator=zeros(1,num_states);
 
-for ii=length(Mrange)
+for ii=1:length(Mrange)
     polls.margin=polls.margin+Mrange(ii);
     
     % biaspct=0;
