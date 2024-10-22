@@ -597,9 +597,6 @@ def process_senate_polls(polls, start_date, sen_states, sen_cands):
     path = os.path.join(dir_path, f'outputs/{YEAR}.Senate.polls.median.txt')
     all_output = [] 
 
-    print(f"Here's how the polls with just Nebraska looks like:")
-    print(sen_polls[sen_polls['state'] == 'Nebraska'])
-
     with open(path, 'w') as f:
 
         for idx in range((datetime.today() - start_date).days):
@@ -674,7 +671,8 @@ def process_presidential_polls(polls, start_date, states):
 
     # Cleaning: Remove rows with other match-ups and national polls
     # Keep Biden polls and remove Harris polls before entry date
-    dem_condition = ((pres_polls['dem_cand'] == DEM_CAND_BEFORE) & (pres_polls['startDate'] < HARRIS_DATE)) | ((pres_polls['dem_cand'] == DEM_CAND_AFTER) & (pres_polls['startDate'] >= HARRIS_DATE))
+    # dem_condition = ((pres_polls['dem_cand'] == DEM_CAND_BEFORE) & (pres_polls['startDate'] < HARRIS_DATE)) | ((pres_polls['dem_cand'] == DEM_CAND_AFTER) & (pres_polls['startDate'] >= HARRIS_DATE))
+    dem_condition = (pres_polls['dem_cand'] == DEM_CAND_AFTER) & (pres_polls['startDate'] >= HARRIS_DATE)
     rep_condition =  (pres_polls['rep_cand'] == REP_CAND)
     pres_polls = pres_polls[dem_condition & rep_condition]
     pres_polls = pres_polls[pres_polls['state'] != 'National']
