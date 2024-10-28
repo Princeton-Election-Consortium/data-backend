@@ -21,6 +21,7 @@ SENATE_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'Senate_j
 # Presidential
 EV_ESTIMATES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_estimates_{YEAR}.csv')
 EV_JERSEYVOTES_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_jerseyvotes_{YEAR}.csv')
+EV_PERTURBATION_CSV = os.path.join(DIR_PATH, '../matlab/outputs/', f'EV_perturbation_{YEAR}.csv')
 
 # Constants to set for the current election cycle
 HOUSE_OFFSET = 0    # Same as custom_twin_axis_offset in graphics_util.py
@@ -143,7 +144,11 @@ def parse_ev():
     if ev_metamargin < 0:
         ev_ahead_str = 'R+'
 
-    return ev_dem, ev_rep, ev_metamargin, ev_ahead_str
+    ev_perturbation = get_estimates(EV_PERTURBATION_CSV)
+    ev_plus_2 = int(ev_perturbation[1])
+    ev_minus_2 = int(ev_perturbation[2])
+
+    return ev_dem, ev_rep, ev_metamargin, ev_ahead_str, ev_plus_2, ev_minus_2
 
 def get_ev_moneyball_states(n):
     pres_string = ""
@@ -192,10 +197,10 @@ def get_ev_moneyball_states(n):
             
     return pres_string
 
-def write_ev_banner(ev_dem, ev_mm_str, ev_moneyball_states):
+def write_ev_banner(ev_dem, ev_mm_str, ev_moneyball_states, ev_plus_2, ev_minus_2):
     banner_ev = f"""
     <div style="font-weight: 600; width: 970px; color:black ; background-color: #eee ; line-height: 30px; font-family: Helvetica; font-size: 20px">
-        <span>Nov 3 polls: Harris: {ev_dem} EV ({ev_mm_str} from toss-up)</span>
+        <span>Nov 3 polls: Harris: {ev_dem} EV ({ev_minus_2}-{ev_plus_2}, {ev_mm_str} from toss-up)</span>
         <br>
         <span><a href="/data/moneyball/">Moneyball</a> states: President {ev_moneyball_states}</span>
     </div>
@@ -227,11 +232,11 @@ def main():
     write_senate_moneyball_banner(sen_moneyball_states)
 
     # PRESIDENTIAL
-    ev_dem, ev_rep, ev_metamargin, ev_ahead_str = parse_ev()
+    ev_dem, ev_rep, ev_metamargin, ev_ahead_str, ev_plus_2, ev_minus_2 = parse_ev()
     ev_mm_str = f'{ev_ahead_str}{abs(ev_metamargin)}%'
     ev_moneyball_states = get_ev_moneyball_states(3)
 
-    write_ev_banner(ev_dem, ev_mm_str, ev_moneyball_states)    
+    write_ev_banner(ev_dem, ev_mm_str, ev_moneyball_states, ev_plus_2, ev_minus_2)    
     
 
 if __name__ == "__main__":

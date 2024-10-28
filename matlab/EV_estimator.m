@@ -38,6 +38,11 @@
 %    Line 1 is the probability of candidate #1 (Biden) getting 1 EV. Line 2 is 2 EV, and so on. 
 %    Note that 0 EV is left out of this histogram for ease of indexing.
 % 
+% EV_perturbation.csv
+%    A 1-line fine that gives the median EV for all polls perturbed by
+%    +/- 2. The first entry is unperturbed, the second entry is +2, 
+%    and the third entry is -2. 
+%    
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % This routine expects the global variables biaspct and analysisdate
@@ -139,12 +144,12 @@ grid on
 hold on
 bar(histogram*100,'k')
 axis([EVmintick EVmaxtick 0 max(histogram)*105])
-xlabel('Electoral votes for Biden/Harris','FontSize',14);
+xlabel('Electoral votes for Harris','FontSize',14);
 ylabel('Probability of exact # of EV (%)','FontSize',14)
 set(gcf, 'InvertHardCopy', 'off');
 title('Distribution of possible outcomes - snapshot','FontSize',14)
 text(EVmintick+3,max(histogram)*99,'Trump wins','FontSize',14)
-text(EVmaxtick-45,max(histogram)*99,'Biden/Harris wins','FontSize',14)
+text(EVmaxtick-45,max(histogram)*99,'Harris wins','FontSize',14)
 if analysisdate==0
     datelabel=datestr(today);
 else
@@ -265,3 +270,41 @@ dlmwrite(strcat(whereoutput,EV_ESTIMATES_CSV), outputs)
 if forhistory
    dlmwrite(strcat(whereoutput,EV_ESTIMATE_HISTORY_CSV),[polldata(1,2) outputs],'-append')
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%% EV Median Range %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We perturb the polls by +/- 2 to see the range of EV votes 
+
+% Perturb by +2 
+for state=1:num_states
+        polls.margin(state)=polls.margin(state)+2;
+end
+
+EV_median
+EV_median_plus_2 = medianEV(1);
+
+
+for state=1:num_states 
+    polls.margin(state)=polls.margin(state)-2;
+end
+
+
+% Perturb by -2 
+for state=1:num_states
+        polls.margin(state)=polls.margin(state)-2;
+end
+
+EV_median
+EV_median_minus_2 = medianEV(1);
+
+for state=1:num_states 
+    polls.margin(state)=polls.margin(state)+2;
+end
+
+% Calculate EV median w/o pertubation (also to just make to properly reset
+EV_median
+
+output_ev_perturbation = [medianEV(1) EV_median_plus_2 EV_median_minus_2]; 
+
+dlmwrite(strcat(whereoutput,EV_PERTURBATION_CSV), output_ev_perturbation); 

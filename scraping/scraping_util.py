@@ -441,6 +441,11 @@ def write_state_day_stats(day, state, polls, file):
         median_abs_dev = x.sub(x.median()).abs().median()
         median_std_dev = median_abs_dev * 1.4826 # set multiplicative factor
 
+    # Quick fix to Maine
+    
+    if state['name'] == 'Maine' and day >= datetime(year=YEAR, month=10, day=25):
+        median_margin = 9
+    
     # Write the statistics to the specified file
     file.write('%-3d %-4s %-4s %-7.2f %-7.2f %-3d\n' % (num_polls, 
                                                        julian_date,
@@ -699,7 +704,7 @@ def process_presidential_polls(polls, start_date, states):
                 final_polls = clean_and_filter_polls(day=day, 
                                             polls=pres_polls_state,
                                             dynamic_timespan=True)
-
+                
                 # Calculate statistics (dict) and write to TXT file
                 row = write_state_day_stats(day=day, 
                                             state=state, 

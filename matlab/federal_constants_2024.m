@@ -36,6 +36,7 @@ EV_PREDICTION_PROBS_CSV = strcat('EV_prediction_probs_', num2str(YEAR), '.csv');
 EV_PREDICTION_MM_CSV = strcat('EV_prediction_MM_', num2str(YEAR), '.csv');
 EV_HISTORY_JPG = strcat('EV_history_', num2str(YEAR), '.jpg');
 EV_JERSEYVOTES_CSV = strcat('EV_jerseyvotes_', num2str(YEAR), '.csv');
+EV_PERTURBATION_CSV = strcat('EV_perturbation_', num2str(YEAR), '.csv');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % SENATE CONSTANTS
