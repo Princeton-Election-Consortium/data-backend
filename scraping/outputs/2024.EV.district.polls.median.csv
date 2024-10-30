@@ -1,0 +1,3 @@
+num_polls,julian_date,date_most_recent_poll,median_margin,median_std_dev,state_num
+3,304,281,26.00,4.45,20
+3,304,294,-9.00,0.00,20

@@ -17,6 +17,7 @@ EV_START_DATE = 112;
 
 % EV_estimator
 EV_POLLS_TXT = strcat(DIR_PATH, num2str(YEAR), '.EV.polls.median.txt');
+EV_POLLS_DISTRICT_TXT = strcat(DIR_PATH, num2str(YEAR), '.EV.district.polls.median.txt');
 EV_STATES = [
  'AL,AK,AZ,AR,CA,CO,CT,DC,DE,FL,GA,HI,ID,IL,IN,IA,KS,KY,LA,ME,MD,MA,MI,MN,MS,MO,MT,NE,NV,NH,NJ,NM,NY,NC,ND,OH,OK,OR,PA,RI,SC,SD,TN,TX,UT,VT,VA,WA,WV,WI,WY,M1,M2,N1,N2,N3 '];
 EV_PER_STATE = [9  3  11  6 54 10 7  3  3  30 16  4 4  19 11  6  6  8  8  2 10 11 15 10 6  10  4  2  6  4 14 5  28 16  3 17  7  8 19  4  9  3 11 40  6  3 13 12  4 10  3  1  1  1  1  1]; % add Maine and Nebraska - deployed October 28 2016

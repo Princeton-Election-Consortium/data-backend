@@ -50,9 +50,9 @@ def clean_districts(polls):
                 # Adjust percentages for Maine districts
                 if polls.loc[index, 'state'] == "Maine":
                     if polls.loc[index, 'district'] == 1:
-                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) - 10
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) # - 10 # Remove adjustment to polls if separating them
                     elif polls.loc[index, 'district'] == 2:
-                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) + 10
+                        polls.loc[index, 'answers'][0]['pct'] = float(polls.loc[index, 'answers'][0]['pct']) # + 10
                     else: 
                         # Drop rows for invalid districts
                         polls = polls.drop(index)
@@ -440,11 +440,6 @@ def write_state_day_stats(day, state, polls, file):
         median_margin = x.median()
         median_abs_dev = x.sub(x.median()).abs().median()
         median_std_dev = median_abs_dev * 1.4826 # set multiplicative factor
-
-    # Quick fix to Maine
-    
-    if state['name'] == 'Maine' and day >= datetime(year=YEAR, month=10, day=25):
-        median_margin = 9
     
     # Write the statistics to the specified file
     file.write('%-3d %-4s %-4s %-7.2f %-7.2f %-3d\n' % (num_polls, 
@@ -690,17 +685,55 @@ def process_presidential_polls(polls, start_date, states):
     # --> Generic algorithm
     path = os.path.join(dir_path, f'outputs/{YEAR}.EV.polls.median.txt')
     all_output = []
+    district_output = []
 
     with open(path, 'w') as f:
 
         for idx in range((datetime.today() - start_date).days):
-
             # Filter polls for the current day
             day = datetime.today() - timedelta(days=idx)
 
             # Filter polls for specific states
             for state in states:
                 pres_polls_state = pres_polls[pres_polls['state'] == state['name']] 
+                
+                # TODO: Add conditionals to do aggregated polls if there are enough polls or distinguish between district polls
+                # TODO: Incorporate exception for districts more cleanly into the algorithm
+                if state['name'] == 'Maine':
+                    if idx == 0:
+                        # Save district polling data 
+                        pres_polls_maine_district_1 = pres_polls_state[pres_polls_state['district'] == 1].copy()
+                        pres_polls_maine_district_2 = pres_polls_state[pres_polls_state['district'] == 2].copy()
+                        
+                        final_polls_maine_district_1 = clean_and_filter_polls(day=day,
+                                                                    polls=pres_polls_maine_district_1,
+                                                                    dynamic_timespan=True)
+                        final_polls_maine_district_2 = clean_and_filter_polls(day=day,
+                                                                    polls=pres_polls_maine_district_2,
+                                                                    dynamic_timespan=True)
+                        
+                        path_district = os.path.join(dir_path, f'outputs/{YEAR}.EV.district.polls.median.txt')
+                        
+                        with open(path_district, 'w') as g:
+                            row_maine_district_1 = write_state_day_stats(day=day,
+                                                                         state = state,
+                                                                         polls = final_polls_maine_district_1,
+                                                                         file = g) 
+                            row_maine_district_2 = write_state_day_stats(day=day,
+                                                                         state = state,
+                                                                         polls = final_polls_maine_district_2,
+                                                                         file = g) 
+                            
+                        district_output.append(row_maine_district_1)
+                        district_output.append(row_maine_district_2)
+                        
+                        df_district = pd.DataFrame(district_output)
+                        path_district = os.path.join(dir_path, f'outputs/{YEAR}.EV.district.polls.median.csv')
+                        df_district.to_csv(path_district, index=False, float_format='%.2f')
+                    
+                    # Filter polls for NaN districts, which are state-wide polls
+                    pres_polls_state = pres_polls_state[np.isnan(pres_polls_state['district'])]
+                    
                 final_polls = clean_and_filter_polls(day=day, 
                                             polls=pres_polls_state,
                                             dynamic_timespan=True)

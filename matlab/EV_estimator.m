@@ -124,8 +124,15 @@ totalpollsused=sum(polldata(:,1));
 %%%%%%%% Generate values for Maine, Nebraska districts %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%  PVI updated September 2024 %%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-polls.margin(52:53)=polls.margin(20)+[12 -12]; % the differences are 2* the deviation in D vote share from statewide average in davesredistricting.org
-polls.SEM(52:53)=sqrt(polls.SEM(20)^2+4);
+polldatadistrict=load(EV_POLLS_DISTRICT_TXT);
+polls.margin(52:53) = polldatadistrict(:,4)'; 
+polls.SEM(52:53) = polldatadistrict(:,5)'; 
+polls.SEM(52:53) = max(polls.SEM(52:53), zeros(1,2)+3); 
+
+% Use this if there are sparse district polls for ME/NE
+% polls.margin(52:53)=polls.margin(20)+[12 -12]; % the differences are 2* the deviation in D vote share from statewide average in davesredistricting.org
+% polls.SEM(52:53)=sqrt(polls.SEM(20)^2+4);
+% Use NE state-wide + aggregated district polls for now
 polls.margin(54:56)=polls.margin(28)+[8 21 -28]; % again the differences are 2* the deviation in D vote share from statewide average in davesredistricting.org
 polls.SEM(54:56)=sqrt(polls.SEM(28)^2+4);
 
